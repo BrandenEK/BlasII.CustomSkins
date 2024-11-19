@@ -1,4 +1,6 @@
 ﻿using BlasII.ModdingAPI;
+using BlasII.ModdingAPI.Helpers;
+using Il2CppTGK.Game;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
@@ -21,6 +23,27 @@ public class CustomSkins : BlasIIMod
     protected override void OnInitialize()
     {
         LoadAllSpritesheets();
+    }
+
+    /// <summary>
+    /// Replace TPO sprites every frame with a loaded one
+    /// </summary>
+    protected override void OnLateUpdate()
+    {
+        if (!SceneHelper.GameSceneLoaded || CoreCache.PlayerSpawn.PlayerInstance == null)
+            return;
+
+        // Replace all TPO sprites that were loaded
+        foreach (var renderer in CoreCache.PlayerSpawn.PlayerInstance.GetComponentsInChildren<SpriteRenderer>())
+        {
+            if (renderer.sprite == null || string.IsNullOrEmpty(renderer.sprite.name))
+                continue;
+
+            if (!_loadedSprites.TryGetValue(renderer.sprite.name, out Sprite customSprite))
+                continue;
+
+            renderer.sprite = customSprite;
+        }
     }
 
     private void LoadAllSpritesheets()
