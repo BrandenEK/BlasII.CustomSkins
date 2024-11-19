@@ -50,8 +50,11 @@ public class CustomSkins : BlasIIMod
     {
         ModLog.Warn("Starting Import...");
 
-        // Get all json files in the skins folder
+        // Create skins folder
         string dir = Path.Combine(FileHandler.ModdingFolder, "skins");
+        Directory.CreateDirectory(dir);
+
+        // Get all json files in the skins folder
         foreach (var file in Directory.GetFiles(dir, "*.json", SearchOption.TopDirectoryOnly))
         {
             LoadSpritesheet(Path.GetFileNameWithoutExtension(file));
