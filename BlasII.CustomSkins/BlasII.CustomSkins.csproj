@@ -8,20 +8,20 @@
     <Product>Custom Skins</Product>
     <Authors>Damocles</Authors>
     <Company>Damocles</Company>
-    <Description>A mod for Blasphemous 2</Description>
+    <Description>Allows using custom player skins made by the community</Description>
     <Version>0.1.0</Version>
     
     <TargetName>CustomSkins</TargetName>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile>bin\$(Configuration)\$(TargetName).xml</DocumentationFile>
-    <RepositoryUrl>https://github.com/Example</RepositoryUrl>
+    <RepositoryUrl>https://github.com/BrandenEK/BlasII.CustomSkins</RepositoryUrl>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="BlasII.GameLibs" Version="2.1.0" />
-    <PackageReference Include="BlasII.ModdingAPI" Version="0.1.0" />
+    <PackageReference Include="BlasII.ModdingAPI" Version="1.1.0" />
   </ItemGroup>
 
   <Target Name="Development" AfterTargets="PostBuildEvent">
