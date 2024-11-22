@@ -9,7 +9,7 @@ namespace BlasII.CustomSkins;
 /// <summary>
 /// Handles loading all custom sprites
 /// </summary>
-public class Importer(string skinsFolder)
+internal class Importer(string skinsFolder)
 {
     private readonly string _skinsFolder = skinsFolder;
 
