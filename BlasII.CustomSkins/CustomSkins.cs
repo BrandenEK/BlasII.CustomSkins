@@ -30,6 +30,13 @@ public class CustomSkins : BlasIIMod
     /// </summary>
     protected override void OnLateUpdate()
     {
+        // temp
+        if (Input.GetKeyDown(KeyCode.F9))
+        {
+            var exporter = new Exporter(FileHandler.ContentFolder);
+            exporter.ExportAll([]);
+        }
+
         if (!SceneHelper.GameSceneLoaded || CoreCache.PlayerSpawn.PlayerInstance == null)
             return;
 
