@@ -19,6 +19,15 @@ internal class Exporter(string path)
     {
         ModLog.Warn("Starting Export...");
 
+        var groups = export.GroupBy(x => x.Key[0..x.Key.LastIndexOf('_')]);
+        foreach (var group in groups)
+        {
+            ModLog.Warn(group.Key);
+            foreach (var sprite in group)
+            {
+                ModLog.Error(sprite.Key);
+            }
+        }
     }
 
     private void Export(string animation, IEnumerable<Sprite> sprites)
