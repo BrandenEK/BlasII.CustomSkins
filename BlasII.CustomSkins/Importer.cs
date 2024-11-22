@@ -21,7 +21,6 @@ internal class Importer(string skinsFolder)
         var output = new Dictionary<string, Sprite>();
 
         // Create skins folder
-        //string dir = Path.Combine(Main.CustomSkins.FileHandler.ModdingFolder, "skins");
         Directory.CreateDirectory(_skinsFolder);
 
         // Get all json files in the skins folder
