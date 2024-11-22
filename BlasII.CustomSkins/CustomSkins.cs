@@ -22,7 +22,7 @@ public class CustomSkins : BlasIIMod
     protected override void OnInitialize()
     {
         var importer = new Importer(Path.Combine(FileHandler.ModdingFolder, "skins"));
-        _loadedSprites = importer.LoadAllSpritesheets();
+        _loadedSprites = importer.ImportAll();
     }
 
     /// <summary>
