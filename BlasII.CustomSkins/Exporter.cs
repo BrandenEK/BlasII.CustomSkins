@@ -19,14 +19,17 @@ internal class Exporter(string path)
     {
         ModLog.Warn("Starting Export...");
 
+        // Group sprites by name
         var groups = export.GroupBy(x => x.Key[0..x.Key.LastIndexOf('_')]);
+
+        // Export each individual spritesheet
         foreach (var group in groups)
         {
-            ModLog.Warn(group.Key);
-            foreach (var sprite in group)
-            {
-                ModLog.Error(sprite.Key);
-            }
+            var sprites = group
+                .OrderBy(x => int.Parse(x.Key[(x.Key.LastIndexOf('_') + 1)..]))
+                .Select(x => x.Value);
+
+            Export(group.Key, sprites);
         }
     }
 
