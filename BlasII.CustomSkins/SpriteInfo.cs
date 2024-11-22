@@ -17,22 +17,17 @@ public class SpriteInfo
     public int PixelsPerUnit { get; init; }
 
     /// <summary>
-    /// The x position of the sprite in pixels
+    /// The location of the sprite in pixels
     /// </summary>
-    public int Position { get; init; }
+    public Vector Position { get; init; }
 
     /// <summary>
-    /// The width of the sprite in pixels
+    /// The size of the sprite in pixels
     /// </summary>
-    public int Width { get; init; }
+    public Vector Size { get; init; }
 
     /// <summary>
-    /// The height of the sprite in pixels
+    /// The normalized pivot of the sprite
     /// </summary>
-    public int Height { get; init; }
-
-    /// <summary>
-    /// The normalized x pivot of the sprite
-    /// </summary>
-    public float Pivot { get; init; }
+    public Vector Pivot { get; init; }
 }
