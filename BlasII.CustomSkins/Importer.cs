@@ -50,8 +50,8 @@ internal class Importer(string skinsFolder)
         {
             ModLog.Info($"Importing {info.Name}");
 
-            var rect = new Rect(info.Position, 0, info.Width, info.Height);
-            var sprite = Sprite.Create(texture, rect, new Vector2(info.Pivot, 0), info.PixelsPerUnit);
+            var rect = new Rect(info.Position, info.Size);
+            var sprite = Sprite.Create(texture, rect, info.Pivot, info.PixelsPerUnit);
             sprite.hideFlags = HideFlags.DontUnloadUnusedAsset;
 
             output.Add(info.Name, sprite);
