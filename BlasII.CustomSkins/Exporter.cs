@@ -1,6 +1,8 @@
 ﻿using BlasII.CustomSkins.Extensions;
 using BlasII.ModdingAPI;
+using MelonLoader;
 using Newtonsoft.Json;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,10 +17,16 @@ internal class Exporter(string path)
 {
     private readonly string _exportFolder = path;
 
+    //private IEnumerator<Sprite> _groupEnumerator;
+
     public void ExportAll(Dictionary<string, Sprite> export)
     {
         ModLog.Warn("Starting Export...");
+        MelonCoroutines.Start(ExportCoroutine(export));
+    }
 
+    private IEnumerator ExportCoroutine(Dictionary<string, Sprite> export)
+    {
         // Group sprites by name
         var groups = export.GroupBy(x => x.Key[0..x.Key.LastIndexOf('_')]);
 
@@ -30,6 +38,7 @@ internal class Exporter(string path)
                 .Select(x => x.Value);
 
             Export(group.Key, sprites);
+            yield return null;
         }
     }
 
@@ -63,7 +72,9 @@ internal class Exporter(string path)
             //ModLog.Info($"Exporting {sprite.name}");
             int w = (int)sprite.rect.width;
             int h = (int)sprite.rect.height;
-            Graphics.CopyTexture(sprite.GetSlicedTexture(), 0, 0, 0, 0, w, h, tex, 0, 0, x, 0);
+            Texture2D sliced = sprite.GetSlicedTexture();
+            Graphics.CopyTexture(sliced, 0, 0, 0, 0, w, h, tex, 0, 0, x, 0);
+            Object.Destroy(sliced);
 
             infos[idx] = new SpriteInfo()
             {

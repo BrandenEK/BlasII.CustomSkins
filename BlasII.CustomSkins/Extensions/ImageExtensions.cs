@@ -9,10 +9,13 @@ internal static class ImageExtensions
         Vector2Int position = new((int)sprite.rect.x, (int)sprite.rect.y);
         Vector2Int size = new((int)sprite.rect.width, (int)sprite.rect.height);
 
-        Color[] pixels = sprite.texture.Duplicate().GetPixels(position.x, position.y, size.x, size.y);
+        Texture2D duplicated = sprite.texture.Duplicate();
+        Color[] pixels = duplicated.GetPixels(position.x, position.y, size.x, size.y);
         var output = new Texture2D(size.x, size.y);
         output.SetPixels(pixels);
         output.Apply();
+
+        Object.Destroy(duplicated);
         return output;
     }
 
