@@ -16,15 +16,7 @@ public class CustomSkins : BlasIIMod
     internal CustomSkins() : base(ModInfo.MOD_ID, ModInfo.MOD_NAME, ModInfo.MOD_AUTHOR, ModInfo.MOD_VERSION) { }
 
     private Dictionary<string, Sprite> _loadedSprites = [];
-
-    /// <summary>
-    /// Load all spritesheets
-    /// </summary>
-    protected override void OnInitialize()
-    {
-        var importer = new Importer(Path.Combine(FileHandler.ModdingFolder, "skins"));
-        _loadedSprites = importer.ImportAll();
-    }
+    private bool _loadedDefault = false;
 
     /// <summary>
     /// Registers the skin command
@@ -32,6 +24,19 @@ public class CustomSkins : BlasIIMod
     protected override void OnRegisterServices(ModServiceProvider provider)
     {
         provider.RegisterCommand(new SkinCommand());
+    }
+
+    /// <summary>
+    /// Update skin with default when loading menu for the first time
+    /// </summary>
+    protected override void OnSceneLoaded(string sceneName)
+    {
+        if (_loadedDefault || !SceneHelper.MenuSceneLoaded)
+            return;
+
+        _loadedDefault = true;
+        var importer = new Importer(Path.Combine(FileHandler.ModdingFolder, "skins"));
+        UpdateSkin(importer.ImportAll());
     }
 
     /// <summary>
@@ -53,5 +58,13 @@ public class CustomSkins : BlasIIMod
 
             renderer.sprite = customSprite;
         }
+    }
+
+    /// <summary>
+    /// Updates the skin based on the new sprites
+    /// </summary>
+    public void UpdateSkin(Dictionary<string, Sprite> sprites)
+    {
+        _loadedSprites = sprites;
     }
 }
