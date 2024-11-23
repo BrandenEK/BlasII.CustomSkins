@@ -17,8 +17,6 @@ internal class Exporter(string path)
 {
     private readonly string _exportFolder = path;
 
-    //private IEnumerator<Sprite> _groupEnumerator;
-
     public void ExportAll(Dictionary<string, Sprite> export)
     {
         ModLog.Warn("Starting Export...");
@@ -49,13 +47,13 @@ internal class Exporter(string path)
         // Create entire animation texture
         int width = (int)sprites.Sum(x => x.rect.width);
         int height = (int)sprites.Max(x => x.rect.height);
-        //ModLog.Info($"w = {width}, h = {height}");
         if (width > 16384 || height > 16384)
         {
             ModLog.Error("Size too big, failed to export texture");
             return;
         }
         Texture2D tex = new Texture2D(width, height);
+        Object.Destroy(tex);
 
         // Fill transparent
         for (int i = 0; i < width; i++)
@@ -66,15 +64,13 @@ internal class Exporter(string path)
         SpriteInfo[] infos = new SpriteInfo[sprites.Count()];
 
         // Copy each sprite to the texture and save info
-        int x = 0, idx = 0;
+        int x = 0, y = 0, idx = 0;
         foreach (var sprite in sprites)
         {
             //ModLog.Info($"Exporting {sprite.name}");
             int w = (int)sprite.rect.width;
             int h = (int)sprite.rect.height;
-            Texture2D sliced = sprite.GetSlicedTexture();
-            Graphics.CopyTexture(sliced, 0, 0, 0, 0, w, h, tex, 0, 0, x, 0);
-            Object.Destroy(sliced);
+            Graphics.CopyTexture(sprite.GetSlicedTexture(), 0, 0, 0, 0, w, h, tex, 0, 0, x, 0);
 
             infos[idx] = new SpriteInfo()
             {
@@ -91,11 +87,10 @@ internal class Exporter(string path)
 
         // Save texture to file
         string texturePath = Path.Combine(_exportFolder, $"{animation}.png");
-        File.WriteAllBytes(texturePath, tex.EncodeToPNG());
-        Object.Destroy(tex);
+        //File.WriteAllBytes(texturePath, tex.EncodeToPNG());
 
         // Save info list to file
         string infoPath = Path.Combine(_exportFolder, $"{animation}.json");
-        File.WriteAllText(infoPath, JsonConvert.SerializeObject(infos, Formatting.Indented));
+        //File.WriteAllText(infoPath, JsonConvert.SerializeObject(infos, Formatting.Indented));
     }
 }
