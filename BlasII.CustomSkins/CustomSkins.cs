@@ -1,4 +1,5 @@
-﻿using BlasII.ModdingAPI;
+﻿using BlasII.CheatConsole;
+using BlasII.ModdingAPI;
 using BlasII.ModdingAPI.Helpers;
 using Il2CppTGK.Game;
 using System.Collections.Generic;
@@ -23,6 +24,14 @@ public class CustomSkins : BlasIIMod
     {
         var importer = new Importer(Path.Combine(FileHandler.ModdingFolder, "skins"));
         _loadedSprites = importer.ImportAll();
+    }
+
+    /// <summary>
+    /// Registers the skin command
+    /// </summary>
+    protected override void OnRegisterServices(ModServiceProvider provider)
+    {
+        provider.RegisterCommand(new SkinCommand());
     }
 
     /// <summary>
