@@ -3,7 +3,6 @@ using BlasII.ModdingAPI.Helpers;
 using Il2CppTGK.Game;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using UnityEngine;
 
 namespace BlasII.CustomSkins;
@@ -31,30 +30,6 @@ public class CustomSkins : BlasIIMod
     /// </summary>
     protected override void OnLateUpdate()
     {
-        // temp
-        if (Input.GetKeyDown(KeyCode.F9))
-        {
-            //var exporter = new Exporter(FileHandler.ContentFolder);
-            //exporter.ExportAll([]);
-        }
-        // temp
-        if (Input.GetKeyDown(KeyCode.F10))
-        {
-            //foreach (var s in Resources.FindObjectsOfTypeAll<Sprite>().Where(x => x.name.StartsWith("TPO")).OrderBy(x => x.name))
-            //{
-            //    ModLog.Info(s.name);
-            //}
-
-            var sprites = Resources.FindObjectsOfTypeAll<Sprite>()
-                .Where(x => x.name.StartsWith("TPO"))
-                .DistinctBy(x => x.name)
-                .OrderBy(x => x.name)
-                .ToDictionary(x => x.name, x => x);
-
-            var exporter = new Exporter(FileHandler.ContentFolder);
-            exporter.ExportAll(sprites);
-        }
-
         if (!SceneHelper.GameSceneLoaded || CoreCache.PlayerSpawn.PlayerInstance == null)
             return;
 
