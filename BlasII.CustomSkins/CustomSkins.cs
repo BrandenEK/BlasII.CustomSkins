@@ -1,9 +1,9 @@
-﻿using BlasII.ModdingAPI;
+﻿using BlasII.CheatConsole;
+using BlasII.ModdingAPI;
 using BlasII.ModdingAPI.Helpers;
 using Il2CppTGK.Game;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using UnityEngine;
 
 namespace BlasII.CustomSkins;
@@ -16,14 +16,27 @@ public class CustomSkins : BlasIIMod
     internal CustomSkins() : base(ModInfo.MOD_ID, ModInfo.MOD_NAME, ModInfo.MOD_AUTHOR, ModInfo.MOD_VERSION) { }
 
     private Dictionary<string, Sprite> _loadedSprites = [];
+    private bool _loadedDefault = false;
 
     /// <summary>
-    /// Load all spritesheets
+    /// Registers the skin command
     /// </summary>
-    protected override void OnInitialize()
+    protected override void OnRegisterServices(ModServiceProvider provider)
     {
+        provider.RegisterCommand(new SkinCommand());
+    }
+
+    /// <summary>
+    /// Update skin with default when loading menu for the first time
+    /// </summary>
+    protected override void OnSceneLoaded(string sceneName)
+    {
+        if (_loadedDefault || !SceneHelper.MenuSceneLoaded)
+            return;
+
+        _loadedDefault = true;
         var importer = new Importer(Path.Combine(FileHandler.ModdingFolder, "skins"));
-        _loadedSprites = importer.ImportAll();
+        UpdateSkin(importer.ImportAll());
     }
 
     /// <summary>
@@ -31,30 +44,6 @@ public class CustomSkins : BlasIIMod
     /// </summary>
     protected override void OnLateUpdate()
     {
-        // temp
-        if (Input.GetKeyDown(KeyCode.F9))
-        {
-            //var exporter = new Exporter(FileHandler.ContentFolder);
-            //exporter.ExportAll([]);
-        }
-        // temp
-        if (Input.GetKeyDown(KeyCode.F10))
-        {
-            //foreach (var s in Resources.FindObjectsOfTypeAll<Sprite>().Where(x => x.name.StartsWith("TPO")).OrderBy(x => x.name))
-            //{
-            //    ModLog.Info(s.name);
-            //}
-
-            var sprites = Resources.FindObjectsOfTypeAll<Sprite>()
-                .Where(x => x.name.StartsWith("TPO"))
-                .DistinctBy(x => x.name)
-                .OrderBy(x => x.name)
-                .ToDictionary(x => x.name, x => x);
-
-            var exporter = new Exporter(FileHandler.ContentFolder);
-            exporter.ExportAll(sprites);
-        }
-
         if (!SceneHelper.GameSceneLoaded || CoreCache.PlayerSpawn.PlayerInstance == null)
             return;
 
@@ -69,5 +58,13 @@ public class CustomSkins : BlasIIMod
 
             renderer.sprite = customSprite;
         }
+    }
+
+    /// <summary>
+    /// Updates the skin based on the new sprites
+    /// </summary>
+    public void UpdateSkin(Dictionary<string, Sprite> sprites)
+    {
+        _loadedSprites = sprites;
     }
 }
