@@ -1,5 +1,6 @@
 ﻿using BlasII.CustomSkins.Extensions;
 using BlasII.ModdingAPI;
+using Il2CppDelaunay;
 using MelonLoader;
 using Newtonsoft.Json;
 using System.Collections;
@@ -26,7 +27,7 @@ internal class Exporter(string path)
     private IEnumerator ExportCoroutine(Dictionary<string, Sprite> export)
     {
         // Group sprites by name
-        var groups = export.Take(100).GroupBy(x => x.Key[0..x.Key.LastIndexOf('_')]);
+        var groups = export.GroupBy(x => x.Key[0..x.Key.LastIndexOf('_')]);
 
         // Export each individual spritesheet
         foreach (var group in groups)
@@ -40,13 +41,69 @@ internal class Exporter(string path)
         }
     }
 
+    //private void Export(string animation, IEnumerable<Sprite> sprites)
+    //{
+    //    ModLog.Info($"Exporting {animation}");
+
+    //    // Create entire animation texture
+    //    int width = (int)sprites.Sum(x => x.rect.width);
+    //    int height = (int)sprites.Max(x => x.rect.height);
+    //    if (width > 16384 || height > 16384)
+    //    {
+    //        ModLog.Error("Size too big, failed to export texture");
+    //        return;
+    //    }
+    //    Texture2D tex = new Texture2D(width, height);
+    //    Object.Destroy(tex);
+
+    //    // Fill transparent
+    //    for (int i = 0; i < width; i++)
+    //        for (int j = 0; j < height; j++)
+    //            tex.SetPixel(i, j, new Color32(0, 0, 0, 0));
+
+    //    // Create empty info list
+    //    SpriteInfo[] infos = new SpriteInfo[sprites.Count()];
+
+    //    // Copy each sprite to the texture and save info
+    //    int x = 0, y = 0, idx = 0;
+    //    foreach (var sprite in sprites)
+    //    {
+    //        //ModLog.Info($"Exporting {sprite.name}");
+    //        int w = (int)sprite.rect.width;
+    //        int h = (int)sprite.rect.height;
+    //        Graphics.CopyTexture(sprite.GetSlicedTexture(), 0, 0, 0, 0, w, h, tex, 0, 0, x, 0);
+
+    //        infos[idx] = new SpriteInfo()
+    //        {
+    //            Name = sprite.name,
+    //            PixelsPerUnit = (int)sprite.pixelsPerUnit,
+    //            Position = new Vector(x, 0),
+    //            Size = new Vector(w, h),
+    //            Pivot = new Vector(sprite.pivot.x / w, sprite.pivot.y / h),
+    //        };
+
+    //        x += w;
+    //        idx++;
+    //    }
+
+    //    // Save texture to file
+    //    string texturePath = Path.Combine(_exportFolder, $"{animation}.png");
+    //    File.WriteAllBytes(texturePath, tex.EncodeToPNG());
+
+    //    // Save info list to file
+    //    string infoPath = Path.Combine(_exportFolder, $"{animation}.json");
+    //    File.WriteAllText(infoPath, JsonConvert.SerializeObject(infos, Formatting.Indented));
+    //}
+
     private void Export(string animation, IEnumerable<Sprite> sprites)
     {
         ModLog.Info($"Exporting {animation}");
 
         // Create entire animation texture
-        int width = (int)sprites.Sum(x => x.rect.width);
-        int height = (int)sprites.Max(x => x.rect.height);
+        Dictionary<Sprite, SpriteInfo> infos = GetInfos(sprites);
+
+        int width = (int)infos.Values.Max(info => info.Position.X + info.Size.X);
+        int height = (int)infos.Values.Max(info => info.Position.Y + info.Size.Y);
         if (width > 16384 || height > 16384)
         {
             ModLog.Error("Size too big, failed to export texture");
@@ -61,29 +118,36 @@ internal class Exporter(string path)
                 tex.SetPixel(i, j, new Color32(0, 0, 0, 0));
 
         // Create empty info list
-        SpriteInfo[] infos = new SpriteInfo[sprites.Count()];
+        //SpriteInfo[] infos = new SpriteInfo[sprites.Count()];
+
+        foreach (var kvp in infos)
+        {
+            Sprite sprite = kvp.Key;
+            SpriteInfo info = kvp.Value;
+            Graphics.CopyTexture(sprite.GetSlicedTexture(), 0, 0, 0, 0, (int)info.Size.X, (int)info.Size.Y, tex, 0, 0, (int)info.Position.X, (int)info.Position.Y);
+        }
 
         // Copy each sprite to the texture and save info
-        int x = 0, y = 0, idx = 0;
-        foreach (var sprite in sprites)
-        {
-            //ModLog.Info($"Exporting {sprite.name}");
-            int w = (int)sprite.rect.width;
-            int h = (int)sprite.rect.height;
-            Graphics.CopyTexture(sprite.GetSlicedTexture(), 0, 0, 0, 0, w, h, tex, 0, 0, x, 0);
+        //int x = 0, y = 0, idx = 0;
+        //foreach (var sprite in sprites)
+        //{
+        //    //ModLog.Info($"Exporting {sprite.name}");
+        //    int w = (int)sprite.rect.width;
+        //    int h = (int)sprite.rect.height;
+        //    Graphics.CopyTexture(sprite.GetSlicedTexture(), 0, 0, 0, 0, w, h, tex, 0, 0, x, 0);
 
-            infos[idx] = new SpriteInfo()
-            {
-                Name = sprite.name,
-                PixelsPerUnit = (int)sprite.pixelsPerUnit,
-                Position = new Vector(x, 0),
-                Size = new Vector(w, h),
-                Pivot = new Vector(sprite.pivot.x / w, sprite.pivot.y / h),
-            };
+        //    //infos[idx] = new SpriteInfo()
+        //    //{
+        //    //    Name = sprite.name,
+        //    //    PixelsPerUnit = (int)sprite.pixelsPerUnit,
+        //    //    Position = new Vector(x, 0),
+        //    //    Size = new Vector(w, h),
+        //    //    Pivot = new Vector(sprite.pivot.x / w, sprite.pivot.y / h),
+        //    //};
 
-            x += w;
-            idx++;
-        }
+        //    x += w;
+        //    idx++;
+        //}
 
         // Save texture to file
         string texturePath = Path.Combine(_exportFolder, $"{animation}.png");
@@ -91,10 +155,43 @@ internal class Exporter(string path)
 
         // Save info list to file
         string infoPath = Path.Combine(_exportFolder, $"{animation}.json");
-        File.WriteAllText(infoPath, JsonConvert.SerializeObject(infos, Formatting.Indented));
+        File.WriteAllText(infoPath, JsonConvert.SerializeObject(infos.Values, Formatting.Indented));
     }
 
+    private Dictionary<Sprite, SpriteInfo> GetInfos(IEnumerable<Sprite> sprites)
+    {
+        var infos = new Dictionary<Sprite, SpriteInfo>();
 
+        int x = 0, y = 0, maxRowHeight = 0;
+        foreach (var sprite in sprites)
+        {
+            int w = (int)sprite.rect.width;
+            int h = (int)sprite.rect.height;
+
+            if (x + w > MAX_SIZE)
+            {
+                x = 0;
+                y += maxRowHeight;
+                maxRowHeight = 0;
+            }
+
+            if (h > maxRowHeight)
+                maxRowHeight = h;
+
+            infos.Add(sprite, new SpriteInfo()
+            {
+                Name = sprite.name,
+                PixelsPerUnit = (int)sprite.pixelsPerUnit,
+                Position = new Vector(x, y),
+                Size = new Vector(w, h),
+                Pivot = new Vector(sprite.pivot.x / w, sprite.pivot.y / h),
+            });
+
+            x += w;
+        }
+
+        return infos;
+    }
 
     private Vector GetMaximumSize(IEnumerable<Sprite> sprites)
     {
@@ -196,7 +293,7 @@ internal class Exporter(string path)
         return locations;
     }
 
-    private const int MAX_SIZE = 1024;
+    private const int MAX_SIZE = 2048;
 
     class SpriteWithLocation()
     {
