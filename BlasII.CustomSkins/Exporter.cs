@@ -35,9 +35,17 @@ internal class Exporter(string path)
 
     private void Export(string animation, IEnumerable<Sprite> sprites)
     {
+        ModLog.Info($"Exporting {animation} [{sprites.Count()}]");
+
         // Create entire animation texture
         int width = (int)sprites.Sum(x => x.rect.width);
         int height = (int)sprites.Max(x => x.rect.height);
+        //ModLog.Info($"w = {width}, h = {height}");
+        if (width > 16384 || height > 16384)
+        {
+            ModLog.Error("Size too big, failed to export texture");
+            return;
+        }
         Texture2D tex = new Texture2D(width, height);
 
         // Fill transparent
@@ -52,7 +60,7 @@ internal class Exporter(string path)
         int x = 0, idx = 0;
         foreach (var sprite in sprites)
         {
-            ModLog.Info($"Exporting {sprite.name}");
+            //ModLog.Info($"Exporting {sprite.name}");
             int w = (int)sprite.rect.width;
             int h = (int)sprite.rect.height;
             Graphics.CopyTexture(sprite.GetSlicedTexture(), 0, 0, 0, 0, w, h, tex, 0, 0, x, 0);
@@ -73,6 +81,7 @@ internal class Exporter(string path)
         // Save texture to file
         string texturePath = Path.Combine(_exportFolder, $"{animation}.png");
         File.WriteAllBytes(texturePath, tex.EncodeToPNG());
+        Object.Destroy(tex);
 
         // Save info list to file
         string infoPath = Path.Combine(_exportFolder, $"{animation}.json");
