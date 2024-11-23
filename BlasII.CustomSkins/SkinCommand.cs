@@ -1,4 +1,5 @@
 ﻿using BlasII.CheatConsole;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 
@@ -12,6 +13,14 @@ internal class SkinCommand : ModCommand
     {
         switch (args[0])
         {
+            case "import":
+                {
+                    if(!ValidateParameterCount(args, 2))
+                        return;
+
+                    Import(args[1]);
+                    break;
+                }
             case "export":
                 {
                     if (!ValidateParameterCount(args, 1))
@@ -26,6 +35,20 @@ internal class SkinCommand : ModCommand
                     break;
                 }
         }
+    }
+
+    private void Import(string folder)
+    {
+        string path = Path.Combine(Main.CustomSkins.FileHandler.ModdingFolder, "skins", folder);
+
+        if (!Directory.Exists(path))
+        {
+            WriteFailure($"{path} does not exist.");
+            return;
+        }
+
+        var importer = new Importer(path);
+        Main.CustomSkins.UpdateSkin(importer.ImportAll());
     }
 
     private void Export()
