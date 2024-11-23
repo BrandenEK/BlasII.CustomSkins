@@ -13,6 +13,8 @@ internal static class ImageExtensions
         var output = new Texture2D(size.x, size.y);
         output.SetPixels(pixels);
         output.Apply();
+
+        Object.Destroy(output);
         return output;
     }
 
@@ -33,6 +35,8 @@ internal static class ImageExtensions
         readableText.Apply();
         RenderTexture.active = previous;
         RenderTexture.ReleaseTemporary(renderTex);
+
+        Object.Destroy(readableText);
         return readableText;
     }
 }

@@ -29,11 +29,14 @@ internal class Importer(string path)
             Import(Path.GetFileNameWithoutExtension(file), output);
         }
 
+        ModLog.Warn("Finished import");
         return output;
     }
 
     private void Import(string animation, Dictionary<string, Sprite> output)
     {
+        ModLog.Info($"Importing {animation}");
+
         // Import info list from import folder
         var json = File.ReadAllText(Path.Combine(_importFolder, $"{animation}.json"));
         var infos = JsonConvert.DeserializeObject<SpriteInfo[]>(json);
@@ -47,8 +50,6 @@ internal class Importer(string path)
         // Load each sprite from the texture based on its info
         foreach (var info in infos)
         {
-            ModLog.Info($"Importing {info.Name}");
-
             var rect = new Rect(info.Position, info.Size);
             var sprite = Sprite.Create(texture, rect, info.Pivot, info.PixelsPerUnit);
             sprite.hideFlags = HideFlags.DontUnloadUnusedAsset;
