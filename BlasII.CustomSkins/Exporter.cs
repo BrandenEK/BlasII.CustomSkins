@@ -13,19 +13,20 @@ namespace BlasII.CustomSkins;
 /// <summary>
 /// Handles exporting all found sprites
 /// </summary>
-public class Exporter(string path)
+public class Exporter
 {
-    private readonly string _exportFolder = path;
-
-    public void ExportAll(Dictionary<string, Sprite> export)
+    /// <summary>
+    /// Exports all spritesheets into the directory
+    /// </summary>
+    public void ExportAll(Dictionary<string, Sprite> export, string directory)
     {
         ModLog.Warn("Starting Export...");
         OnStartExport?.Invoke();
 
-        MelonCoroutines.Start(ExportCoroutine(export));
+        MelonCoroutines.Start(ExportCoroutine(export, directory));
     }
 
-    private IEnumerator ExportCoroutine(Dictionary<string, Sprite> export)
+    private IEnumerator ExportCoroutine(Dictionary<string, Sprite> export, string directory)
     {
         // Group sprites by name
         var groups = export.GroupBy(x => x.Key[0..x.Key.LastIndexOf('_')]);
@@ -37,7 +38,7 @@ public class Exporter(string path)
                 .OrderBy(x => int.Parse(x.Key[(x.Key.LastIndexOf('_') + 1)..]))
                 .Select(x => x.Value);
 
-            Export(group.Key, sprites);
+            Export(group.Key, directory, sprites);
             yield return null;
         }
 
@@ -45,7 +46,7 @@ public class Exporter(string path)
         ModLog.Warn("Finished export");
     }
 
-    private void Export(string animation, IEnumerable<Sprite> sprites)
+    private void Export(string animation, string directory, IEnumerable<Sprite> sprites)
     {
         ModLog.Info($"Exporting {animation}");
 
@@ -62,11 +63,11 @@ public class Exporter(string path)
         }
 
         // Save texture to file
-        string texturePath = Path.Combine(_exportFolder, $"{animation}.png");
+        string texturePath = Path.Combine(directory, $"{animation}.png");
         File.WriteAllBytes(texturePath, texture.EncodeToPNG());
 
         // Save info list to file
-        string infoPath = Path.Combine(_exportFolder, $"{animation}.json");
+        string infoPath = Path.Combine(directory, $"{animation}.json");
         File.WriteAllText(infoPath, JsonConvert.SerializeObject(infos.Values, Formatting.Indented));
     }
 
@@ -122,7 +123,7 @@ public class Exporter(string path)
 
     private const int MAX_SIZE = 2048;
 
-    public delegate void ExportDelegate();
-    public ExportDelegate OnStartExport;
-    public ExportDelegate OnFinishExport;
+    internal delegate void ExportDelegate();
+    internal ExportDelegate OnStartExport;
+    internal ExportDelegate OnFinishExport;
 }
