@@ -11,13 +11,11 @@ using UnityEngine;
 namespace BlasII.CustomSkins.Exporters;
 
 /// <summary>
-/// Handles exporting all found sprites
+/// Exports all spritesheets grouped by animation one per frame 
 /// </summary>
 public class FirstExporter : IExporter
 {
-    /// <summary>
-    /// Exports all spritesheets into the directory
-    /// </summary>
+    /// <inheritdoc/>
     public void ExportAll(Dictionary<string, Sprite> export, string directory)
     {
         ModLog.Warn("Starting Export...");
