@@ -1,6 +1,5 @@
 ﻿using BlasII.CustomSkins.Extensions;
 using BlasII.ModdingAPI;
-using MelonLoader;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,18 +12,10 @@ namespace BlasII.CustomSkins.Exporters;
 /// <summary>
 /// Exports all spritesheets grouped by animation one per frame 
 /// </summary>
-public class FirstExporter : IExporter
+public class LegacyExporter : CoroutineExporter
 {
     /// <inheritdoc/>
-    public void ExportAll(Dictionary<string, Sprite> export, string directory)
-    {
-        ModLog.Warn("Starting Export...");
-        OnStartExport?.Invoke();
-
-        MelonCoroutines.Start(ExportCoroutine(export, directory));
-    }
-
-    private IEnumerator ExportCoroutine(Dictionary<string, Sprite> export, string directory)
+    protected override IEnumerator ExportCoroutine(Dictionary<string, Sprite> export, string directory)
     {
         // Group sprites by name
         var groups = export.GroupBy(x => x.Key[0..x.Key.LastIndexOf('_')]);
@@ -39,9 +30,6 @@ public class FirstExporter : IExporter
             Export(group.Key, directory, sprites);
             yield return null;
         }
-
-        OnFinishExport?.Invoke();
-        ModLog.Warn("Finished export");
     }
 
     private void Export(string animation, string directory, IEnumerable<Sprite> sprites)
@@ -120,8 +108,4 @@ public class FirstExporter : IExporter
     }
 
     private const int MAX_SIZE = 2048;
-
-    internal delegate void ExportDelegate();
-    internal ExportDelegate OnStartExport;
-    internal ExportDelegate OnFinishExport;
 }

@@ -24,7 +24,7 @@ public class CustomSkins : BlasIIMod
     /// </summary>
     public Importer Importer { get; } = new Importer();
     /// <inheritdoc cref="IExporter"/>
-    public IExporter Exporter { get; } = new FirstExporter();
+    public IExporter Exporter { get; } = new LegacyExporter();
 
     /// <summary>
     /// Registers the skin command
