@@ -19,6 +19,15 @@ public class CustomSkins : BlasIIMod
     private bool _loadedDefault = false;
 
     /// <summary>
+    /// Imports the sprites
+    /// </summary>
+    public Importer Importer { get; } = new Importer();
+    /// <summary>
+    /// Exports the sprites
+    /// </summary>
+    public Exporter Exporter { get; } = new Exporter();
+
+    /// <summary>
     /// Registers the skin command
     /// </summary>
     protected override void OnRegisterServices(ModServiceProvider provider)

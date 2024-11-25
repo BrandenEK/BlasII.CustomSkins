@@ -13,13 +13,15 @@ namespace BlasII.CustomSkins;
 /// <summary>
 /// Handles exporting all found sprites
 /// </summary>
-internal class Exporter(string path)
+public class Exporter(string path)
 {
     private readonly string _exportFolder = path;
 
     public void ExportAll(Dictionary<string, Sprite> export)
     {
         ModLog.Warn("Starting Export...");
+        OnStartExport?.Invoke();
+
         MelonCoroutines.Start(ExportCoroutine(export));
     }
 
@@ -39,6 +41,7 @@ internal class Exporter(string path)
             yield return null;
         }
 
+        OnFinishExport?.Invoke();
         ModLog.Warn("Finished export");
     }
 
@@ -118,4 +121,8 @@ internal class Exporter(string path)
     }
 
     private const int MAX_SIZE = 2048;
+
+    public delegate void ExportDelegate();
+    public ExportDelegate OnStartExport;
+    public ExportDelegate OnFinishExport;
 }
