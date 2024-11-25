@@ -8,12 +8,12 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 
-namespace BlasII.CustomSkins;
+namespace BlasII.CustomSkins.Exporters;
 
 /// <summary>
 /// Handles exporting all found sprites
 /// </summary>
-public class Exporter
+public class FirstExporter : IExporter
 {
     /// <summary>
     /// Exports all spritesheets into the directory

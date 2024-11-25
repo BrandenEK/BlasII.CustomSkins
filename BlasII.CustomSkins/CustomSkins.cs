@@ -1,4 +1,5 @@
 ﻿using BlasII.CheatConsole;
+using BlasII.CustomSkins.Exporters;
 using BlasII.ModdingAPI;
 using BlasII.ModdingAPI.Helpers;
 using Il2CppTGK.Game;
@@ -22,10 +23,8 @@ public class CustomSkins : BlasIIMod
     /// Imports the sprites
     /// </summary>
     public Importer Importer { get; } = new Importer();
-    /// <summary>
-    /// Exports the sprites
-    /// </summary>
-    public Exporter Exporter { get; } = new Exporter();
+    /// <inheritdoc cref="IExporter"/>
+    public IExporter Exporter { get; } = new FirstExporter();
 
     /// <summary>
     /// Registers the skin command
@@ -67,6 +66,16 @@ public class CustomSkins : BlasIIMod
 
             renderer.sprite = customSprite;
         }
+    }
+
+    private void OnStartExport()
+    {
+
+    }
+
+    private void OnFinishExport()
+    {
+
     }
 
     /// <summary>
