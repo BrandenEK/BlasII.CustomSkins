@@ -23,11 +23,6 @@ public class CustomSkins : BlasIIMod
     private SpriteCollection _loadedSprites = [];
     private bool _loadedDefault = false;
 
-    /// <inheritdoc cref="IImporter"/>
-    public IImporter Importer { get; } = new SimpleImporter();
-    /// <inheritdoc cref="IExporter"/>
-    public IExporter Exporter { get; } = new LegacyExporter();
-
     /// <summary>
     /// Registers the skin command
     /// </summary>
@@ -87,8 +82,10 @@ public class CustomSkins : BlasIIMod
 
     private IEnumerator ImportCoroutine(string directory, Action<SpriteCollection> callback)
     {
-        yield return Importer.ImportAll(directory);
-        callback(Importer.Result);
+        IImporter importer = new SimpleImporter();
+
+        yield return importer.ImportAll(directory);
+        callback(importer.Result);
     }
 
     // Export methods
@@ -109,10 +106,11 @@ public class CustomSkins : BlasIIMod
 
     private IEnumerator ExportCoroutine(string directory)
     {
-        var finder = new FinderWithCrisanta(new ResourcesFinder());
+        IFinder finder = new FinderWithCrisanta(new ResourcesFinder());
+        IExporter exporter = new LegacyExporter();
 
         yield return finder.FindAll();
-        yield return Exporter.ExportAll(finder.Result, directory);
+        yield return exporter.ExportAll(finder.Result, directory);
     }
 
     // Update methods
