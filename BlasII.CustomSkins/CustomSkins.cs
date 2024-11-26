@@ -17,13 +17,13 @@ public class CustomSkins : BlasIIMod
 {
     internal CustomSkins() : base(ModInfo.MOD_ID, ModInfo.MOD_NAME, ModInfo.MOD_AUTHOR, ModInfo.MOD_VERSION) { }
 
-    private Dictionary<string, Sprite> _loadedSprites = [];
+    private SpriteCollection _loadedSprites = [];
     private bool _loadedDefault = false;
 
     /// <inheritdoc cref="IImporter"/>
     public IImporter Importer { get; } = new SimpleImporter();
     /// <inheritdoc cref="IExporter"/>
-    public IExporter Exporter { get; } = new FakeExporter();
+    public IExporter Exporter { get; } = new LegacyExporter();
 
     /// <summary>
     /// Registers the skin command
@@ -70,8 +70,13 @@ public class CustomSkins : BlasIIMod
     /// <summary>
     /// Updates the skin based on the new sprites
     /// </summary>
-    public void UpdateSkin(Dictionary<string, Sprite> sprites)
+    public void UpdateSkin(SpriteCollection sprites)
     {
         _loadedSprites = sprites;
     }
 }
+
+/// <summary>
+/// Maps a name to a sprite
+/// </summary>
+public class SpriteCollection : Dictionary<string, Sprite> { }

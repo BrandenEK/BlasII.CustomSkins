@@ -1,7 +1,6 @@
 ﻿using BlasII.CheatConsole;
+using BlasII.CustomSkins.Finders;
 using System.IO;
-using System.Linq;
-using UnityEngine;
 
 namespace BlasII.CustomSkins;
 
@@ -53,12 +52,7 @@ internal class SkinCommand : ModCommand
 
     private void Export()
     {
-        var sprites = Resources.FindObjectsOfTypeAll<Sprite>()
-            .Where(x => x.name.StartsWith("TPO"))
-            .DistinctBy(x => x.name)
-            .OrderBy(x => x.name)
-            .ToDictionary(x => x.name, x => x);
-
-        Main.CustomSkins.Exporter.ExportAll(sprites, Main.CustomSkins.FileHandler.ContentFolder);
+        IFinder finder = new FinderWithCrisanta(new ResourcesFinder());
+        Main.CustomSkins.Exporter.ExportAll(finder, Main.CustomSkins.FileHandler.ContentFolder);
     }
 }
