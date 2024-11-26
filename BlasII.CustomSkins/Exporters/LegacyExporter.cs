@@ -15,19 +15,19 @@ namespace BlasII.CustomSkins.Exporters;
 public class LegacyExporter : CoroutineExporter
 {
     /// <inheritdoc/>
-    protected override IEnumerator ExportCoroutine(Dictionary<string, Sprite> export, string directory)
+    protected override IEnumerator ExportCoroutine(SpriteCollection sprites, string directory)
     {
         // Group sprites by name
-        var groups = export.GroupBy(x => x.Key[0..x.Key.LastIndexOf('_')]);
+        var groups = sprites.GroupBy(x => x.Key[0..x.Key.LastIndexOf('_')]);
 
         // Export each individual spritesheet
         foreach (var group in groups)
         {
-            var sprites = group
+            var spriteGroup = group
                 .OrderBy(x => int.Parse(x.Key[(x.Key.LastIndexOf('_') + 1)..]))
                 .Select(x => x.Value);
 
-            Export(group.Key, directory, sprites);
+            Export(group.Key, directory, spriteGroup);
             yield return null;
         }
     }

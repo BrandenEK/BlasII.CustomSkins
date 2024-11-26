@@ -1,4 +1,5 @@
 ﻿using BlasII.CheatConsole;
+using BlasII.CustomSkins.Extensions;
 using System.IO;
 using System.Linq;
 using UnityEngine;
@@ -57,7 +58,8 @@ internal class SkinCommand : ModCommand
             .Where(x => x.name.StartsWith("TPO"))
             .DistinctBy(x => x.name)
             .OrderBy(x => x.name)
-            .ToDictionary(x => x.name, x => x);
+            .ToDictionary(x => x.name, x => x)
+            .AsCollection();
 
         Main.CustomSkins.Exporter.ExportAll(sprites, Main.CustomSkins.FileHandler.ContentFolder);
     }

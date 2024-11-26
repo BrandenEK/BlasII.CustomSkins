@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-
+﻿
 namespace BlasII.CustomSkins.Exporters;
 
 /// <summary>
@@ -11,5 +9,5 @@ public interface IExporter
     /// <summary>
     /// Exports all spritesheets into the directory
     /// </summary>
-    public void ExportAll(Dictionary<string, Sprite> export, string directory);
+    public void ExportAll(SpriteCollection sprites, string directory);
 }

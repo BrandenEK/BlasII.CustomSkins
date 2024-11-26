@@ -2,7 +2,6 @@
 using Newtonsoft.Json;
 using System.IO;
 using UnityEngine;
-using System.Collections.Generic;
 
 namespace BlasII.CustomSkins.Importers;
 
@@ -14,12 +13,12 @@ public class SimpleImporter : IImporter
     /// <summary>
     /// Imports all spritesheets in the directory
     /// </summary>
-    public Dictionary<string, Sprite> ImportAll(string directory)
+    public SpriteCollection ImportAll(string directory)
     {
         ModLog.Warn("Starting Import...");
 
         // Create output dictionary
-        var output = new Dictionary<string, Sprite>();
+        var output = new SpriteCollection();
 
         // Create import folder
         Directory.CreateDirectory(directory);
@@ -34,7 +33,7 @@ public class SimpleImporter : IImporter
         return output;
     }
 
-    private void Import(string animation, string directory, Dictionary<string, Sprite> output)
+    private void Import(string animation, string directory, SpriteCollection output)
     {
         ModLog.Info($"Importing {animation}");
 

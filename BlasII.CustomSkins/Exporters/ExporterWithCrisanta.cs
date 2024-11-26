@@ -1,8 +1,6 @@
 ﻿using BlasII.ModdingAPI;
 using BlasII.ModdingAPI.Assets;
 using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace BlasII.CustomSkins.Exporters;
 
@@ -14,12 +12,12 @@ public class ExporterWithCrisanta(IExporter exporter) : CoroutineExporter
     bool _alreadyHasCrisanta = false;
 
     /// <inheritdoc/>
-    protected override IEnumerator ExportCoroutine(Dictionary<string, Sprite> export, string directory)
+    protected override IEnumerator ExportCoroutine(SpriteCollection sprites, string directory)
     {
         // Does not work, since the figure needs to be given before the sprites are loaded in
 
         yield return null;
-        exporter.ExportAll(export, directory);
+        exporter.ExportAll(sprites, directory);
     }
 
     /// <summary>
