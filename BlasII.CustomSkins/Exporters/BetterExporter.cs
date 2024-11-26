@@ -1,6 +1,7 @@
 ﻿using BlasII.ModdingAPI;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 
@@ -35,21 +36,43 @@ public class BetterExporter : IExporter
         ];
         // Load groups from data folder json
 
-        foreach (var spritesByType in sprites.Values.GroupBy(x => GetGroupName(x, groups)))
+        // Split sprites by group and export them
+        foreach (var spritesByGroup in sprites.Values.GroupBy(x => GetGroupName(x, groups)))
         {
-            ModLog.Warn(spritesByType.Key);
-            foreach (var s in spritesByType)
-            {
-                ModLog.Error(s.name);
-            }
+            string group = spritesByGroup.Key;
+
+            ModLog.Info($"Exporting group {group}");
+            yield return ExportGroup(spritesByGroup, group, directory);
+        }
+    }
+
+    private IEnumerator ExportGroup(IEnumerable<Sprite> sprites, string groupName, string directory)
+    {
+        // Split sprites by animation and export them
+        foreach (var spritesByAnimation in sprites.GroupBy(GetAnimationName))
+        {
+            string animation = spritesByAnimation.Key;
+
+            ModLog.Info($"Exporting animation {animation}");
+            yield return ExportAnimation(spritesByAnimation, animation, Path.Combine(directory, groupName));
         }
 
+        // Combine all animations
+    }
+
+    private IEnumerator ExportAnimation(IEnumerable<Sprite> sprites, string animationName, string directory)
+    {
         yield return null;
+    }
+
+    private string GetAnimationName(Sprite sprite)
+    {
+        return sprite.name[0..sprite.name.LastIndexOf('_')];
     }
 
     private string GetGroupName(Sprite sprite, IEnumerable<AnimationGroup> groups)
     {
-        string name = sprite.name[0..sprite.name.LastIndexOf('_')];
+        string name = GetAnimationName(sprite);
         AnimationGroup group = groups.FirstOrDefault(x => x.Animations.Contains(name));
 
         return group?.GroupName ?? "unknown";
