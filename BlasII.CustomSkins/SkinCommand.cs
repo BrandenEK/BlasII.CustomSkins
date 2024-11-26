@@ -47,8 +47,8 @@ internal class SkinCommand : ModCommand
             return;
         }
 
-        var importer = new Importer(path);
-        Main.CustomSkins.UpdateSkin(importer.ImportAll());
+        var spritesheets = Main.CustomSkins.Importer.ImportAll(path);
+        Main.CustomSkins.UpdateSkin(spritesheets);
     }
 
     private void Export()
@@ -59,7 +59,6 @@ internal class SkinCommand : ModCommand
             .OrderBy(x => x.name)
             .ToDictionary(x => x.name, x => x);
 
-        var exporter = new Exporter(Main.CustomSkins.FileHandler.ContentFolder);
-        exporter.ExportAll(sprites);
+        Main.CustomSkins.Exporter.ExportAll(sprites, Main.CustomSkins.FileHandler.ContentFolder);
     }
 }

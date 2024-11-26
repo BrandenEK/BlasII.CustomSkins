@@ -4,16 +4,17 @@ using System.IO;
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace BlasII.CustomSkins;
+namespace BlasII.CustomSkins.Importers;
 
 /// <summary>
 /// Handles importing all custom sprites
 /// </summary>
-internal class Importer(string path)
+public class SimpleImporter : IImporter
 {
-    private readonly string _importFolder = path;
-
-    public Dictionary<string, Sprite> ImportAll()
+    /// <summary>
+    /// Imports all spritesheets in the directory
+    /// </summary>
+    public Dictionary<string, Sprite> ImportAll(string directory)
     {
         ModLog.Warn("Starting Import...");
 
@@ -21,28 +22,28 @@ internal class Importer(string path)
         var output = new Dictionary<string, Sprite>();
 
         // Create import folder
-        Directory.CreateDirectory(_importFolder);
+        Directory.CreateDirectory(directory);
 
         // Get all json files in the import folder
-        foreach (var file in Directory.GetFiles(_importFolder, "*.json", SearchOption.TopDirectoryOnly))
+        foreach (var file in Directory.GetFiles(directory, "*.json", SearchOption.TopDirectoryOnly))
         {
-            Import(Path.GetFileNameWithoutExtension(file), output);
+            Import(Path.GetFileNameWithoutExtension(file), directory, output);
         }
 
         ModLog.Warn("Finished import");
         return output;
     }
 
-    private void Import(string animation, Dictionary<string, Sprite> output)
+    private void Import(string animation, string directory, Dictionary<string, Sprite> output)
     {
         ModLog.Info($"Importing {animation}");
 
         // Import info list from import folder
-        var json = File.ReadAllText(Path.Combine(_importFolder, $"{animation}.json"));
+        var json = File.ReadAllText(Path.Combine(directory, $"{animation}.json"));
         var infos = JsonConvert.DeserializeObject<SpriteInfo[]>(json);
 
         // Import texture from import folder
-        var bytes = File.ReadAllBytes(Path.Combine(_importFolder, $"{animation}.png"));
+        var bytes = File.ReadAllBytes(Path.Combine(directory, $"{animation}.png"));
         var texture = new Texture2D(2, 2, TextureFormat.RGBA32, false);
         texture.LoadImage(bytes, false);
         texture.filterMode = FilterMode.Point;

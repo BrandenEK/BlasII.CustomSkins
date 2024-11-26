@@ -1,6 +1,5 @@
 ﻿using BlasII.CustomSkins.Extensions;
 using BlasII.ModdingAPI;
-using MelonLoader;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,22 +7,15 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 
-namespace BlasII.CustomSkins;
+namespace BlasII.CustomSkins.Exporters;
 
 /// <summary>
-/// Handles exporting all found sprites
+/// Exports all spritesheets grouped by animation one per frame 
 /// </summary>
-internal class Exporter(string path)
+public class LegacyExporter : CoroutineExporter
 {
-    private readonly string _exportFolder = path;
-
-    public void ExportAll(Dictionary<string, Sprite> export)
-    {
-        ModLog.Warn("Starting Export...");
-        MelonCoroutines.Start(ExportCoroutine(export));
-    }
-
-    private IEnumerator ExportCoroutine(Dictionary<string, Sprite> export)
+    /// <inheritdoc/>
+    protected override IEnumerator ExportCoroutine(Dictionary<string, Sprite> export, string directory)
     {
         // Group sprites by name
         var groups = export.GroupBy(x => x.Key[0..x.Key.LastIndexOf('_')]);
@@ -35,14 +27,12 @@ internal class Exporter(string path)
                 .OrderBy(x => int.Parse(x.Key[(x.Key.LastIndexOf('_') + 1)..]))
                 .Select(x => x.Value);
 
-            Export(group.Key, sprites);
+            Export(group.Key, directory, sprites);
             yield return null;
         }
-
-        ModLog.Warn("Finished export");
     }
 
-    private void Export(string animation, IEnumerable<Sprite> sprites)
+    private void Export(string animation, string directory, IEnumerable<Sprite> sprites)
     {
         ModLog.Info($"Exporting {animation}");
 
@@ -59,11 +49,11 @@ internal class Exporter(string path)
         }
 
         // Save texture to file
-        string texturePath = Path.Combine(_exportFolder, $"{animation}.png");
+        string texturePath = Path.Combine(directory, $"{animation}.png");
         File.WriteAllBytes(texturePath, texture.EncodeToPNG());
 
         // Save info list to file
-        string infoPath = Path.Combine(_exportFolder, $"{animation}.json");
+        string infoPath = Path.Combine(directory, $"{animation}.json");
         File.WriteAllText(infoPath, JsonConvert.SerializeObject(infos.Values, Formatting.Indented));
     }
 
