@@ -47,7 +47,7 @@ internal class SkinCommand : ModCommand
         }
 
         var spritesheets = Main.CustomSkins.Importer.ImportAll(path);
-        Main.CustomSkins.UpdateSkin(spritesheets);
+        Main.CustomSkins.ReplaceSkin(spritesheets);
     }
 
     private void Export()
