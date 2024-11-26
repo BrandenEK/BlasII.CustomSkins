@@ -45,8 +45,6 @@ public class CustomSkins : BlasIIMod
 
         _loadedDefault = true;
         StartImport(Path.Combine(FileHandler.ModdingFolder, "skins"), ReplaceSkin);
-        //var spritesheets = Importer.ImportAll(Path.Combine(FileHandler.ModdingFolder, "skins"));
-        //ReplaceSkin(spritesheets);
     }
 
     /// <summary>
