@@ -17,9 +17,7 @@ public class ResourcesFinder : IFinder
     /// <inheritdoc/>
     public IEnumerator FindAll()
     {
-        ModLog.Info("Starting find");
-        yield return new WaitForSeconds(1);
-
+        yield return null;
         Result = Resources.FindObjectsOfTypeAll<Sprite>()
             .Where(x => x.name.StartsWith("TPO"))
             .DistinctBy(x => x.name)

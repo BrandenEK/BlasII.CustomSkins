@@ -52,7 +52,7 @@ internal class SkinCommand : ModCommand
 
     private void Export()
     {
-        IFinder finder = new ResourcesFinder();
+        IFinder finder = new FinderWithCrisanta(new ResourcesFinder());
         Main.CustomSkins.Exporter.ExportAll(finder, Main.CustomSkins.FileHandler.ContentFolder);
     }
 }
