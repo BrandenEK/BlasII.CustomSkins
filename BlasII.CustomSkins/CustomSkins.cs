@@ -84,7 +84,10 @@ public class CustomSkins : BlasIIMod
     {
         IImporter importer = new SimpleImporter();
 
+        ModLog.Warn("Starting import...");
         yield return importer.ImportAll(directory);
+        ModLog.Warn("Finished import");
+
         callback(importer.Result);
     }
 
@@ -109,8 +112,10 @@ public class CustomSkins : BlasIIMod
         IFinder finder = new FinderWithCrisanta(new ResourcesFinder());
         IExporter exporter = new LegacyExporter();
 
+        ModLog.Warn("Starting export...");
         yield return finder.FindAll();
         yield return exporter.ExportAll(finder.Result, directory);
+        ModLog.Warn("Finished export");
     }
 
     // Update methods

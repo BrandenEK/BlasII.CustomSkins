@@ -17,8 +17,6 @@ public class SimpleImporter : IImporter
     /// <inheritdoc/>
     public IEnumerator ImportAll(string directory)
     {
-        ModLog.Warn("Starting Import...");
-
         // Create output dictionary
         Result = [];
 
@@ -31,8 +29,6 @@ public class SimpleImporter : IImporter
             Import(Path.GetFileNameWithoutExtension(file), directory);
             yield return null;
         }
-
-        ModLog.Warn("Finished import");
     }
 
     private void Import(string animation, string directory)
