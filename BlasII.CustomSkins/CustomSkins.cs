@@ -4,6 +4,9 @@ using BlasII.CustomSkins.Importers;
 using BlasII.ModdingAPI;
 using BlasII.ModdingAPI.Helpers;
 using Il2CppTGK.Game;
+using MelonLoader;
+using System;
+using System.Collections;
 using System.IO;
 using UnityEngine;
 
@@ -41,8 +44,9 @@ public class CustomSkins : BlasIIMod
             return;
 
         _loadedDefault = true;
-        var spritesheets = Importer.ImportAll(Path.Combine(FileHandler.ModdingFolder, "skins"));
-        ReplaceSkin(spritesheets);
+        StartImport(Path.Combine(FileHandler.ModdingFolder, "skins"), ReplaceSkin);
+        //var spritesheets = Importer.ImportAll(Path.Combine(FileHandler.ModdingFolder, "skins"));
+        //ReplaceSkin(spritesheets);
     }
 
     /// <summary>
@@ -67,6 +71,26 @@ public class CustomSkins : BlasIIMod
     }
 
     // New methods
+
+    /// <summary>
+    /// Starts the import process
+    /// </summary>
+    public void StartImport(string directory, Action<SpriteCollection> callback)
+    {
+        if (!Directory.Exists(directory))
+        {
+            ModLog.Error($"{directory} does not exist. Failed to import spritesheets");
+            return;
+        }
+
+        MelonCoroutines.Start(ImportCoroutine(directory, callback));
+    }
+
+    private IEnumerator ImportCoroutine(string directory, Action<SpriteCollection> callback)
+    {
+        yield return Importer.ImportAll(directory);
+        callback(Importer.Result);
+    }
 
     /// <summary>
     /// Merges the skin with the new one
