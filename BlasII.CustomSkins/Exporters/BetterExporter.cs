@@ -38,6 +38,8 @@ public class BetterExporter : IExporter
         ];
         // Load groups from data folder json
 
+        var sheets = new List<SpriteSheet>();
+
         // Split sprites by group and export them
         foreach (var spritesByGroup in sprites.Values.GroupBy(x => GetGroupName(x, groups)))
         {
@@ -48,10 +50,13 @@ public class BetterExporter : IExporter
             
             ModLog.Info($"Exporting group {group}");
             SpriteSheet sheet = ExportGroup(spritesByGroup, group, directory);
+            sheets.Add(sheet);
             SaveSpriteSheet(directory, sheet);
 
             yield return null;
         }
+
+        // Combine and save total sheet ?
     }
 
     private SpriteSheet ExportGroup(IEnumerable<Sprite> sprites, string groupName, string directory)
@@ -65,8 +70,8 @@ public class BetterExporter : IExporter
 
             ModLog.Info($"Exporting animation {animation}");
             SpriteSheet sheet = ExportAnimation(spritesByAnimation, animation, Path.Combine(directory, groupName));
-            // Save to file
             sheets.Add(sheet);
+            // Save to file
         }
 
         // Combine all animations
@@ -86,7 +91,20 @@ public class BetterExporter : IExporter
 
     private SpriteSheet ExportAnimation(IEnumerable<Sprite> sprites, string animationName, string directory)
     {
-        var sheets = sprites.Select(ExtractSprite);
+        var sheets = new List<SpriteSheet>();
+
+        // Split sprites by frame and export them
+        foreach (var sprite in sprites)
+        {
+            string frame = sprite.name;
+
+            ModLog.Info($"Exporting frame {frame}");
+            SpriteSheet sheet = ExportFrame(sprite);
+            sheets.Add(sheet);
+            // Save to file
+        }
+
+        // Combine all frames
         return CombineSpritesToAnimation(animationName, sheets);
     }
 
@@ -101,7 +119,7 @@ public class BetterExporter : IExporter
         };
     }
 
-    private SpriteSheet ExtractSprite(Sprite sprite)
+    private SpriteSheet ExportFrame(Sprite sprite)
     {
         int w = (int)sprite.rect.width;
         int h = (int)sprite.rect.height;
