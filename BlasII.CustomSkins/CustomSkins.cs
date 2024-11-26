@@ -1,5 +1,6 @@
 ﻿using BlasII.CheatConsole;
 using BlasII.CustomSkins.Exporters;
+using BlasII.CustomSkins.Finders;
 using BlasII.CustomSkins.Importers;
 using BlasII.ModdingAPI;
 using BlasII.ModdingAPI.Helpers;
@@ -68,7 +69,7 @@ public class CustomSkins : BlasIIMod
         }
     }
 
-    // New methods
+    // Import methods
 
     /// <summary>
     /// Starts the import process
@@ -89,6 +90,32 @@ public class CustomSkins : BlasIIMod
         yield return Importer.ImportAll(directory);
         callback(Importer.Result);
     }
+
+    // Export methods
+
+    /// <summary>
+    /// Starts the export process
+    /// </summary>
+    public void StartExport(string directory)
+    {
+        if (!Directory.Exists(directory))
+        {
+            ModLog.Error($"{directory} does not exist. Failed to export spritesheets");
+            return;
+        }
+
+        MelonCoroutines.Start(ExportCoroutine(directory));
+    }
+
+    private IEnumerator ExportCoroutine(string directory)
+    {
+        var finder = new FinderWithCrisanta(new ResourcesFinder());
+
+        yield return finder.FindAll();
+        yield return Exporter.ExportAll(finder.Result, directory);
+    }
+
+    // Update methods
 
     /// <summary>
     /// Merges the skin with the new one

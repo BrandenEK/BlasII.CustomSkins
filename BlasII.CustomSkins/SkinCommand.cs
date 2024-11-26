@@ -1,5 +1,4 @@
 ﻿using BlasII.CheatConsole;
-using BlasII.CustomSkins.Finders;
 using System.IO;
 
 namespace BlasII.CustomSkins;
@@ -71,7 +70,7 @@ internal class SkinCommand : ModCommand
 
     private void Export()
     {
-        IFinder finder = new FinderWithCrisanta(new ResourcesFinder());
-        Main.CustomSkins.Exporter.ExportAll(finder, Main.CustomSkins.FileHandler.ContentFolder);
+        string folder = Main.CustomSkins.FileHandler.ContentFolder;
+        Main.CustomSkins.StartExport(folder);
     }
 }
