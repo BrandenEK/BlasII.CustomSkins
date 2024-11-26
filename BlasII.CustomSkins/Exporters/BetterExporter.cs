@@ -47,32 +47,58 @@ public class BetterExporter : IExporter
                 continue;
             
             ModLog.Info($"Exporting group {group}");
-            yield return ExportGroup(spritesByGroup, group, directory);
+            SpriteSheet sheet = ExportGroup(spritesByGroup, group, directory);
+            SaveSpriteSheet(directory, sheet);
+
+            yield return null;
         }
     }
 
-    private IEnumerator ExportGroup(IEnumerable<Sprite> sprites, string groupName, string directory)
+    private SpriteSheet ExportGroup(IEnumerable<Sprite> sprites, string groupName, string directory)
     {
+        var sheets = new List<SpriteSheet>();
+
         // Split sprites by animation and export them
         foreach (var spritesByAnimation in sprites.GroupBy(GetAnimationName))
         {
             string animation = spritesByAnimation.Key;
 
             ModLog.Info($"Exporting animation {animation}");
-            yield return ExportAnimation(spritesByAnimation, animation, Path.Combine(directory, groupName));
+            SpriteSheet sheet = ExportAnimation(spritesByAnimation, animation, Path.Combine(directory, groupName));
+            // Save to file
+            sheets.Add(sheet);
         }
 
         // Combine all animations
+        return CombineAnimationsToGroup(groupName, sheets);
     }
 
-    private IEnumerator ExportAnimation(IEnumerable<Sprite> sprites, string animationName, string directory)
+    private SpriteSheet CombineAnimationsToGroup(string name, IEnumerable<SpriteSheet> sheets)
     {
-        foreach (var sheet in sprites.Select(ExtractSprite))
+        // Just returns first right now
+        return new SpriteSheet()
         {
-            SaveSpriteSheet(directory, sheet);
-        }
+            Name = name,
+            Texture = sheets.First().Texture,
+            Infos = sheets.First().Infos
+        };
+    }
 
-        yield return null;
+    private SpriteSheet ExportAnimation(IEnumerable<Sprite> sprites, string animationName, string directory)
+    {
+        var sheets = sprites.Select(ExtractSprite);
+        return CombineSpritesToAnimation(animationName, sheets);
+    }
+
+    private SpriteSheet CombineSpritesToAnimation(string name, IEnumerable<SpriteSheet> sheets)
+    {
+        // Just returns first right now
+        return new SpriteSheet()
+        {
+            Name = name,
+            Texture = sheets.First().Texture,
+            Infos = sheets.First().Infos
+        };
     }
 
     private SpriteSheet ExtractSprite(Sprite sprite)
