@@ -1,4 +1,6 @@
-﻿using BlasII.ModdingAPI;
+﻿using BlasII.CustomSkins.Extensions;
+using BlasII.ModdingAPI;
+using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -41,6 +43,9 @@ public class BetterExporter : IExporter
         {
             string group = spritesByGroup.Key;
 
+            if (group == "unknown")
+                continue;
+            
             ModLog.Info($"Exporting group {group}");
             yield return ExportGroup(spritesByGroup, group, directory);
         }
@@ -62,7 +67,35 @@ public class BetterExporter : IExporter
 
     private IEnumerator ExportAnimation(IEnumerable<Sprite> sprites, string animationName, string directory)
     {
+        foreach (var sheet in sprites.Select(ExtractSprite))
+        {
+            SaveSpriteSheet(directory, sheet);
+        }
+
         yield return null;
+    }
+
+    private SpriteSheet ExtractSprite(Sprite sprite)
+    {
+        int w = (int)sprite.rect.width;
+        int h = (int)sprite.rect.height;
+
+        var texture = sprite.GetSlicedTexture();
+        var info = new SpriteInfo()
+        {
+            Name = sprite.name,
+            PixelsPerUnit = (int)sprite.pixelsPerUnit,
+            Position = new Vector(0, 0),
+            Size = new Vector(w, h),
+            Pivot = new Vector(sprite.pivot.x / w, sprite.pivot.y / h),
+        };
+
+        return new SpriteSheet()
+        {
+            Name = sprite.name,
+            Texture = texture,
+            Infos = [info]
+        };
     }
 
     private string GetAnimationName(Sprite sprite)
@@ -77,6 +110,72 @@ public class BetterExporter : IExporter
 
         return group?.GroupName ?? "unknown";
     }
+
+    private void SaveSpriteSheet(string directory, SpriteSheet sheet)
+    {
+        // Ensure directory exists
+        Directory.CreateDirectory(directory);
+
+        // Save texture to file
+        string texturePath = Path.Combine(directory, $"{sheet.Name}.png");
+        File.WriteAllBytes(texturePath, sheet.Texture.EncodeToPNG());
+        Object.Destroy(sheet.Texture);
+
+        // Save info list to file
+        string infoPath = Path.Combine(directory, $"{sheet.Name}.json");
+        File.WriteAllText(infoPath, JsonConvert.SerializeObject(sheet.Infos, Formatting.Indented));
+    }
+
+    private Dictionary<Sprite, SpriteInfo> CreateSpriteInfos(IEnumerable<Sprite> sprites)
+    {
+        var infos = new Dictionary<Sprite, SpriteInfo>();
+
+        int x = 0, y = 0, maxRowHeight = 0;
+        foreach (var sprite in sprites)
+        {
+            int w = (int)sprite.rect.width;
+            int h = (int)sprite.rect.height;
+
+            if (x + w > MAX_SIZE)
+            {
+                x = 0;
+                y += maxRowHeight;
+                maxRowHeight = 0;
+            }
+
+            if (h > maxRowHeight)
+                maxRowHeight = h;
+
+            infos.Add(sprite, new SpriteInfo()
+            {
+                Name = sprite.name,
+                PixelsPerUnit = (int)sprite.pixelsPerUnit,
+                Position = new Vector(x, y),
+                Size = new Vector(w, h),
+                Pivot = new Vector(sprite.pivot.x / w, sprite.pivot.y / h),
+            });
+
+            x += w;
+        }
+
+        return infos;
+    }
+
+    private Texture2D CreateTexture(IEnumerable<SpriteInfo> infos)
+    {
+        int width = (int)infos.Max(info => info.Position.X + info.Size.X);
+        int height = (int)infos.Max(info => info.Position.Y + info.Size.Y);
+        Texture2D tex = new Texture2D(width, height);
+
+        // Fill transparent
+        for (int i = 0; i < width; i++)
+            for (int j = 0; j < height; j++)
+                tex.SetPixel(i, j, new Color32(0, 0, 0, 0));
+
+        return tex;
+    }
+
+    private const int MAX_SIZE = 2048;
 }
 
 /// <summary>
@@ -85,14 +184,19 @@ public class BetterExporter : IExporter
 public class SpriteSheet
 {
     /// <summary>
+    /// The name the spritesheet should be saved as
+    /// </summary>
+    public string Name { get; set; }
+
+    /// <summary>
     /// The texture
     /// </summary>
-    public Texture2D Texture { get; init; }
+    public Texture2D Texture { get; set; }
 
     /// <summary>
     /// List of SpriteInfos about every sprite
     /// </summary>
-    public List<SpriteInfo> Infos { get; init; }
+    public List<SpriteInfo> Infos { get; set; }
 }
 
 /// <summary>
