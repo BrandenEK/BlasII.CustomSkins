@@ -4,7 +4,6 @@ using BlasII.CustomSkins.Importers;
 using BlasII.ModdingAPI;
 using BlasII.ModdingAPI.Helpers;
 using Il2CppTGK.Game;
-using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -75,8 +74,3 @@ public class CustomSkins : BlasIIMod
         _loadedSprites = sprites;
     }
 }
-
-/// <summary>
-/// Maps a name to a sprite
-/// </summary>
-public class SpriteCollection : Dictionary<string, Sprite> { }
