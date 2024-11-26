@@ -1,9 +1,13 @@
 ﻿using BlasII.CheatConsole;
 using BlasII.CustomSkins.Exporters;
+using BlasII.CustomSkins.Finders;
 using BlasII.CustomSkins.Importers;
 using BlasII.ModdingAPI;
 using BlasII.ModdingAPI.Helpers;
 using Il2CppTGK.Game;
+using MelonLoader;
+using System;
+using System.Collections;
 using System.IO;
 using UnityEngine;
 
@@ -18,11 +22,6 @@ public class CustomSkins : BlasIIMod
 
     private SpriteCollection _loadedSprites = [];
     private bool _loadedDefault = false;
-
-    /// <inheritdoc cref="IImporter"/>
-    public IImporter Importer { get; } = new SimpleImporter();
-    /// <inheritdoc cref="IExporter"/>
-    public IExporter Exporter { get; } = new LegacyExporter();
 
     /// <summary>
     /// Registers the skin command
@@ -41,8 +40,7 @@ public class CustomSkins : BlasIIMod
             return;
 
         _loadedDefault = true;
-        var spritesheets = Importer.ImportAll(Path.Combine(FileHandler.ModdingFolder, "skins"));
-        ReplaceSkin(spritesheets);
+        StartImport(Path.Combine(FileHandler.ModdingFolder, "skins"), ReplaceSkin);
     }
 
     /// <summary>
@@ -66,7 +64,56 @@ public class CustomSkins : BlasIIMod
         }
     }
 
-    // New methods
+    // Import methods
+
+    /// <summary>
+    /// Starts the import process
+    /// </summary>
+    public void StartImport(string directory, Action<SpriteCollection> callback)
+    {
+        if (!Directory.Exists(directory))
+        {
+            ModLog.Error($"{directory} does not exist. Failed to import spritesheets");
+            return;
+        }
+
+        MelonCoroutines.Start(ImportCoroutine(directory, callback));
+    }
+
+    private IEnumerator ImportCoroutine(string directory, Action<SpriteCollection> callback)
+    {
+        IImporter importer = new SimpleImporter();
+
+        yield return importer.ImportAll(directory);
+        callback(importer.Result);
+    }
+
+    // Export methods
+
+    /// <summary>
+    /// Starts the export process
+    /// </summary>
+    public void StartExport(string directory)
+    {
+        if (!Directory.Exists(directory))
+        {
+            ModLog.Error($"{directory} does not exist. Failed to export spritesheets");
+            return;
+        }
+
+        MelonCoroutines.Start(ExportCoroutine(directory));
+    }
+
+    private IEnumerator ExportCoroutine(string directory)
+    {
+        IFinder finder = new FinderWithCrisanta(new ResourcesFinder());
+        IExporter exporter = new LegacyExporter();
+
+        yield return finder.FindAll();
+        yield return exporter.ExportAll(finder.Result, directory);
+    }
+
+    // Update methods
 
     /// <summary>
     /// Merges the skin with the new one

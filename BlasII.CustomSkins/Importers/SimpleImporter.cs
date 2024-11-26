@@ -1,5 +1,6 @@
 ﻿using BlasII.ModdingAPI;
 using Newtonsoft.Json;
+using System.Collections;
 using System.IO;
 using UnityEngine;
 
@@ -10,15 +11,16 @@ namespace BlasII.CustomSkins.Importers;
 /// </summary>
 public class SimpleImporter : IImporter
 {
-    /// <summary>
-    /// Imports all spritesheets in the directory
-    /// </summary>
-    public SpriteCollection ImportAll(string directory)
+    /// <inheritdoc/>
+    public SpriteCollection Result { get; private set; }
+
+    /// <inheritdoc/>
+    public IEnumerator ImportAll(string directory)
     {
         ModLog.Warn("Starting Import...");
 
         // Create output dictionary
-        var output = new SpriteCollection();
+        Result = [];
 
         // Create import folder
         Directory.CreateDirectory(directory);
@@ -26,14 +28,14 @@ public class SimpleImporter : IImporter
         // Get all json files in the import folder
         foreach (var file in Directory.GetFiles(directory, "*.json", SearchOption.TopDirectoryOnly))
         {
-            Import(Path.GetFileNameWithoutExtension(file), directory, output);
+            Import(Path.GetFileNameWithoutExtension(file), directory);
+            yield return null;
         }
 
         ModLog.Warn("Finished import");
-        return output;
     }
 
-    private void Import(string animation, string directory, SpriteCollection output)
+    private void Import(string animation, string directory)
     {
         ModLog.Info($"Importing {animation}");
 
@@ -54,7 +56,7 @@ public class SimpleImporter : IImporter
             var sprite = Sprite.Create(texture, rect, info.Pivot, info.PixelsPerUnit);
             sprite.hideFlags = HideFlags.DontUnloadUnusedAsset;
 
-            output.Add(info.Name, sprite);
+            Result.Add(info.Name, sprite);
         }
     }
 }

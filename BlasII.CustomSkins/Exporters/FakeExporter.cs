@@ -7,11 +7,13 @@ namespace BlasII.CustomSkins.Exporters;
 /// <summary>
 /// Just lists the spritesheet names instead of exporting
 /// </summary>
-public class FakeExporter : CoroutineExporter
+public class FakeExporter : IExporter
 {
     /// <inheritdoc/>
-    protected override IEnumerator ExportCoroutine(SpriteCollection sprites, string directory)
+    public IEnumerator ExportAll(SpriteCollection sprites, string directory)
     {
+        ModLog.Warn("Starting Export...");
+
         // Group sprites by name
         var groups = sprites.GroupBy(x => x.Key[0..x.Key.LastIndexOf('_')]);
 
@@ -20,5 +22,7 @@ public class FakeExporter : CoroutineExporter
             ModLog.Info($"Exporting {group.Key}");
             yield return null;
         }
+
+        ModLog.Warn("Finished export");
     }
 }

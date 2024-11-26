@@ -10,13 +10,15 @@ using UnityEngine;
 namespace BlasII.CustomSkins.Exporters;
 
 /// <summary>
-/// Exports all spritesheets grouped by animation one per frame 
+/// Exports all spritesheets individually 
 /// </summary>
-public class LegacyExporter : CoroutineExporter
+public class LegacyExporter : IExporter
 {
     /// <inheritdoc/>
-    protected override IEnumerator ExportCoroutine(SpriteCollection sprites, string directory)
+    public IEnumerator ExportAll(SpriteCollection sprites, string directory)
     {
+        ModLog.Warn("Starting Export...");
+
         // Group sprites by name
         var groups = sprites.GroupBy(x => x.Key[0..x.Key.LastIndexOf('_')]);
         int idx = 0;
@@ -32,10 +34,13 @@ public class LegacyExporter : CoroutineExporter
             yield return null;
         }
 
+        // Ensure all animations were exported
         if (idx != NUM_ANIMATIONS)
         {
             ModLog.Error("Failed to find all animations!");
         }
+
+        ModLog.Warn("Finished export");
     }
 
     private void Export(string animation, int idx, string directory, IEnumerable<Sprite> sprites)

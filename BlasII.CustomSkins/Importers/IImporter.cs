@@ -1,4 +1,5 @@
-﻿
+﻿using System.Collections;
+
 namespace BlasII.CustomSkins.Importers;
 
 /// <summary>
@@ -7,7 +8,12 @@ namespace BlasII.CustomSkins.Importers;
 public interface IImporter
 {
     /// <summary>
+    /// The sprites that were imported
+    /// </summary>
+    public SpriteCollection Result { get; }
+
+    /// <summary>
     /// Imports all spritesheets in the directory
     /// </summary>
-    public SpriteCollection ImportAll(string directory);
+    public IEnumerator ImportAll(string directory);
 }
