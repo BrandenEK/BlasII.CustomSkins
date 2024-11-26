@@ -1,4 +1,5 @@
-﻿
+﻿using BlasII.CustomSkins.Finders;
+
 namespace BlasII.CustomSkins.Exporters;
 
 /// <summary>
@@ -9,5 +10,5 @@ public interface IExporter
     /// <summary>
     /// Exports all spritesheets into the directory
     /// </summary>
-    public void ExportAll(SpriteCollection sprites, string directory);
+    public void ExportAll(IFinder finder, string directory);
 }

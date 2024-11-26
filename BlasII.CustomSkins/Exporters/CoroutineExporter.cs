@@ -1,4 +1,5 @@
-﻿using BlasII.ModdingAPI;
+﻿using BlasII.CustomSkins.Finders;
+using BlasII.ModdingAPI;
 using MelonLoader;
 using System.Collections;
 
@@ -10,16 +11,18 @@ namespace BlasII.CustomSkins.Exporters;
 public class CoroutineExporter : IExporter
 {
     /// <inheritdoc/>
-    public void ExportAll(SpriteCollection sprites, string directory)
+    public void ExportAll(IFinder finder, string directory)
     {
-        MelonCoroutines.Start(ExportProcess(sprites, directory));
+        MelonCoroutines.Start(ExportProcess(finder, directory));
     }
 
-    private IEnumerator ExportProcess(SpriteCollection sprites, string directory)
+    private IEnumerator ExportProcess(IFinder finder, string directory)
     {
         OnStart();
 
-        yield return ExportCoroutine(sprites, directory);
+        yield return finder.FindAll();
+
+        yield return ExportCoroutine(finder.Result, directory);
 
         OnFinish();
     }

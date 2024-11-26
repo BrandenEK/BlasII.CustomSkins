@@ -1,8 +1,6 @@
 ﻿using BlasII.CheatConsole;
-using BlasII.CustomSkins.Extensions;
+using BlasII.CustomSkins.Finders;
 using System.IO;
-using System.Linq;
-using UnityEngine;
 
 namespace BlasII.CustomSkins;
 
@@ -54,7 +52,7 @@ internal class SkinCommand : ModCommand
 
     private void Export()
     {
-
-        Main.CustomSkins.Exporter.ExportAll(sprites, Main.CustomSkins.FileHandler.ContentFolder);
+        IFinder finder = new ResourcesFinder();
+        Main.CustomSkins.Exporter.ExportAll(finder, Main.CustomSkins.FileHandler.ContentFolder);
     }
 }
