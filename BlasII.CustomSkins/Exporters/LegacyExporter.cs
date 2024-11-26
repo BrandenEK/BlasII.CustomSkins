@@ -19,6 +19,7 @@ public class LegacyExporter : CoroutineExporter
     {
         // Group sprites by name
         var groups = sprites.GroupBy(x => x.Key[0..x.Key.LastIndexOf('_')]);
+        int idx = 0;
 
         // Export each individual spritesheet
         foreach (var group in groups)
@@ -27,14 +28,19 @@ public class LegacyExporter : CoroutineExporter
                 .OrderBy(x => int.Parse(x.Key[(x.Key.LastIndexOf('_') + 1)..]))
                 .Select(x => x.Value);
 
-            Export(group.Key, directory, spriteGroup);
+            Export(group.Key, ++idx, directory, spriteGroup);
             yield return null;
+        }
+
+        if (idx != NUM_ANIMATIONS)
+        {
+            ModLog.Error("Failed to find all animations!");
         }
     }
 
-    private void Export(string animation, string directory, IEnumerable<Sprite> sprites)
+    private void Export(string animation, int idx, string directory, IEnumerable<Sprite> sprites)
     {
-        ModLog.Info($"Exporting {animation}");
+        ModLog.Info($"[{idx}/{NUM_ANIMATIONS}] Exporting {animation}");
 
         // Create sprite infos and texture
         Dictionary<Sprite, SpriteInfo> infos = CreateSpriteInfos(sprites);
@@ -108,4 +114,5 @@ public class LegacyExporter : CoroutineExporter
     }
 
     private const int MAX_SIZE = 2048;
+    private const int NUM_ANIMATIONS = 540;
 }

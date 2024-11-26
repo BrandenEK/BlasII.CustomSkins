@@ -23,7 +23,7 @@ public class CustomSkins : BlasIIMod
     /// <inheritdoc cref="IImporter"/>
     public IImporter Importer { get; } = new SimpleImporter();
     /// <inheritdoc cref="IExporter"/>
-    public IExporter Exporter { get; } = new FakeExporter();
+    public IExporter Exporter { get; } = new LegacyExporter();
 
     /// <summary>
     /// Registers the skin command
