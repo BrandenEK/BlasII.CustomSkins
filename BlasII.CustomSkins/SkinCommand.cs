@@ -12,12 +12,28 @@ internal class SkinCommand : ModCommand
     {
         switch (args[0])
         {
-            case "import":
+            case "merge":
                 {
-                    if(!ValidateParameterCount(args, 2))
+                    if (!ValidateParameterCount(args, 2))
                         return;
 
-                    Import(args[1]);
+                    Merge(args[1]);
+                    break;
+                }
+            case "replace":
+                {
+                    if (!ValidateParameterCount(args, 2))
+                        return;
+
+                    Replace(args[1]);
+                    break;
+                }
+            case "reset":
+                {
+                    if (!ValidateParameterCount(args, 1))
+                        return;
+
+                    Reset();
                     break;
                 }
             case "export":
@@ -36,18 +52,41 @@ internal class SkinCommand : ModCommand
         }
     }
 
-    private void Import(string folder)
+    private bool TryImport(string folder, out SpriteCollection spritesheets)
     {
         string path = Path.Combine(Main.CustomSkins.FileHandler.ModdingFolder, "skins", folder);
 
         if (!Directory.Exists(path))
         {
             WriteFailure($"{path} does not exist.");
-            return;
+
+            spritesheets = []; 
+            return false;
         }
 
-        var spritesheets = Main.CustomSkins.Importer.ImportAll(path);
-        Main.CustomSkins.UpdateSkin(spritesheets);
+        spritesheets = Main.CustomSkins.Importer.ImportAll(path);
+        return true;
+    }
+
+    private void Replace(string folder)
+    {
+        if (!TryImport(folder, out SpriteCollection spritesheets))
+            return;
+
+        Main.CustomSkins.ReplaceSkin(spritesheets);
+    }
+
+    private void Merge(string folder)
+    {
+        if (!TryImport(folder, out SpriteCollection spritesheets))
+            return;
+
+        Main.CustomSkins.MergeSkin(spritesheets);
+    }
+
+    private void Reset()
+    {
+        Main.CustomSkins.ResetSkin();
     }
 
     private void Export()

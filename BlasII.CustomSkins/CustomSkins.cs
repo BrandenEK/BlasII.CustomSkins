@@ -4,7 +4,6 @@ using BlasII.CustomSkins.Importers;
 using BlasII.ModdingAPI;
 using BlasII.ModdingAPI.Helpers;
 using Il2CppTGK.Game;
-using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -43,7 +42,7 @@ public class CustomSkins : BlasIIMod
 
         _loadedDefault = true;
         var spritesheets = Importer.ImportAll(Path.Combine(FileHandler.ModdingFolder, "skins"));
-        UpdateSkin(spritesheets);
+        ReplaceSkin(spritesheets);
     }
 
     /// <summary>
@@ -67,16 +66,32 @@ public class CustomSkins : BlasIIMod
         }
     }
 
+    // New methods
+
     /// <summary>
-    /// Updates the skin based on the new sprites
+    /// Merges the skin with the new one
     /// </summary>
-    public void UpdateSkin(SpriteCollection sprites)
+    public void MergeSkin(SpriteCollection sprites)
+    {
+        foreach (var kvp in sprites)
+        {
+            _loadedSprites[kvp.Key] = kvp.Value;
+        }
+    }
+
+    /// <summary>
+    /// Replaces skin with the new one
+    /// </summary>
+    public void ReplaceSkin(SpriteCollection sprites)
     {
         _loadedSprites = sprites;
     }
-}
 
-/// <summary>
-/// Maps a name to a sprite
-/// </summary>
-public class SpriteCollection : Dictionary<string, Sprite> { }
+    /// <summary>
+    /// Resets skin to default
+    /// </summary>
+    public void ResetSkin()
+    {
+        _loadedSprites = [];
+    }
+}
