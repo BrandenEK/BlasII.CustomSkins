@@ -24,10 +24,13 @@ public class SimpleImporter : IImporter
         Directory.CreateDirectory(directory);
 
         // Get all json files in the import folder
+        int idx = 0;
         foreach (var file in Directory.GetFiles(directory, "*.json", SearchOption.TopDirectoryOnly))
         {
             Import(Path.GetFileNameWithoutExtension(file), directory);
-            yield return null;
+
+            if (idx++ % IMPORTS_PER_FRAME == 0)
+                yield return null;
         }
     }
 
@@ -55,4 +58,6 @@ public class SimpleImporter : IImporter
             Result.Add(info.Name, sprite);
         }
     }
+
+    private const int IMPORTS_PER_FRAME = 3;
 }
