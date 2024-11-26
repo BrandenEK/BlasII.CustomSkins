@@ -69,11 +69,14 @@ public class CustomSkins : BlasIIMod
     // New methods
 
     /// <summary>
-    /// Resets skin to default
+    /// Merges the skin with the new one
     /// </summary>
-    public void ResetSkin()
+    public void MergeSkin(SpriteCollection sprites)
     {
-        _loadedSprites = [];
+        foreach (var kvp in sprites)
+        {
+            _loadedSprites[kvp.Key] = kvp.Value;
+        }
     }
 
     /// <summary>
@@ -85,13 +88,10 @@ public class CustomSkins : BlasIIMod
     }
 
     /// <summary>
-    /// Merges the skin with the new one
+    /// Resets skin to default
     /// </summary>
-    public void MergeSkin(SpriteCollection sprites)
+    public void ResetSkin()
     {
-        foreach (var kvp in sprites)
-        {
-            _loadedSprites[kvp.Key] = kvp.Value;
-        }
+        _loadedSprites = [];
     }
 }
