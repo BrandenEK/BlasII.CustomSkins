@@ -4,12 +4,12 @@ using System.IO;
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace BlasII.CustomSkins;
+namespace BlasII.CustomSkins.Importers;
 
 /// <summary>
 /// Handles importing all custom sprites
 /// </summary>
-public class Importer
+public class SimpleImporter : IImporter
 {
     /// <summary>
     /// Imports all spritesheets in the directory
