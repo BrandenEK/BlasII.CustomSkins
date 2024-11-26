@@ -1,4 +1,5 @@
-﻿
+﻿using System.Collections;
+
 namespace BlasII.CustomSkins.Finders;
 
 /// <summary>
@@ -7,7 +8,12 @@ namespace BlasII.CustomSkins.Finders;
 public interface IFinder
 {
     /// <summary>
+    /// The sprites that were found
+    /// </summary>
+    public SpriteCollection Result { get; }
+
+    /// <summary>
     /// Finds all player sprites
     /// </summary>
-    public SpriteCollection FindAll();
+    public IEnumerator FindAll();
 }

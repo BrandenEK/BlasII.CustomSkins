@@ -54,12 +54,6 @@ internal class SkinCommand : ModCommand
 
     private void Export()
     {
-        var sprites = Resources.FindObjectsOfTypeAll<Sprite>()
-            .Where(x => x.name.StartsWith("TPO"))
-            .DistinctBy(x => x.name)
-            .OrderBy(x => x.name)
-            .ToDictionary(x => x.name, x => x)
-            .AsCollection();
 
         Main.CustomSkins.Exporter.ExportAll(sprites, Main.CustomSkins.FileHandler.ContentFolder);
     }
