@@ -78,7 +78,7 @@ public class BetterExporter : IExporter
         }
 
         // Combine all animations
-        return CombineSpriteSheetsVertical(groupName, 8192, sheets);
+        return CombineSpriteSheets(groupName, true, 8192, sheets);
     }
 
     private SpriteSheet ExportAnimation(IEnumerable<Sprite> sprites, string animationName, string directory)
@@ -97,7 +97,7 @@ public class BetterExporter : IExporter
         }
 
         // Combine all frames
-        return CombineSpriteSheetsHorizontal(animationName, 2048, sheets);
+        return CombineSpriteSheets(animationName, false, 2048, sheets);
     }
 
     private SpriteSheet ExportFrame(Sprite sprite)
@@ -123,9 +123,44 @@ public class BetterExporter : IExporter
         };
     }
 
-    private SpriteSheet CombineSpriteSheetsHorizontal(string name, int maxWidth, IEnumerable<SpriteSheet> sheets)
+    private SpriteSheet CombineSpriteSheets(string name, bool vertical, int maxSize, IEnumerable<SpriteSheet> sheets)
     {
         // Modify the position of all SpriteInfos in each sheet
+        if (vertical)
+            ModifySpriteInfosVertical(sheets, maxSize);
+        else
+            ModifySpriteInfosHorizontal(sheets, maxSize);
+
+        // Create new bigger texture
+        var allInfos = sheets.SelectMany(x => x.Infos);
+        int width = (int)allInfos.Max(info => info.Position.X + info.Size.X);
+        int height = (int)allInfos.Max(info => info.Position.Y + info.Size.Y);
+        Texture2D tex = new Texture2D(width, height);
+
+        // Fill transparent pixels
+        for (int i = 0; i < width; i++)
+            for (int j = 0; j < height; j++)
+                tex.SetPixel(i, j, new Color32(0, 0, 0, 0));
+
+        // Copy each sheet's texture onto the bigger one
+        foreach (var sheet in sheets)
+        {
+            Texture texture = sheet.Texture;
+            SpriteInfo info = sheet.Infos.First();
+            Graphics.CopyTexture(texture, 0, 0, 0, 0, texture.width, texture.height, tex, 0, 0, (int)info.Position.X, (int)info.Position.Y);
+        }
+
+        // Return new single spritesheet
+        return new SpriteSheet()
+        {
+            Name = name,
+            Texture = tex,
+            Infos = allInfos,
+        };
+    }
+
+    private void ModifySpriteInfosHorizontal(IEnumerable<SpriteSheet> sheets, int maxWidth)
+    {
         int x = 0, y = 0, maxRowHeight = 0;
         foreach (var sheet in sheets)
         {
@@ -147,38 +182,10 @@ public class BetterExporter : IExporter
 
             x += w;
         }
-
-        // Create new bigger texture
-        var allInfos = sheets.SelectMany(x => x.Infos);
-        int width = (int)allInfos.Max(info => info.Position.X + info.Size.X);
-        int height = (int)allInfos.Max(info => info.Position.Y + info.Size.Y);
-        Texture2D tex = new Texture2D(width, height);
-
-        // Fill transparent pixels
-        for (int i = 0; i < width; i++)
-            for (int j = 0; j < height; j++)
-                tex.SetPixel(i, j, new Color32(0, 0, 0, 0)); // This should be changed to SetPixels.  Also more texture need to be deleted
-
-        // Copy each sheet's texture onto the bigger one
-        foreach (var sheet in sheets)
-        {
-            Texture texture = sheet.Texture;
-            SpriteInfo info = sheet.Infos.First();
-            Graphics.CopyTexture(texture, 0, 0, 0, 0, texture.width, texture.height, tex, 0, 0, (int)info.Position.X, (int)info.Position.Y);
-        }
-
-        // Return new single spritesheet
-        return new SpriteSheet()
-        {
-            Name = name,
-            Texture = tex,
-            Infos = allInfos,
-        };
     }
 
-    private SpriteSheet CombineSpriteSheetsVertical(string name, int maxHeight, IEnumerable<SpriteSheet> sheets)
+    private void ModifySpriteInfosVertical(IEnumerable<SpriteSheet> sheets, int maxHeight)
     {
-        // Modify the position of all SpriteInfos in each sheet
         int x = 0, y = 0, maxColumnWidth = 0;
         foreach (var sheet in sheets)
         {
@@ -200,33 +207,6 @@ public class BetterExporter : IExporter
 
             y += h;
         }
-
-        // Create new bigger texture
-        var allInfos = sheets.SelectMany(x => x.Infos);
-        int width = (int)allInfos.Max(info => info.Position.X + info.Size.X);
-        int height = (int)allInfos.Max(info => info.Position.Y + info.Size.Y);
-        Texture2D tex = new Texture2D(width, height);
-
-        // Fill transparent pixels
-        for (int i = 0; i < width; i++)
-            for (int j = 0; j < height; j++)
-                tex.SetPixel(i, j, new Color32(0, 0, 0, 0)); // This should be changed to SetPixels.  Also more texture need to be deleted
-
-        // Copy each sheet's texture onto the bigger one
-        foreach (var sheet in sheets)
-        {
-            Texture texture = sheet.Texture;
-            SpriteInfo info = sheet.Infos.First();
-            Graphics.CopyTexture(texture, 0, 0, 0, 0, texture.width, texture.height, tex, 0, 0, (int)info.Position.X, (int)info.Position.Y);
-        }
-
-        // Return new single spritesheet
-        return new SpriteSheet()
-        {
-            Name = name,
-            Texture = tex,
-            Infos = allInfos,
-        };
     }
 
     private string GetAnimationName(Sprite sprite)
