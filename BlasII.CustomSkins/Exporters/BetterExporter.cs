@@ -26,7 +26,7 @@ public class BetterExporter : IExporter
         var sheets = new List<SpriteSheet>();
 
         // Split sprites by group and export them
-        foreach (var spritesByGroup in sprites.Values.GroupBy(x => GetGroupName(x, groups)))
+        foreach (var spritesByGroup in sprites.Values.GroupBy(x => GetGroupName(x, groups)).OrderBy(x => x.Key))
         {
             string group = spritesByGroup.Key;
             var groupAnimations = spritesByGroup.OrderBy(x => x.name);
@@ -35,19 +35,15 @@ public class BetterExporter : IExporter
                 continue;
             
             ModLog.Info($"Exporting group {group}");
-            yield return ExportGroup(groupAnimations, group, directory);
+            yield return ExportGroup(groupAnimations, group, Path.Combine(directory, group));
             sheets.Add(_currentSheet);
 
-            // Save group texture
+            // Save and destroy group texture
             SaveSpriteSheet(directory, _currentSheet);
             Object.Destroy(_currentSheet.Texture);
         }
 
-        // Destroy group textures
-        //foreach (var sheet in sheets)
-        //    Object.Destroy(sheet.Texture);
-
-        // Combine and save total sheet ?
+        _currentSheet = null;
     }
 
     private IEnumerator ExportGroup(IEnumerable<Sprite> sprites, string groupName, string directory)
@@ -55,17 +51,17 @@ public class BetterExporter : IExporter
         var sheets = new List<SpriteSheet>();
 
         // Split sprites by animation and export them
-        foreach (var spritesByAnimation in sprites.GroupBy(GetAnimationName))
+        foreach (var spritesByAnimation in sprites.GroupBy(GetAnimationName).OrderBy(x => x.Key))
         {
             string animation = spritesByAnimation.Key;
             var animationFrames = spritesByAnimation.OrderBy(x => int.Parse(x.name[(x.name.LastIndexOf('_') + 1)..]));
 
             ModLog.Info($"Exporting animation {animation}");
-            yield return ExportAnimation(animationFrames, animation, Path.Combine(directory, groupName));
+            yield return ExportAnimation(animationFrames, animation, Path.Combine(directory, animation));
             sheets.Add(_currentSheet);
 
             // Save animation texture
-            SaveSpriteSheet(Path.Combine(directory, groupName), _currentSheet);
+            SaveSpriteSheet(directory, _currentSheet);
         }
 
         // Destroy animation textures
@@ -233,7 +229,6 @@ public class BetterExporter : IExporter
         // Save texture to file
         string texturePath = Path.Combine(directory, $"{sheet.Name}.png");
         File.WriteAllBytes(texturePath, sheet.Texture.EncodeToPNG());
-        //Object.Destroy(sheet.Texture);
 
         // Save info list to file
         string infoPath = Path.Combine(directory, $"{sheet.Name}.json");
