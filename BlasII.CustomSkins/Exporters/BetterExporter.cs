@@ -35,6 +35,8 @@ public class BetterExporter : IExporter
             ModLog.Info($"Exporting group {group}");
             SpriteSheet sheet = ExportGroup(groupAnimations, group, directory);
             sheets.Add(sheet);
+
+            // Save or destroy texture
             SaveSpriteSheet(directory, sheet);
 
             yield return null;
@@ -56,6 +58,8 @@ public class BetterExporter : IExporter
             ModLog.Info($"Exporting animation {animation}");
             SpriteSheet sheet = ExportAnimation(animationFrames, animation, Path.Combine(directory, groupName));
             sheets.Add(sheet);
+
+            // Save or destroy texture
             SaveSpriteSheet(Path.Combine(directory, groupName), sheet);
         }
 
@@ -75,7 +79,9 @@ public class BetterExporter : IExporter
             //ModLog.Info($"Exporting frame {frame}");
             SpriteSheet sheet = ExportFrame(sprite);
             sheets.Add(sheet);
-            // Save to file
+
+            // Save or destroy texture
+            Object.Destroy(sheet.Texture);
         }
 
         // Combine all frames
