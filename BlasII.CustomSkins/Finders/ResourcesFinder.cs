@@ -1,4 +1,5 @@
 ﻿using BlasII.CustomSkins.Extensions;
+using BlasII.CustomSkins.Models;
 using BlasII.ModdingAPI;
 using System.Collections;
 using System.Linq;

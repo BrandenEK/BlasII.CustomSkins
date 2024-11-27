@@ -1,4 +1,5 @@
-﻿using BlasII.ModdingAPI;
+﻿using BlasII.CustomSkins.Models;
+using BlasII.ModdingAPI;
 using Newtonsoft.Json;
 using System.Collections;
 using System.IO;

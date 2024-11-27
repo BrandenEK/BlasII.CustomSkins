@@ -2,6 +2,7 @@
 using BlasII.CustomSkins.Exporters;
 using BlasII.CustomSkins.Finders;
 using BlasII.CustomSkins.Importers;
+using BlasII.CustomSkins.Models;
 using BlasII.ModdingAPI;
 using BlasII.ModdingAPI.Helpers;
 using Il2CppTGK.Game;
@@ -110,7 +111,7 @@ public class CustomSkins : BlasIIMod
     private IEnumerator ExportCoroutine(string directory)
     {
         IFinder finder = new FinderWithCrisanta(new ResourcesFinder());
-        IExporter exporter = new LegacyExporter();
+        IExporter exporter = new BetterExporter();
 
         ModLog.Warn("Starting export...");
         yield return finder.FindAll();

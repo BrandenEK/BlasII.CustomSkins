@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace BlasII.CustomSkins;
+namespace BlasII.CustomSkins.Models;
 
 /// <summary>
 /// Maps a name to a sprite
