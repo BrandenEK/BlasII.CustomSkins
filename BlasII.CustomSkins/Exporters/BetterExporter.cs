@@ -44,12 +44,13 @@ public class BetterExporter : IExporter
         foreach (var spritesByGroup in sprites.Values.GroupBy(x => GetGroupName(x, groups)))
         {
             string group = spritesByGroup.Key;
+            var groupAnimations = spritesByGroup.OrderBy(x => x.name);
 
             if (group == "unknown")
                 continue;
             
             ModLog.Info($"Exporting group {group}");
-            SpriteSheet sheet = ExportGroup(spritesByGroup, group, directory);
+            SpriteSheet sheet = ExportGroup(groupAnimations, group, directory);
             sheets.Add(sheet);
             SaveSpriteSheet(directory, sheet);
 
@@ -67,11 +68,12 @@ public class BetterExporter : IExporter
         foreach (var spritesByAnimation in sprites.GroupBy(GetAnimationName))
         {
             string animation = spritesByAnimation.Key;
+            var animationFrames = spritesByAnimation.OrderBy(x => int.Parse(x.name[(x.name.LastIndexOf('_') + 1)..]));
 
             ModLog.Info($"Exporting animation {animation}");
-            SpriteSheet sheet = ExportAnimation(spritesByAnimation, animation, Path.Combine(directory, groupName));
+            SpriteSheet sheet = ExportAnimation(animationFrames, animation, Path.Combine(directory, groupName));
             sheets.Add(sheet);
-            // Save to file
+            SaveSpriteSheet(Path.Combine(directory, groupName), sheet);
         }
 
         // Combine all animations
@@ -105,19 +107,134 @@ public class BetterExporter : IExporter
         }
 
         // Combine all frames
-        return CombineSpritesToAnimation(animationName, sheets);
+        return CombineFramesToAnimation(animationName, sheets);
     }
 
-    private SpriteSheet CombineSpritesToAnimation(string name, IEnumerable<SpriteSheet> sheets)
+    private SpriteSheet CombineFramesToAnimation(string name, IEnumerable<SpriteSheet> sheets)
     {
-        // Just returns first right now
+        // Modify the position of all SpriteInfos in each sheet
+        int x = 0, y = 0, maxRowHeight = 0;
+        foreach (var sheet in sheets)
+        {
+            int w = sheet.Texture.width;
+            int h = sheet.Texture.height;
+
+            if (x + w > MAX_SIZE)
+            {
+                x = 0;
+                y += maxRowHeight;
+                maxRowHeight = 0;
+            }
+
+            if (h > maxRowHeight)
+                maxRowHeight = h;
+
+            foreach (var info in sheet.Infos)
+                info.Position = new Vector(info.Position.X + x, info.Position.Y + y);
+
+            x += w;
+        }
+
+        // Create new bigger texture
+        var allInfos = sheets.SelectMany(x => x.Infos);
+        int width = (int)allInfos.Max(info => info.Position.X + info.Size.X);
+        int height = (int)allInfos.Max(info => info.Position.Y + info.Size.Y);
+        Texture2D tex = new Texture2D(width, height);
+
+        // Fill transparent pixels
+        for (int i = 0; i < width; i++)
+            for (int j = 0; j < height; j++)
+                tex.SetPixel(i, j, new Color32(0, 0, 0, 0));
+
+        // Copy each sheet's texture onto the bigger one
+        foreach (var sheet in sheets)
+        {
+            SpriteInfo info = sheet.Infos.First();
+            Graphics.CopyTexture(sheet.Texture, 0, 0, 0, 0, (int)info.Size.X, (int)info.Size.Y, tex, 0, 0, (int)info.Position.X, (int)info.Position.Y);
+        }
+
+        // Return new single spritesheet
         return new SpriteSheet()
         {
             Name = name,
-            Texture = sheets.First().Texture,
-            Infos = sheets.First().Infos
+            Texture = tex,
+            Infos = allInfos,
         };
     }
+
+    //private void CombineSheetInfos(IEnumerable<SpriteSheet> sheets)
+    //{
+    //    int x = 0, y = 0, maxRowHeight = 0;
+    //    foreach (var sheet in sheets)
+    //    {
+    //        int w = sheet.Texture.width;
+    //        int h = sheet.Texture.height;
+
+    //        if (x + w > MAX_SIZE)
+    //        {
+    //            x = 0;
+    //            y += maxRowHeight;
+    //            maxRowHeight = 0;
+    //        }
+
+    //        if (h > maxRowHeight)
+    //            maxRowHeight = h;
+
+    //        foreach (var info in sheet.Infos)
+    //            info.Position = new Vector(info.Position.X + x, info.Position.Y + y);
+
+    //        x += w;
+    //    }
+    //}
+
+    //private Dictionary<Sprite, SpriteInfo> CreateSpriteInfos(IEnumerable<Sprite> sprites)
+    //{
+    //    var infos = new Dictionary<Sprite, SpriteInfo>();
+
+    //    int x = 0, y = 0, maxRowHeight = 0;
+    //    foreach (var sprite in sprites)
+    //    {
+    //        int w = (int)sprite.rect.width;
+    //        int h = (int)sprite.rect.height;
+
+    //        if (x + w > MAX_SIZE)
+    //        {
+    //            x = 0;
+    //            y += maxRowHeight;
+    //            maxRowHeight = 0;
+    //        }
+
+    //        if (h > maxRowHeight)
+    //            maxRowHeight = h;
+
+    //        infos.Add(sprite, new SpriteInfo()
+    //        {
+    //            Name = sprite.name,
+    //            PixelsPerUnit = (int)sprite.pixelsPerUnit,
+    //            Position = new Vector(x, y),
+    //            Size = new Vector(w, h),
+    //            Pivot = new Vector(sprite.pivot.x / w, sprite.pivot.y / h),
+    //        });
+
+    //        x += w;
+    //    }
+
+    //    return infos;
+    //}
+
+    //private Texture2D CreateTexture(IEnumerable<SpriteInfo> infos)
+    //{
+    //    int width = (int)infos.Max(info => info.Position.X + info.Size.X);
+    //    int height = (int)infos.Max(info => info.Position.Y + info.Size.Y);
+    //    Texture2D tex = new Texture2D(width, height);
+
+    //    // Fill transparent
+    //    for (int i = 0; i < width; i++)
+    //        for (int j = 0; j < height; j++)
+    //            tex.SetPixel(i, j, new Color32(0, 0, 0, 0));
+
+    //    return tex;
+    //}
 
     private SpriteSheet ExportFrame(Sprite sprite)
     {
@@ -170,55 +287,6 @@ public class BetterExporter : IExporter
         File.WriteAllText(infoPath, JsonConvert.SerializeObject(sheet.Infos, Formatting.Indented));
     }
 
-    private Dictionary<Sprite, SpriteInfo> CreateSpriteInfos(IEnumerable<Sprite> sprites)
-    {
-        var infos = new Dictionary<Sprite, SpriteInfo>();
-
-        int x = 0, y = 0, maxRowHeight = 0;
-        foreach (var sprite in sprites)
-        {
-            int w = (int)sprite.rect.width;
-            int h = (int)sprite.rect.height;
-
-            if (x + w > MAX_SIZE)
-            {
-                x = 0;
-                y += maxRowHeight;
-                maxRowHeight = 0;
-            }
-
-            if (h > maxRowHeight)
-                maxRowHeight = h;
-
-            infos.Add(sprite, new SpriteInfo()
-            {
-                Name = sprite.name,
-                PixelsPerUnit = (int)sprite.pixelsPerUnit,
-                Position = new Vector(x, y),
-                Size = new Vector(w, h),
-                Pivot = new Vector(sprite.pivot.x / w, sprite.pivot.y / h),
-            });
-
-            x += w;
-        }
-
-        return infos;
-    }
-
-    private Texture2D CreateTexture(IEnumerable<SpriteInfo> infos)
-    {
-        int width = (int)infos.Max(info => info.Position.X + info.Size.X);
-        int height = (int)infos.Max(info => info.Position.Y + info.Size.Y);
-        Texture2D tex = new Texture2D(width, height);
-
-        // Fill transparent
-        for (int i = 0; i < width; i++)
-            for (int j = 0; j < height; j++)
-                tex.SetPixel(i, j, new Color32(0, 0, 0, 0));
-
-        return tex;
-    }
-
     private const int MAX_SIZE = 2048;
 }
 
@@ -240,7 +308,7 @@ public class SpriteSheet
     /// <summary>
     /// List of SpriteInfos about every sprite
     /// </summary>
-    public List<SpriteInfo> Infos { get; set; }
+    public IEnumerable<SpriteInfo> Infos { get; set; }
 }
 
 /// <summary>
