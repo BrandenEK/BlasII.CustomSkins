@@ -38,11 +38,9 @@ public class BetterExporter : IExporter
             yield return ExportGroup(groupAnimations, group, directory);
             sheets.Add(_currentSheet);
 
-            // Save or destroy texture
+            // Save group texture
             SaveSpriteSheet(directory, _currentSheet);
             Object.Destroy(_currentSheet.Texture);
-
-            yield return null;
         }
 
         // Destroy group textures
@@ -63,13 +61,11 @@ public class BetterExporter : IExporter
             var animationFrames = spritesByAnimation.OrderBy(x => int.Parse(x.name[(x.name.LastIndexOf('_') + 1)..]));
 
             ModLog.Info($"Exporting animation {animation}");
-            SpriteSheet sheet = ExportAnimation(animationFrames, animation, Path.Combine(directory, groupName));
-            sheets.Add(sheet);
+            yield return ExportAnimation(animationFrames, animation, Path.Combine(directory, groupName));
+            sheets.Add(_currentSheet);
 
-            // Save or destroy texture
-            SaveSpriteSheet(Path.Combine(directory, groupName), sheet);
-
-            yield return null;
+            // Save animation texture
+            SaveSpriteSheet(Path.Combine(directory, groupName), _currentSheet);
         }
 
         // Destroy animation textures
@@ -80,7 +76,7 @@ public class BetterExporter : IExporter
         _currentSheet = CombineSpriteSheets(groupName, true, 16384, sheets);
     }
 
-    private SpriteSheet ExportAnimation(IEnumerable<Sprite> sprites, string animationName, string directory)
+    private IEnumerator ExportAnimation(IEnumerable<Sprite> sprites, string animationName, string directory)
     {
         var sheets = new List<SpriteSheet>();
 
@@ -93,12 +89,16 @@ public class BetterExporter : IExporter
             SpriteSheet sheet = ExportFrame(sprite);
             sheets.Add(sheet);
 
-            // Save or destroy texture
-            Object.Destroy(sheet.Texture);
+            // Dont save frame textures
         }
 
+        // Destroy frame textures
+        foreach (var sheet in sheets)
+            Object.Destroy(sheet.Texture);
+
         // Combine all frames
-        return CombineSpriteSheets(animationName, false, 2048, sheets);
+        _currentSheet = CombineSpriteSheets(animationName, false, 2048, sheets);
+        yield return null;
     }
 
     private SpriteSheet ExportFrame(Sprite sprite)
