@@ -72,7 +72,7 @@ public class BetterExporter : IExporter
         {
             string frame = sprite.name;
 
-            ModLog.Info($"Exporting frame {frame}");
+            //ModLog.Info($"Exporting frame {frame}");
             SpriteSheet sheet = ExportFrame(sprite);
             sheets.Add(sheet);
             // Save to file
@@ -120,9 +120,11 @@ public class BetterExporter : IExporter
         Texture2D tex = new Texture2D(width, height);
 
         // Fill transparent pixels
-        for (int i = 0; i < width; i++)
-            for (int j = 0; j < height; j++)
-                tex.SetPixel(i, j, new Color32(0, 0, 0, 0));
+        Color32[] colors = new Color32[width * height];
+        Color32 transparent = new Color32(0, 0, 0, 0);
+        for (int i = 0; i < colors.Length; i++)
+            colors[i] = transparent;
+        tex.SetPixels32(colors, 0);
 
         // Copy each sheet's texture onto the bigger one
         foreach (var sheet in sheets)
