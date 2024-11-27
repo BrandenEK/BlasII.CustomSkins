@@ -1,5 +1,4 @@
-﻿
-namespace BlasII.CustomSkins;
+﻿namespace BlasII.CustomSkins.Models;
 
 /// <summary>
 /// Models a <see cref="UnityEngine.Sprite"/>

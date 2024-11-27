@@ -1,4 +1,5 @@
 ﻿using BlasII.CustomSkins.Extensions;
+using BlasII.CustomSkins.Models;
 using BlasII.ModdingAPI;
 using Newtonsoft.Json;
 using System.Collections;
@@ -236,41 +237,4 @@ public class BetterExporter : IExporter
         string infoPath = Path.Combine(directory, $"{sheet.Name}.json");
         File.WriteAllText(infoPath, JsonConvert.SerializeObject(sheet.Infos, Formatting.Indented));
     }
-}
-
-/// <summary>
-/// A texture, along with info about each sprite
-/// </summary>
-public class SpriteSheet
-{
-    /// <summary>
-    /// The name the spritesheet should be saved as
-    /// </summary>
-    public string Name { get; set; }
-
-    /// <summary>
-    /// The texture
-    /// </summary>
-    public Texture2D Texture { get; set; }
-
-    /// <summary>
-    /// List of SpriteInfos about every sprite
-    /// </summary>
-    public IEnumerable<SpriteInfo> Infos { get; set; }
-}
-
-/// <summary>
-/// A group of related animations
-/// </summary>
-public class AnimationGroup
-{
-    /// <summary>
-    /// The name of the group
-    /// </summary>
-    public string GroupName { get; set; }
-
-    /// <summary>
-    /// The names of the animations in the group
-    /// </summary>
-    public string[] Animations { get; set; }
 }
