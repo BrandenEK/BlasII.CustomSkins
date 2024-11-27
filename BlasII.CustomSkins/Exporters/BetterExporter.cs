@@ -15,6 +15,8 @@ namespace BlasII.CustomSkins.Exporters;
 /// </summary>
 public class BetterExporter : IExporter
 {
+    private SpriteSheet _currentSheet;
+
     /// <inheritdoc/>
     public IEnumerator ExportAll(SpriteCollection sprites, string directory)
     {
@@ -33,19 +35,24 @@ public class BetterExporter : IExporter
                 continue;
             
             ModLog.Info($"Exporting group {group}");
-            SpriteSheet sheet = ExportGroup(groupAnimations, group, directory);
-            sheets.Add(sheet);
+            yield return ExportGroup(groupAnimations, group, directory);
+            sheets.Add(_currentSheet);
 
             // Save or destroy texture
-            SaveSpriteSheet(directory, sheet);
+            SaveSpriteSheet(directory, _currentSheet);
+            Object.Destroy(_currentSheet.Texture);
 
             yield return null;
         }
 
+        // Destroy group textures
+        //foreach (var sheet in sheets)
+        //    Object.Destroy(sheet.Texture);
+
         // Combine and save total sheet ?
     }
 
-    private SpriteSheet ExportGroup(IEnumerable<Sprite> sprites, string groupName, string directory)
+    private IEnumerator ExportGroup(IEnumerable<Sprite> sprites, string groupName, string directory)
     {
         var sheets = new List<SpriteSheet>();
 
@@ -61,10 +68,16 @@ public class BetterExporter : IExporter
 
             // Save or destroy texture
             SaveSpriteSheet(Path.Combine(directory, groupName), sheet);
+
+            yield return null;
         }
 
+        // Destroy animation textures
+        foreach (var sheet in sheets)
+            Object.Destroy(sheet.Texture);
+
         // Combine all animations
-        return CombineSpriteSheets(groupName, true, 16384, sheets);
+        _currentSheet = CombineSpriteSheets(groupName, true, 16384, sheets);
     }
 
     private SpriteSheet ExportAnimation(IEnumerable<Sprite> sprites, string animationName, string directory)
@@ -220,7 +233,7 @@ public class BetterExporter : IExporter
         // Save texture to file
         string texturePath = Path.Combine(directory, $"{sheet.Name}.png");
         File.WriteAllBytes(texturePath, sheet.Texture.EncodeToPNG());
-        Object.Destroy(sheet.Texture);
+        //Object.Destroy(sheet.Texture);
 
         // Save info list to file
         string infoPath = Path.Combine(directory, $"{sheet.Name}.json");
