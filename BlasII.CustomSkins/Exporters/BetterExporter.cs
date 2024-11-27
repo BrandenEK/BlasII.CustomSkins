@@ -18,27 +18,8 @@ public class BetterExporter : IExporter
     /// <inheritdoc/>
     public IEnumerator ExportAll(SpriteCollection sprites, string directory)
     {
-        AnimationGroup[] groups = [
-            new AnimationGroup()
-            {
-                GroupName = "player",
-                Animations = [
-                    "TPO_airDashSequence_HeavyWeapon_armor00",
-                    "TPO_airDashSequence_HeavyWeapon_flurryVFX",
-                    "TPO_AlhambraMirrorTransition_MirroredToNormal",
-                    "TPO_cherubsRespawn_armor00"
-                ]
-            },
-            new AnimationGroup()
-            {
-                GroupName = "censer",
-                Animations = [
-                    "TPO_airDashSequence_HeavyWeapon_censer",
-                    "TPO_chargingCenser_toIdle_weapon"
-                ]
-            }
-        ];
-        // Load groups from data folder json
+        // Load groups from data folder
+        Main.CustomSkins.FileHandler.LoadDataAsJson("groups.json", out AnimationGroup[] groups);
 
         var sheets = new List<SpriteSheet>();
 
@@ -79,7 +60,7 @@ public class BetterExporter : IExporter
         }
 
         // Combine all animations
-        return CombineSpriteSheets(groupName, true, 8192, sheets);
+        return CombineSpriteSheets(groupName, true, 16384, sheets);
     }
 
     private SpriteSheet ExportAnimation(IEnumerable<Sprite> sprites, string animationName, string directory)
