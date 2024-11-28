@@ -30,9 +30,6 @@ public class BetterExporter : IExporter
         {
             string group = spritesByGroup.Key;
             var groupAnimations = spritesByGroup.OrderBy(x => x.name);
-
-            if (group == "unknown")
-                continue;
             
             ModLog.Info($"Exporting group {group}");
             yield return ExportGroup(groupAnimations, group, Path.Combine(directory, group));
@@ -69,7 +66,7 @@ public class BetterExporter : IExporter
             Object.Destroy(sheet.Texture);
 
         // Combine all animations
-        _currentSheet = CombineSpriteSheets(groupName, true, 12000, sheets);
+        _currentSheet = CombineSpriteSheets(groupName, true, 6500, sheets);
     }
 
     private IEnumerator ExportAnimation(IEnumerable<Sprite> sprites, string animationName, string directory)
