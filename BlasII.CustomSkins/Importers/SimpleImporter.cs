@@ -15,27 +15,26 @@ public class SimpleImporter : IImporter
     /// <inheritdoc/>
     public SpriteCollection Result { get; private set; }
 
+    private int _currentImports;
+
     /// <inheritdoc/>
     public IEnumerator ImportAll(string directory)
     {
         // Create output dictionary
         Result = [];
+        _currentImports = 0;
 
         // Create import folder
         Directory.CreateDirectory(directory);
 
         // Get all json files in the import folder
-        int idx = 0;
         foreach (var file in Directory.GetFiles(directory, "*.json", SearchOption.TopDirectoryOnly))
         {
-            Import(Path.GetFileNameWithoutExtension(file), directory);
-
-            if (idx++ % IMPORTS_PER_FRAME == 0)
-                yield return null;
+            yield return Import(Path.GetFileNameWithoutExtension(file), directory);
         }
     }
 
-    private void Import(string animation, string directory)
+    private IEnumerator Import(string animation, string directory)
     {
         ModLog.Info($"Importing {animation}");
 
@@ -57,8 +56,10 @@ public class SimpleImporter : IImporter
             sprite.hideFlags = HideFlags.DontUnloadUnusedAsset;
 
             Result.Add(info.Name, sprite);
+            if (_currentImports++ % IMPORTS_PER_FRAME == 0)
+                yield return null;
         }
     }
 
-    private const int IMPORTS_PER_FRAME = 3;
+    private const int IMPORTS_PER_FRAME = 20;
 }
