@@ -52,7 +52,7 @@ public class SimpleImporter : IImporter
         foreach (var info in infos)
         {
             var rect = new Rect(info.Position, info.Size);
-            var sprite = Sprite.Create(texture, rect, info.Pivot, info.PixelsPerUnit);
+            var sprite = Sprite.Create(texture, rect, info.Pivot, info.PixelsPerUnit, 0, SpriteMeshType.FullRect);
             sprite.hideFlags = HideFlags.DontUnloadUnusedAsset;
 
             Result.Add(info.Name, sprite);
