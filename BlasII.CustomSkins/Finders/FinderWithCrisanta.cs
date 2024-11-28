@@ -1,6 +1,7 @@
 ﻿using BlasII.ModdingAPI.Assets;
 using BlasII.ModdingAPI;
 using System.Collections;
+using BlasII.CustomSkins.Models;
 
 namespace BlasII.CustomSkins.Finders;
 

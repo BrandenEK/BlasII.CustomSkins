@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace BlasII.CustomSkins;
+namespace BlasII.CustomSkins.Models;
 
 /// <summary>
 /// Represents a 2D point

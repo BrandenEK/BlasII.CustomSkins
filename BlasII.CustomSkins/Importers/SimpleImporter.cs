@@ -1,4 +1,5 @@
-﻿using BlasII.ModdingAPI;
+﻿using BlasII.CustomSkins.Models;
+using BlasII.ModdingAPI;
 using Newtonsoft.Json;
 using System.Collections;
 using System.IO;
@@ -14,13 +15,14 @@ public class SimpleImporter : IImporter
     /// <inheritdoc/>
     public SpriteCollection Result { get; private set; }
 
+    private int _currentImports;
+
     /// <inheritdoc/>
     public IEnumerator ImportAll(string directory)
     {
-        ModLog.Warn("Starting Import...");
-
         // Create output dictionary
         Result = [];
+        _currentImports = 0;
 
         // Create import folder
         Directory.CreateDirectory(directory);
@@ -28,14 +30,11 @@ public class SimpleImporter : IImporter
         // Get all json files in the import folder
         foreach (var file in Directory.GetFiles(directory, "*.json", SearchOption.TopDirectoryOnly))
         {
-            Import(Path.GetFileNameWithoutExtension(file), directory);
-            yield return null;
+            yield return Import(Path.GetFileNameWithoutExtension(file), directory);
         }
-
-        ModLog.Warn("Finished import");
     }
 
-    private void Import(string animation, string directory)
+    private IEnumerator Import(string animation, string directory)
     {
         ModLog.Info($"Importing {animation}");
 
@@ -53,10 +52,14 @@ public class SimpleImporter : IImporter
         foreach (var info in infos)
         {
             var rect = new Rect(info.Position, info.Size);
-            var sprite = Sprite.Create(texture, rect, info.Pivot, info.PixelsPerUnit);
+            var sprite = Sprite.Create(texture, rect, info.Pivot, info.PixelsPerUnit, 0, SpriteMeshType.FullRect);
             sprite.hideFlags = HideFlags.DontUnloadUnusedAsset;
 
             Result.Add(info.Name, sprite);
+            if (_currentImports++ % IMPORTS_PER_FRAME == 0)
+                yield return null;
         }
     }
+
+    private const int IMPORTS_PER_FRAME = 20;
 }

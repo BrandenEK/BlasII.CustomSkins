@@ -1,4 +1,5 @@
 ﻿using BlasII.CustomSkins.Extensions;
+using BlasII.CustomSkins.Models;
 using BlasII.ModdingAPI;
 using Newtonsoft.Json;
 using System.Collections;
@@ -17,8 +18,6 @@ public class LegacyExporter : IExporter
     /// <inheritdoc/>
     public IEnumerator ExportAll(SpriteCollection sprites, string directory)
     {
-        ModLog.Warn("Starting Export...");
-
         // Group sprites by name
         var groups = sprites.GroupBy(x => x.Key[0..x.Key.LastIndexOf('_')]);
         int idx = 0;
@@ -39,8 +38,6 @@ public class LegacyExporter : IExporter
         {
             ModLog.Error("Failed to find all animations!");
         }
-
-        ModLog.Warn("Finished export");
     }
 
     private void Export(string animation, int idx, string directory, IEnumerable<Sprite> sprites)
