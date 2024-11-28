@@ -69,7 +69,7 @@ public class BetterExporter : IExporter
             Object.Destroy(sheet.Texture);
 
         // Combine all animations
-        _currentSheet = CombineSpriteSheets(groupName, true, 16384, sheets);
+        _currentSheet = CombineSpriteSheets(groupName, true, 12000, sheets);
     }
 
     private IEnumerator ExportAnimation(IEnumerable<Sprite> sprites, string animationName, string directory)
