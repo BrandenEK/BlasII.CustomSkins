@@ -51,11 +51,14 @@ public class SimpleImporter : IImporter
         // Load each sprite from the texture based on its info
         foreach (var info in infos)
         {
+            if (Result.ContainsKey(info.Name))
+                ModLog.Warn($"{info.Name} was already imported");
+
             var rect = new Rect(info.Position, info.Size);
             var sprite = Sprite.Create(texture, rect, info.Pivot, info.PixelsPerUnit, 0, SpriteMeshType.FullRect);
             sprite.hideFlags = HideFlags.DontUnloadUnusedAsset;
 
-            Result.Add(info.Name, sprite);
+            Result[info.Name] = sprite;
             if (_currentImports++ % IMPORTS_PER_FRAME == 0)
                 yield return null;
         }
