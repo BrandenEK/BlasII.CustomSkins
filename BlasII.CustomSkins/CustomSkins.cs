@@ -120,7 +120,7 @@ public class CustomSkins : BlasIIMod
     private IEnumerator ExportCoroutine(string directory)
     {
         IFinder finder = new FinderWithCrisanta(new ResourcesFinder());
-        IExporter exporter = new BetterExporter();
+        IExporter exporter = new BetterExporter(_config.ExportAnimationWidth, _config.ExportGroupHeight);
 
         ModLog.Warn("Starting export...");
         yield return finder.FindAll();

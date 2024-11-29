@@ -15,7 +15,18 @@ namespace BlasII.CustomSkins.Exporters;
 /// </summary>
 public class BetterExporter : IExporter
 {
+    private readonly int _animationWidthPixels;
+    private readonly int _groupHeightPixels;
     private SpriteSheet _currentSheet;
+
+    /// <summary>
+    /// Creates a new IExporter
+    /// </summary>
+    public BetterExporter(int animationWidthPixels, int groupHeightPixels)
+    {
+        _animationWidthPixels = animationWidthPixels;
+        _groupHeightPixels = groupHeightPixels;
+    }
 
     /// <inheritdoc/>
     public IEnumerator ExportAll(SpriteCollection sprites, string directory)
@@ -70,7 +81,7 @@ public class BetterExporter : IExporter
             Object.Destroy(sheet.Texture);
 
         // Combine all animations
-        _currentSheet = CombineSpriteSheets(groupName, true, 6500, sheets);
+        _currentSheet = CombineSpriteSheets(groupName, true, _groupHeightPixels, sheets);
     }
 
     private IEnumerator ExportAnimation(IEnumerable<Sprite> sprites, string animationName, string directory)
@@ -94,7 +105,7 @@ public class BetterExporter : IExporter
             Object.Destroy(sheet.Texture);
 
         // Combine all frames
-        _currentSheet = CombineSpriteSheets(animationName, false, 2048, sheets);
+        _currentSheet = CombineSpriteSheets(animationName, false, _animationWidthPixels, sheets);
         yield return null;
     }
 
