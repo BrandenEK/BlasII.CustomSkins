@@ -92,7 +92,7 @@ public class CustomSkins : BlasIIMod
 
     private IEnumerator ImportCoroutine(string directory, Action<SpriteCollection> callback)
     {
-        IImporter importer = new SimpleImporter();
+        IImporter importer = new SimpleImporter(_config.ImportsPerFrame);
 
         ModLog.Warn("Starting import...");
         yield return importer.ImportAll(directory);

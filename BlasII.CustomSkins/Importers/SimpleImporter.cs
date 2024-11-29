@@ -15,7 +15,16 @@ public class SimpleImporter : IImporter
     /// <inheritdoc/>
     public SpriteCollection Result { get; private set; }
 
+    private readonly int _importsPerFrame;
     private int _currentImports;
+
+    /// <summary>
+    /// Creates a new IImporter
+    /// </summary>
+    public SimpleImporter(int importsPerFrame)
+    {
+        _importsPerFrame = importsPerFrame;
+    }
 
     /// <inheritdoc/>
     public IEnumerator ImportAll(string directory)
@@ -59,10 +68,8 @@ public class SimpleImporter : IImporter
             sprite.hideFlags = HideFlags.DontUnloadUnusedAsset;
 
             Result[info.Name] = sprite;
-            if (_currentImports++ % IMPORTS_PER_FRAME == 0)
+            if (_currentImports++ % _importsPerFrame == 0)
                 yield return null;
         }
     }
-
-    private const int IMPORTS_PER_FRAME = 20;
 }

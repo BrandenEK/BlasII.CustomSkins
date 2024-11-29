@@ -9,7 +9,7 @@ public class SkinConfig
     /// <summary>
     /// How many sprites should be imported in a single frame
     /// </summary>
-    public int ImportsPerFrame { get; set; } = 20;
+    public int ImportsPerFrame { get; set; } = 30;
 
     /// <summary>
     /// How many pixels wide the animation texture should be until it wraps
