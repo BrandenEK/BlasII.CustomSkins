@@ -21,6 +21,7 @@ public class CustomSkins : BlasIIMod
 {
     internal CustomSkins() : base(ModInfo.MOD_ID, ModInfo.MOD_NAME, ModInfo.MOD_AUTHOR, ModInfo.MOD_VERSION) { }
 
+    private SkinConfig _config;
     private SpriteCollection _loadedSprites = [];
     private bool _loadedDefault = false;
 
@@ -30,6 +31,14 @@ public class CustomSkins : BlasIIMod
     protected override void OnRegisterServices(ModServiceProvider provider)
     {
         provider.RegisterCommand(new SkinCommand());
+    }
+
+    /// <summary>
+    /// Loads the config properties
+    /// </summary>
+    protected override void OnInitialize()
+    {
+        _config = ConfigHandler.Load<SkinConfig>();
     }
 
     /// <summary>
