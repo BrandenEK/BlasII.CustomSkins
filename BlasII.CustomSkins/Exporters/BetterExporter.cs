@@ -21,7 +21,11 @@ public class BetterExporter : IExporter
     public IEnumerator ExportAll(SpriteCollection sprites, string directory)
     {
         // Load groups from data folder
-        Main.CustomSkins.FileHandler.LoadDataAsJson("groups.json", out AnimationGroup[] groups);
+        if (!Main.CustomSkins.FileHandler.LoadDataAsJson("groups.json", out AnimationGroup[] groups))
+        {
+            ModLog.Error("Failed to read data: groups.json");
+            yield break;
+        }
 
         var sheets = new List<SpriteSheet>();
 
