@@ -36,9 +36,12 @@ public class CustomSkins : BlasIIMod
     /// <summary>
     /// Loads the config properties
     /// </summary>
-    protected override void OnInitialize()
+    protected override void OnAllInitialized()
     {
         _config = ConfigHandler.Load<SkinConfig>();
+
+        if (!_config.UseFullReplacement)
+            ModLog.Warn("UseFullReplacement is set to false.  Only the player object will have its sprites replaced.  You can expand this to all loaded objects by changing this setting in the config, but at the cost of performance.");
     }
 
     /// <summary>
