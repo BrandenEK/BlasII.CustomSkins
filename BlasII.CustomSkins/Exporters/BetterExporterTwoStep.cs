@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 using UnityEngine;
 
 namespace BlasII.CustomSkins.Exporters;
@@ -47,7 +48,7 @@ public class BetterExporterTwoStep : IExporter
             yield return ExportGroup(groupAnimations, group, Path.Combine(directory, group));
 
             // Save group texture
-            SaveSpriteSheet(directory, _currentSheet);
+            SaveSpriteSheet(directory, CreateTextureFromSheet(_currentSheet));
         }
 
         _currentSheet = null;
@@ -68,7 +69,7 @@ public class BetterExporterTwoStep : IExporter
             sheets.Add(_currentSheet);
 
             // Save animation texture
-            SaveSpriteSheet(directory, _currentSheet);
+            SaveSpriteSheet(directory, CreateTextureFromSheet(_currentSheet));
         }
 
         // Return sheet for group
@@ -114,6 +115,40 @@ public class BetterExporterTwoStep : IExporter
             Name = info.Name,
             Size = info.Size,
             Infos = [info],
+        };
+    }
+
+    private SpriteSheet CreateTextureFromSheet(SpriteSheetWithoutTexture sheet)
+    {
+        int width = (int)sheet.Size.X;
+        int height = (int)sheet.Size.Y;
+
+        // Create new texture
+        Texture2D tex = new Texture2D(width, height);
+        Object.Destroy(tex);
+
+        // Fill transparent pixels
+        Color32[] colors = new Color32[width * height];
+        Color32 transparent = new Color32(0, 0, 0, 0);
+        for (int i = 0; i < colors.Length; i++)
+            colors[i] = transparent;
+        tex.SetPixels32(colors, 0);
+
+        // Copy each sprite's texture onto the combined one
+        foreach (var info in sheet.Infos)
+        {
+            Texture texture = info.Texture;
+            Object.Destroy(texture);
+
+            Graphics.CopyTexture(texture, 0, 0, 0, 0, texture.width, texture.height, tex, 0, 0, (int)info.Position.X, (int)info.Position.Y);
+        }
+
+        // Return new spritesheet
+        return new SpriteSheet()
+        {
+            Name = sheet.Name,
+            Texture = tex,
+            Infos = sheet.Infos,
         };
     }
 
@@ -202,14 +237,14 @@ public class BetterExporterTwoStep : IExporter
         return group?.GroupName ?? "unknown";
     }
 
-    private void SaveSpriteSheet(string directory, SpriteSheetWithoutTexture sheet)
+    private void SaveSpriteSheet(string directory, SpriteSheet sheet)
     {
         // Ensure directory exists
         Directory.CreateDirectory(directory);
 
         // Save texture to file
-        //string texturePath = Path.Combine(directory, $"{sheet.Name}.png");
-        //File.WriteAllBytes(texturePath, sheet.Texture.EncodeToPNG());
+        string texturePath = Path.Combine(directory, $"{sheet.Name}.png");
+        File.WriteAllBytes(texturePath, sheet.Texture.EncodeToPNG());
 
         // Save info list to file
         string infoPath = Path.Combine(directory, $"{sheet.Name}.json");
