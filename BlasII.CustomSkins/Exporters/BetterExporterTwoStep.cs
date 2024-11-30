@@ -52,11 +52,10 @@ public class BetterExporterTwoStep : IExporter
             yield return CreateTextureFromSheet(_exportResult);
             SaveSpriteSheet(directory, _creationResult);
             Object.Destroy(_creationResult.Texture);
-
-            _exportResult = null;
-            _creationResult.Infos = [];
-            _creationResult = null;
         }
+
+        _exportResult = null;
+        _creationResult = null;
     }
 
     private IEnumerator ExportGroup(IEnumerable<Sprite> sprites, string groupName, string directory)
@@ -74,12 +73,9 @@ public class BetterExporterTwoStep : IExporter
             sheets.Add(_exportResult);
 
             // Save animation texture
-            //yield return null;
             yield return CreateTextureFromSheet(_exportResult);
             SaveSpriteSheet(directory, _creationResult);
             Object.Destroy(_creationResult.Texture);
-            _creationResult.Infos = [];
-            _creationResult = null;
         }
 
         // Return sheet for group
@@ -102,7 +98,6 @@ public class BetterExporterTwoStep : IExporter
 
         // Return sheet for animation
         _exportResult = CombineSpriteSheets(animationName, false, _animationWidthPixels, sheets);
-        //yield return null;
     }
 
     private void ExportFrame(Sprite sprite)
@@ -131,22 +126,9 @@ public class BetterExporterTwoStep : IExporter
 
     private IEnumerator CreateTextureFromSheet(SpriteSheetWithoutTexture sheet)
     {
+        // Create new texture
         int width = (int)sheet.Size.X;
         int height = (int)sheet.Size.Y;
-
-        // Create new texture
-        //Color32 transparent = new Color32(0, 0, 0, 0);
-        //Texture2D tex = new Texture2D(1, 1);
-        //tex.SetPixel(0, 0, transparent);
-        //tex.Resize(width, height);
-        //ModLog.Warn("Created tex: " + width + ", " + height);
-        //ModLog.Warn("Infos: " + sheet.Infos.Count());
-
-        // Fill transparent pixels
-        //Color32[] colors = new Color32[width * height];
-        //for (int i = 0; i < colors.Length; i++)
-        //    colors[i] = transparent;
-        //tex.SetPixels32(colors, 0);
         Texture2D tex = CreateEmptyTexture(width, height);
 
         // Copy each sprite's texture onto the combined one
@@ -156,14 +138,13 @@ public class BetterExporterTwoStep : IExporter
             Texture2D texture = info.Texture.GetSlicedTexture();
             Object.Destroy(texture);
 
-            //ModLog.Info("Copying " + info.Name);
             Graphics.CopyTexture(texture, 0, 0, 0, 0, texture.width, texture.height, tex, 0, 0, (int)info.Position.X, (int)info.Position.Y);
 
-            if (idx++ % 30 == 0)
+            if (idx++ % EXPORTS_PER_FRAME == 0)
                 yield return null;
         }
 
-        if (idx <= 30)
+        if (idx <= EXPORTS_PER_FRAME)
             yield return null;
 
         // Return new spritesheet
@@ -173,18 +154,14 @@ public class BetterExporterTwoStep : IExporter
             Texture = tex,
             Infos = sheet.Infos,
         };
-        //ModLog.Warn(_creationResult.Texture.width);
     }
 
     private Texture2D CreateEmptyTexture(int w, int h)
     {
-        Texture2D tex = new Texture2D(w, h);
-
-        // Fill transparent pixels
         Color32[] colors = new Color32[w * h];
-        //for (int i = 0; i < colors.Length; i++)
-        //    colors[i] = transparent;
+        Texture2D tex = new Texture2D(w, h);
         tex.SetPixels32(colors, 0);
+
         return tex;
     }
 
@@ -286,4 +263,7 @@ public class BetterExporterTwoStep : IExporter
         string infoPath = Path.Combine(directory, $"{sheet.Name}.json");
         File.WriteAllText(infoPath, JsonConvert.SerializeObject(sheet.Infos, Formatting.Indented));
     }
+
+    // No time/ram difference when changing this, so Im not adding it to the config
+    private const int EXPORTS_PER_FRAME = 30;
 }
