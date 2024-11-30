@@ -7,6 +7,11 @@ namespace BlasII.CustomSkins;
 public class SkinConfig
 {
     /// <summary>
+    /// Whether all objects should be replaced instead of just the player
+    /// </summary>
+    public bool UseFullReplacement { get; set; } = false;
+
+    /// <summary>
     /// How many sprites should be imported in a single frame
     /// </summary>
     public int ImportsPerFrame { get; set; } = 30;
