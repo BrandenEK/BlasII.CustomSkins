@@ -1,11 +1,11 @@
-﻿using BlasII.CustomSkins.Models;
+﻿using BlasII.CustomSkins.Extensions;
+using BlasII.CustomSkins.Models;
 using BlasII.ModdingAPI;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml.Linq;
 using UnityEngine;
 
 namespace BlasII.CustomSkins.Exporters;
@@ -100,13 +100,14 @@ public class BetterExporterTwoStep : IExporter
         int w = (int)sprite.rect.width;
         int h = (int)sprite.rect.height;
 
-        var info = new SpriteInfo()
+        var info = new SpriteInfoWithTexture()
         {
             Name = sprite.name,
             PixelsPerUnit = (int)sprite.pixelsPerUnit,
             Position = new Vector(0, 0),
             Size = new Vector(w, h),
             Pivot = new Vector(sprite.pivot.x / w, sprite.pivot.y / h),
+            Texture = sprite,
         };
 
         // Return sheet for frame
@@ -137,7 +138,7 @@ public class BetterExporterTwoStep : IExporter
         // Copy each sprite's texture onto the combined one
         foreach (var info in sheet.Infos)
         {
-            Texture texture = info.Texture;
+            Texture texture = info.Texture.GetSlicedTexture();
             Object.Destroy(texture);
 
             Graphics.CopyTexture(texture, 0, 0, 0, 0, texture.width, texture.height, tex, 0, 0, (int)info.Position.X, (int)info.Position.Y);

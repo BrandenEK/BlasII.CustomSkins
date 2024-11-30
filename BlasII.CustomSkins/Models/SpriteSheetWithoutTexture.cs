@@ -4,9 +4,9 @@ using UnityEngine;
 namespace BlasII.CustomSkins.Models;
 
 /// <summary>
-/// A texture, along with info about each sprite
+/// A !(texture), along with info about each sprite
 /// </summary>
-public class SpriteSheet
+public class SpriteSheetWithoutTexture
 {
     /// <summary>
     /// The name the spritesheet should be saved as
@@ -14,12 +14,12 @@ public class SpriteSheet
     public string Name { get; set; }
 
     /// <summary>
-    /// The texture
+    /// The size of the texture
     /// </summary>
-    public Texture2D Texture { get; set; }
+    public Vector Size { get; set; }
 
     /// <summary>
-    /// List of SpriteInfos about every sprite
+    /// List of SpriteInfoWithTextures about every sprite
     /// </summary>
-    public IEnumerable<SpriteInfo> Infos { get; set; }
+    public IEnumerable<SpriteInfoWithTexture> Infos { get; set; }
 }
