@@ -61,8 +61,11 @@ public class CustomSkins : BlasIIMod
         if (!SceneHelper.GameSceneLoaded || CoreCache.PlayerSpawn.PlayerInstance == null)
             return;
 
+        //var renderers = CoreCache.PlayerSpawn.PlayerInstance.GetComponentsInChildren<SpriteRenderer>();
+        var renderers = UnityEngine.Object.FindObjectsOfType<SpriteRenderer>();
+
         // Replace all TPO sprites that were loaded
-        foreach (var renderer in CoreCache.PlayerSpawn.PlayerInstance.GetComponentsInChildren<SpriteRenderer>())
+        foreach (var renderer in renderers)
         {
             if (renderer.sprite == null || string.IsNullOrEmpty(renderer.sprite.name))
                 continue;
