@@ -17,7 +17,8 @@ public class BetterExporterTwoStep : IExporter
 {
     private readonly int _animationWidthPixels;
     private readonly int _groupHeightPixels;
-    private SpriteSheetWithoutTexture _currentSheet;
+    private SpriteSheetWithoutTexture _exportResult;
+    private SpriteSheet _creationResult;
 
     /// <summary>
     /// Creates a new IExporter
@@ -48,10 +49,14 @@ public class BetterExporterTwoStep : IExporter
             yield return ExportGroup(groupAnimations, group, Path.Combine(directory, group));
 
             // Save group texture
-            SaveSpriteSheet(directory, CreateTextureFromSheet(_currentSheet));
-        }
+            yield return CreateTextureFromSheet(_exportResult);
+            SaveSpriteSheet(directory, _creationResult);
+            Object.Destroy(_creationResult.Texture);
 
-        _currentSheet = null;
+            _exportResult = null;
+            _creationResult.Infos = [];
+            _creationResult = null;
+        }
     }
 
     private IEnumerator ExportGroup(IEnumerable<Sprite> sprites, string groupName, string directory)
@@ -65,18 +70,23 @@ public class BetterExporterTwoStep : IExporter
             var animationFrames = spritesByAnimation.OrderBy(x => int.Parse(x.name[(x.name.LastIndexOf('_') + 1)..]));
 
             ModLog.Info($"Exporting animation {animation}");
-            yield return ExportAnimation(animationFrames, animation, Path.Combine(directory, animation));
-            sheets.Add(_currentSheet);
+            ExportAnimation(animationFrames, animation, Path.Combine(directory, animation));
+            sheets.Add(_exportResult);
 
             // Save animation texture
-            SaveSpriteSheet(directory, CreateTextureFromSheet(_currentSheet));
+            //yield return null;
+            yield return CreateTextureFromSheet(_exportResult);
+            SaveSpriteSheet(directory, _creationResult);
+            Object.Destroy(_creationResult.Texture);
+            _creationResult.Infos = [];
+            _creationResult = null;
         }
 
         // Return sheet for group
-        _currentSheet = CombineSpriteSheets(groupName, true, _groupHeightPixels, sheets);
+        _exportResult = CombineSpriteSheets(groupName, true, _groupHeightPixels, sheets);
     }
 
-    private IEnumerator ExportAnimation(IEnumerable<Sprite> sprites, string animationName, string directory)
+    private void ExportAnimation(IEnumerable<Sprite> sprites, string animationName, string directory)
     {
         var sheets = new List<SpriteSheetWithoutTexture>();
 
@@ -87,12 +97,12 @@ public class BetterExporterTwoStep : IExporter
 
             //ModLog.Info($"Exporting frame {frame}");
             ExportFrame(sprite);
-            sheets.Add(_currentSheet);
+            sheets.Add(_exportResult);
         }
 
         // Return sheet for animation
-        _currentSheet = CombineSpriteSheets(animationName, false, _animationWidthPixels, sheets);
-        yield return null;
+        _exportResult = CombineSpriteSheets(animationName, false, _animationWidthPixels, sheets);
+        //yield return null;
     }
 
     private void ExportFrame(Sprite sprite)
@@ -111,7 +121,7 @@ public class BetterExporterTwoStep : IExporter
         };
 
         // Return sheet for frame
-        _currentSheet = new SpriteSheetWithoutTexture()
+        _exportResult = new SpriteSheetWithoutTexture()
         {
             Name = info.Name,
             Size = info.Size,
@@ -119,38 +129,63 @@ public class BetterExporterTwoStep : IExporter
         };
     }
 
-    private SpriteSheet CreateTextureFromSheet(SpriteSheetWithoutTexture sheet)
+    private IEnumerator CreateTextureFromSheet(SpriteSheetWithoutTexture sheet)
     {
         int width = (int)sheet.Size.X;
         int height = (int)sheet.Size.Y;
 
         // Create new texture
-        Texture2D tex = new Texture2D(width, height);
-        Object.Destroy(tex);
+        //Color32 transparent = new Color32(0, 0, 0, 0);
+        //Texture2D tex = new Texture2D(1, 1);
+        //tex.SetPixel(0, 0, transparent);
+        //tex.Resize(width, height);
+        //ModLog.Warn("Created tex: " + width + ", " + height);
+        //ModLog.Warn("Infos: " + sheet.Infos.Count());
 
         // Fill transparent pixels
-        Color32[] colors = new Color32[width * height];
-        Color32 transparent = new Color32(0, 0, 0, 0);
-        for (int i = 0; i < colors.Length; i++)
-            colors[i] = transparent;
-        tex.SetPixels32(colors, 0);
+        //Color32[] colors = new Color32[width * height];
+        //for (int i = 0; i < colors.Length; i++)
+        //    colors[i] = transparent;
+        //tex.SetPixels32(colors, 0);
+        Texture2D tex = CreateEmptyTexture(width, height);
 
         // Copy each sprite's texture onto the combined one
+        int idx = 0;
         foreach (var info in sheet.Infos)
         {
-            Texture texture = info.Texture.GetSlicedTexture();
+            Texture2D texture = info.Texture.GetSlicedTexture();
             Object.Destroy(texture);
 
+            //ModLog.Info("Copying " + info.Name);
             Graphics.CopyTexture(texture, 0, 0, 0, 0, texture.width, texture.height, tex, 0, 0, (int)info.Position.X, (int)info.Position.Y);
+
+            if (idx++ % 30 == 0)
+                yield return null;
         }
 
+        if (idx <= 30)
+            yield return null;
+
         // Return new spritesheet
-        return new SpriteSheet()
+        _creationResult = new SpriteSheet()
         {
             Name = sheet.Name,
             Texture = tex,
             Infos = sheet.Infos,
         };
+        //ModLog.Warn(_creationResult.Texture.width);
+    }
+
+    private Texture2D CreateEmptyTexture(int w, int h)
+    {
+        Texture2D tex = new Texture2D(w, h);
+
+        // Fill transparent pixels
+        Color32[] colors = new Color32[w * h];
+        //for (int i = 0; i < colors.Length; i++)
+        //    colors[i] = transparent;
+        tex.SetPixels32(colors, 0);
+        return tex;
     }
 
     private SpriteSheetWithoutTexture CombineSpriteSheets(string name, bool vertical, int maxSize, IEnumerable<SpriteSheetWithoutTexture> sheets)
