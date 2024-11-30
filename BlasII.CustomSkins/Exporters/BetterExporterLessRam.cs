@@ -38,17 +38,21 @@ public class BetterExporterLessRam : IExporter
             yield break;
         }
 
-        var sheets = new List<SpriteSheetWithPosition>();
-
         // Split sprites by group and export them
         foreach (var spritesByGroup in sprites.Values.GroupBy(x => GetGroupName(x, groups)).OrderBy(x => x.Key))
         {
             string group = spritesByGroup.Key;
             var groupAnimations = spritesByGroup.OrderBy(x => x.name);
 
+            if (group == "unknown")
+            {
+                foreach (Sprite sprite in groupAnimations)
+                    ModLog.Warn($"Unknown animation: {sprite.name}");
+                continue;
+            }
+
             ModLog.Info($"Exporting group {group}");
             yield return ExportGroup(groupAnimations, group, Path.Combine(directory, group));
-            sheets.Add(_currentSheet);
 
             // Save and destroy group texture
             SaveSpriteSheet(directory, _currentSheet);
@@ -60,7 +64,6 @@ public class BetterExporterLessRam : IExporter
 
     private IEnumerator ExportGroup(IEnumerable<Sprite> sprites, string groupName, string directory)
     {
-        var sheets = new List<SpriteSheetWithPosition>();
         SpriteSheetWithPosition groupSheet = null;
 
         // Split sprites by animation and export them
@@ -71,40 +74,69 @@ public class BetterExporterLessRam : IExporter
 
             ModLog.Info($"Exporting animation {animation}");
             yield return ExportAnimation(animationFrames, animation, Path.Combine(directory, animation));
-            groupSheet = AddSheet(groupSheet, _currentSheet);
 
-            // Save animation texture
+            groupSheet = AddAnimationToGroup(groupName, groupSheet, _currentSheet);
             SaveSpriteSheet(directory, _currentSheet);
-            Object.Destroy(_currentSheet.Texture);
         }
-
-        // Destroy animation textures
-        //foreach (var sheet in sheets)
-        //    Object.Destroy(sheet.Texture);
 
         // Combine all animations
-        _currentSheet = groupSheet;// CombineSpriteSheets(groupName, true, _groupHeightPixels, sheets);
+        _currentSheet = groupSheet;
     }
 
-    private SpriteSheetWithPosition AddSheet(SpriteSheetWithPosition source, SpriteSheetWithPosition addition)
+    private SpriteSheetWithPosition AddAnimationToGroup(string name, SpriteSheetWithPosition group, SpriteSheetWithPosition anim)
     {
-        if (source == null)
-            return addition;
-
-        int w = System.Math.Max(source.Texture.width, addition.Texture.width);
-        int h = source.Texture.height + addition.Texture.height;
-        int x =
-
-        if (h > 6500)
+        if (group == null)
         {
-            w = source.Texture.width + addition.Texture.width;
-            h = source.Texture.height;
+            return new SpriteSheetWithPosition()
+            {
+                Name = name,
+                Texture = anim.Texture,
+                Infos = anim.Infos,
+                NextPosition = new Vector(0, anim.Texture.height),
+            };
         }
 
+        int x = (int)group.NextPosition.X;
+        int y = (int)group.NextPosition.Y;
 
+        // Possibly wrap around
+        if (y + anim.Texture.height > _groupHeightPixels)
+        {
+            x = group.Texture.width;
+            y = 0;
+        }
 
-        //ADd addition onto the source and change their sprite infos
-        return source;
+        // Add new spriteinfo
+        foreach (SpriteInfo info in anim.Infos)
+            info.Position = new Vector(info.Position.X + x, info.Position.Y + y);
+
+        // Create new texture
+        int w = System.Math.Max(group.Texture.width, x + anim.Texture.width);
+        int h = System.Math.Max(group.Texture.height, y + anim.Texture.height);
+        Texture2D texture = new Texture2D(w, h);
+
+        // Fill transparent pixels
+        Color32[] colors = new Color32[w * h];
+        Color32 transparent = new Color32(0, 0, 0, 0);
+        for (int i = 0; i < colors.Length; i++)
+            colors[i] = transparent;
+        texture.SetPixels32(colors, 0);
+
+        // Add old and new textures onto this one
+        Graphics.CopyTexture(group.Texture, 0, 0, 0, 0, group.Texture.width, group.Texture.height, texture, 0, 0, 0, 0);
+        Graphics.CopyTexture(anim.Texture, 0, 0, 0, 0, anim.Texture.width, anim.Texture.height, texture, 0, 0, x, y);
+
+        // Destroy old textures
+        Object.Destroy(group.Texture);
+        Object.Destroy(anim.Texture);
+
+        return new SpriteSheetWithPosition()
+        {
+            Name = name,
+            Texture = texture,
+            Infos = group.Infos.Concat(anim.Infos),
+            NextPosition = new Vector(x, y),
+        };
     }
 
     private IEnumerator ExportAnimation(IEnumerable<Sprite> sprites, string animationName, string directory)
@@ -148,7 +180,7 @@ public class BetterExporterLessRam : IExporter
         if (x + frame.Texture.width > _animationWidthPixels)
         {
             x = 0;
-            y = ?;
+            y = anim.Texture.height;
         }
 
         // Add new spriteinfo
@@ -309,7 +341,7 @@ public class BetterExporterLessRam : IExporter
         return group?.GroupName ?? "unknown";
     }
 
-    private void SaveSpriteSheet(string directory, SpriteSheet sheet)
+    private void SaveSpriteSheet(string directory, SpriteSheetWithPosition sheet)
     {
         // Ensure directory exists
         Directory.CreateDirectory(directory);
