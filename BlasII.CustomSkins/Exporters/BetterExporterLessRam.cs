@@ -135,7 +135,7 @@ public class BetterExporterLessRam : IExporter
             Name = name,
             Texture = texture,
             Infos = group.Infos.Concat(anim.Infos),
-            NextPosition = new Vector(x, y),
+            NextPosition = new Vector(x, y + anim.Texture.height),
         };
     }
 
@@ -183,7 +183,7 @@ public class BetterExporterLessRam : IExporter
             y = anim.Texture.height;
         }
 
-        // Add new spriteinfo
+        // Update all SpriteInfos
         foreach (SpriteInfo info in frame.Infos)
             info.Position = new Vector(info.Position.X + x, info.Position.Y + y);
 
@@ -212,7 +212,7 @@ public class BetterExporterLessRam : IExporter
             Name = name,
             Texture = texture,
             Infos = anim.Infos.Concat(frame.Infos),
-            NextPosition = new Vector(x, y),
+            NextPosition = new Vector(x + frame.Texture.width, y),
         };
     }
 
