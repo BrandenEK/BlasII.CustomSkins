@@ -21,6 +21,7 @@ public class CustomSkins : BlasIIMod
 {
     internal CustomSkins() : base(ModInfo.MOD_ID, ModInfo.MOD_NAME, ModInfo.MOD_AUTHOR, ModInfo.MOD_VERSION) { }
 
+    private SkinConfig _config;
     private SpriteCollection _loadedSprites = [];
     private bool _loadedDefault = false;
 
@@ -30,6 +31,14 @@ public class CustomSkins : BlasIIMod
     protected override void OnRegisterServices(ModServiceProvider provider)
     {
         provider.RegisterCommand(new SkinCommand());
+    }
+
+    /// <summary>
+    /// Loads the config properties
+    /// </summary>
+    protected override void OnInitialize()
+    {
+        _config = ConfigHandler.Load<SkinConfig>();
     }
 
     /// <summary>
@@ -83,7 +92,7 @@ public class CustomSkins : BlasIIMod
 
     private IEnumerator ImportCoroutine(string directory, Action<SpriteCollection> callback)
     {
-        IImporter importer = new SimpleImporter();
+        IImporter importer = new SimpleImporter(_config.ImportsPerFrame);
 
         ModLog.Warn("Starting import...");
         yield return importer.ImportAll(directory);
@@ -111,7 +120,7 @@ public class CustomSkins : BlasIIMod
     private IEnumerator ExportCoroutine(string directory)
     {
         IFinder finder = new FinderWithCrisanta(new ResourcesFinder());
-        IExporter exporter = new BetterExporter();
+        IExporter exporter = new BetterExporter(_config.ExportAnimationWidth, _config.ExportGroupHeight);
 
         ModLog.Warn("Starting export...");
         yield return finder.FindAll();

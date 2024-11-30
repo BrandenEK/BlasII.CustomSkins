@@ -15,7 +15,16 @@ public class SimpleImporter : IImporter
     /// <inheritdoc/>
     public SpriteCollection Result { get; private set; }
 
+    private readonly int _importsPerFrame;
     private int _currentImports;
+
+    /// <summary>
+    /// Creates a new IImporter
+    /// </summary>
+    public SimpleImporter(int importsPerFrame)
+    {
+        _importsPerFrame = importsPerFrame;
+    }
 
     /// <inheritdoc/>
     public IEnumerator ImportAll(string directory)
@@ -51,15 +60,16 @@ public class SimpleImporter : IImporter
         // Load each sprite from the texture based on its info
         foreach (var info in infos)
         {
+            if (Result.ContainsKey(info.Name))
+                ModLog.Warn($"{info.Name} was already imported");
+
             var rect = new Rect(info.Position, info.Size);
             var sprite = Sprite.Create(texture, rect, info.Pivot, info.PixelsPerUnit, 0, SpriteMeshType.FullRect);
             sprite.hideFlags = HideFlags.DontUnloadUnusedAsset;
 
-            Result.Add(info.Name, sprite);
-            if (_currentImports++ % IMPORTS_PER_FRAME == 0)
+            Result[info.Name] = sprite;
+            if (_currentImports++ % _importsPerFrame == 0)
                 yield return null;
         }
     }
-
-    private const int IMPORTS_PER_FRAME = 20;
 }
