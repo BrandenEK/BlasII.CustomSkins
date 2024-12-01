@@ -49,6 +49,8 @@ public class BetterExporterTwoStep : IExporter
             if (group == "unknown")
             {
                 ModLog.Warn("There were unknown sprites not exported!");
+                foreach (var sprite in groupAnimations)
+                    ModLog.Info(sprite.name);
                 continue;
             }
 
@@ -246,6 +248,9 @@ public class BetterExporterTwoStep : IExporter
 
     private string GetAnimationName(Sprite sprite)
     {
+        if (sprite.name.IndexOf('_') < 0)
+            return sprite.name;
+
         return sprite.name[0..sprite.name.LastIndexOf('_')];
     }
 

@@ -19,7 +19,7 @@ public class ResourcesFinder : IFinder
     {
         yield return null;
         Result = Resources.FindObjectsOfTypeAll<Sprite>()
-            .Where(x => x.name.StartsWith("TPO"))
+            .Where(x => !string.IsNullOrEmpty(x.name))
             .DistinctBy(x => x.name)
             .OrderBy(x => x.name)
             .ToDictionary(x => x.name, x => x)

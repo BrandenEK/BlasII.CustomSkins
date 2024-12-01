@@ -56,6 +56,9 @@
     {
         "groupName": "censer_vfx",
         "animations": [
+            "censerChargingSequence",
+            "censerChargingSequence_FireVFX",
+            "censerChargingSequence_MiasmaVFX",
             "TPO_crouchSequence_wieldingHeavyWeapon_FireVFX",
             "TPO_crouchSequence_wieldingHeavyWeapon_MiasmaVFX",
             "TPO_dodge_toIdle_wieldingHeavyWeapon_FireVFX",
@@ -116,6 +119,8 @@
     {
         "groupName": "rosary",
         "animations": [
+            "rosary to idle",
+            "RosaryBlade_dodge_toRun_Armor00",
             "TPO_airDashSequence_LightWeapon_RosaryBlade",
             "TPO_cherubsRespawnLightWeapon_RosaryBlade",
             "TPO_chessInteraction_lightWeapon_RosaryBlade",
@@ -201,12 +206,16 @@
             "TPO_WPN03_UltimateAttackAirRE08VFX",
             "TPO_WPN03_UltimateAttackRE08VFX",
             "TPO_WPN03_upperSlash_RBEdge",
-            "TPO_WPN03_upperSlash_RE08Edge"
+            "TPO_WPN03_upperSlash_RE08Edge",
+            "WPN03_perfectParryStabVFX",
+            "WPN03_perfectParryVFX"
         ]
     },
     {
         "groupName": "rapier",
         "animations": [
+            "Ropera_dodge_toIdle_Armor00",
+            "Ropera_dodge_toRun_Armor00",
             "TPO_airDashSequence_LightWeapon_rapier",
             "TPO_cherubsRespawnLightWeapon_rapier",
             "TPO_chessInteraction_lightWeapon_rapier",
@@ -257,6 +266,9 @@
     {
         "groupName": "rapier_vfx",
         "animations": [
+            "DashCounterBlockVFX",
+            "DashCounterSlashVFX",
+            "RapierTeleportAppearVFX",
             "TPO_dodge_lungeAttack_VFXVD1",
             "TPO_dodge_lungeAttack_VFXVD2",
             "TPO_dodge_lungeAttack_VFXVD3",
@@ -356,6 +368,7 @@
     {
         "groupName": "meaculpa_vfx",
         "animations": [
+            "Meaculpa guardSlideVFX",
             "TPO_MeaCulpa_parryPerfectSuccess_VFX",
             "TPO_MeaCulpa_parryPerfectSuccessStab_VFX",
             "TPO_MeaCulpa_parrySuccess_VFX",
@@ -381,6 +394,9 @@
     {
         "groupName": "player",
         "animations": [
+            "Player_AlhambraMirror_recoveryEmerge",
+            "Player_AlhambraMirror_recoverySink",
+            "Player_AlhambraMirror_recoverySink2",
             "TPO_airDashSequence_HeavyWeapon_armor00",
             "TPO_airDashSequence_HeavyWeapon_flurryVFX",
             "TPO_AlhambraMirrorTransition_MirroredToNormal",
@@ -586,7 +602,9 @@
             "TPO_QuickVerse_heavyWeapon_midAir_bloodVFX",
             "TPO_QuickVerse_lightWeapon_bloodVFX",
             "TPO_spikesDeath_bloodVFX",
-            "TPOCrisantaAirDash_Explosion"
+            "TPOCrisantaAirDash_Explosion",
+            "Weaponchange",
+            "WeaponchangeMeaCulpa"
         ]
     }
 ]
