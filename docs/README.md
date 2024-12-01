@@ -13,28 +13,20 @@
 - 
 
 ## Available commands
-- Press the 'backslash' key to open the debug console
-- Type the desired command followed by the parameters all separated by a single space
-
 | Command | Parameters | Description |
 | ------- | ----------- | ------- |
-| `multiplayer help` | none | List all available commands |
-| `multiplayer status` | none | Display connection status |
-| `multiplayer connect` | SERVER, NAME, PASSWORD (Optional) | Connect to the specified server IP address |
-| `multiplayer disconnect` | none | Disconnect from current server |
-| `multiplayer team` | NUMBER | Change to a different team (1-10) |
-| `multiplayer players` | none | List all connected players in the server |
+| `skin merge` | FOLDER | Merges the current skin with one at "Modding/skins/{FOLDER}" |
+| `skin replace` | FOLDER | Replaces the current skin with one at "Modding/skins/{FOLDER}" |
+| `skin reset` | none | Removes all loaded skins |
+| `skin export` | none | Extracts all unmodified player animations from the game |
 
 ## Configuration settings
-- These settings can be modified in the 'multiplayer.cfg' file located in the "Modding/config" folder
-
-### Server:
-
 | Setting | Description | Default |
 | ------- | ----------- | :-----: |
-| serverPort | The port to start the server on | 8989 |
-| maxPlayers| The maximum number of players to allow on the server| 8 |
-| password | The password for players to join the server | "" |
+| usePerformanceMode | Increases performance by only replacing sprites on the player object, but some animations won't appear modified | false |
+| importsPerFrame | How many sprites are loaded per frame during the import process.  Higher numbers increase the speed, but may cause lag | 30 |
+| exportAnimationWidth| The maximum width of exported animations in pixels | 2048 |
+| exportGroupHeight | The maximum height of exported groups in pixels | 6500 |
 
 ## Installation
 This mod is available for download through the [Blasphemous Mod Installer](https://github.com/BrandenEK/Blasphemous.Modding.Installer)
