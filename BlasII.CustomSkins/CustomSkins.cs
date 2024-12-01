@@ -40,8 +40,8 @@ public class CustomSkins : BlasIIMod
     {
         _config = ConfigHandler.Load<SkinConfig>();
 
-        if (!_config.UseFullReplacement)
-            ModLog.Warn("UseFullReplacement is set to false.  Only the player object will have its sprites replaced.  You can expand this to all loaded objects by changing this setting in the config, but at the cost of performance.");
+        if (!_config.UsePerformanceMode)
+            ModLog.Warn("The setting 'UsePerformanceMode' is disabled. If you experience significant frame drops, enable this setting in the config at the cost of certain animations not being replaced.");
     }
 
     /// <summary>
@@ -64,9 +64,9 @@ public class CustomSkins : BlasIIMod
         if (!SceneHelper.GameSceneLoaded || CoreCache.PlayerSpawn.PlayerInstance == null)
             return;
 
-        var renderers = _config.UseFullReplacement
-            ? UnityEngine.Object.FindObjectsOfType<SpriteRenderer>()
-            : CoreCache.PlayerSpawn.PlayerInstance.GetComponentsInChildren<SpriteRenderer>();
+        var renderers = _config.UsePerformanceMode
+            ? CoreCache.PlayerSpawn.PlayerInstance.GetComponentsInChildren<SpriteRenderer>()
+            : UnityEngine.Object.FindObjectsOfType<SpriteRenderer>();
 
         // Replace all TPO sprites that were loaded
         foreach (var renderer in renderers)
