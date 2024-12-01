@@ -36,7 +36,7 @@
 | usePerformanceMode | Increases performance by only replacing sprites on the player object, but some animations won't appear modified | false |
 | importsPerFrame | How many sprites are loaded per frame during the import process.  Higher numbers increase the speed, but may cause lag | 30 |
 | exportAnimationWidth| The maximum width of exported animations in pixels | 2048 |
-| exportGroupHeight | The maximum height of exported groups in pixels | 6500 |
+| exportGroupHeight | The maximum height of exported groups in pixels | 8192 |
 
 ## Installation
 This mod is available for download through the [Blasphemous Mod Installer](https://github.com/BrandenEK/Blasphemous.Modding.Installer)
