@@ -369,6 +369,10 @@
         "groupName": "meaculpa_vfx",
         "animations": [
             "Meaculpa guardSlideVFX",
+            "MeaculpaProjectile Explosion_2",
+            "MeaculpaProjectile transform",
+            "MeaculpaProjectile WallOut",
+            "MeaculpaProjectile",
             "TPO_MeaCulpa_parryPerfectSuccess_VFX",
             "TPO_MeaCulpa_parryPerfectSuccessStab_VFX",
             "TPO_MeaCulpa_parrySuccess_VFX",
