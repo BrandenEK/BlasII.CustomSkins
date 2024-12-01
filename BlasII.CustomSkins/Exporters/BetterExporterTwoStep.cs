@@ -45,6 +45,13 @@ public class BetterExporterTwoStep : IExporter
             string group = spritesByGroup.Key;
             var groupAnimations = spritesByGroup.OrderBy(x => x.name);
 
+            // This will probably go away with the new group update (TPO)
+            if (group == "unknown")
+            {
+                ModLog.Warn("There were unknown sprites not exported!");
+                continue;
+            }
+
             ModLog.Info($"Exporting group {group}");
             yield return ExportGroup(groupAnimations, group, Path.Combine(directory, group));
 
