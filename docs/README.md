@@ -9,8 +9,18 @@
 ***- Programming and design -*** <br>
 [@BrandenEK](https://github.com/BrandenEK), [@ObsessiveBadguy](https://github.com/ObsessiveBadguy), [@Faust](https://github.com/FaustBaudelaire)
 
-## Features
-- 
+## How to play with custom skins
+1. Open the "blasphemous2" folder on the [Community Skins repo](https://github.com/BrandenEK/Blasphemous.Community.Skins)
+1. Find a skin you like and download everything in the 'textures' folder
+1. Place all of the '.png' and the '.json' files into your "{GameRoot}/Modding/skins" folder
+1. Everything in the "skins" folder will be loaded into the game, you can also use commands to modify your skin
+
+## How to create custom skins
+1. Open the cheat console with 'backslash' and type 'skin export'
+1. Wait for the export process to finish, it will take a few minutes and about 1gb of ram
+1. Navigate to the "{GameRoot}/Modding/content/Custom Skins" folder
+1. Modify any of these files with a photo editor of your choice
+1. Upload the modified '.png' and '.json' file to the [Community Skins repo](https://github.com/BrandenEK/Blasphemous.Community.Skins)
 
 ## Available commands
 | Command | Parameters | Description |
