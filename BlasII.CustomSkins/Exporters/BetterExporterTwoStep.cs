@@ -49,8 +49,8 @@ public class BetterExporterTwoStep : IExporter
             if (group == "unknown")
             {
                 ModLog.Warn("There were unknown sprites not exported!");
-                foreach (var sprite in groupAnimations)
-                    ModLog.Info(sprite.name);
+                //foreach (var sprite in groupAnimations)
+                //    ModLog.Info(sprite.name);
                 continue;
             }
 

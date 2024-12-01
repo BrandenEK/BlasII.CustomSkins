@@ -24,5 +24,5 @@ public class SkinConfig
     /// <summary>
     /// How many pixels tall the group texture should be until it wraps
     /// </summary>
-    public int ExportGroupHeight { get; set; } = 6500;
+    public int ExportGroupHeight { get; set; } = 8192;
 }
