@@ -30,7 +30,7 @@ public class BetterExporterTwoStep : IExporter
     }
 
     /// <inheritdoc/>
-    public IEnumerator ExportAll(SpriteCollection sprites, string directory)
+    public IEnumerator ExportAll(IEnumerable<Sprite> sprites, string directory)
     {
         // Load groups from data folder
         if (!Main.CustomSkins.FileHandler.LoadDataAsJson("groups.json", out AnimationGroup[] groups))
@@ -40,10 +40,15 @@ public class BetterExporterTwoStep : IExporter
         }
 
         // Split sprites by group and export them
-        foreach (var spritesByGroup in sprites.Values.GroupBy(x => GetGroupName(x, groups)).OrderBy(x => x.Key))
+        foreach (var spritesByGroup in sprites.GroupBy(x => GetGroupName(x, groups)).OrderBy(x => x.Key))
         {
             string group = spritesByGroup.Key;
             var groupAnimations = spritesByGroup.OrderBy(x => x.name);
+
+            // This will probably go away with the new group update (TPO)
+            // Unfortunately it did not
+            if (group == "unknown")
+                continue;
 
             ModLog.Info($"Exporting group {group}");
             yield return ExportGroup(groupAnimations, group, Path.Combine(directory, group));
@@ -66,7 +71,7 @@ public class BetterExporterTwoStep : IExporter
         foreach (var spritesByAnimation in sprites.GroupBy(GetAnimationName).OrderBy(x => x.Key))
         {
             string animation = spritesByAnimation.Key;
-            var animationFrames = spritesByAnimation.OrderBy(x => int.Parse(x.name[(x.name.LastIndexOf('_') + 1)..]));
+            var animationFrames = spritesByAnimation.OrderBy(GetFrameOrder);
 
             ModLog.Info($"Exporting animation {animation}");
             ExportAnimation(animationFrames, animation, Path.Combine(directory, animation));
@@ -107,7 +112,7 @@ public class BetterExporterTwoStep : IExporter
 
         var info = new SpriteInfoWithTexture()
         {
-            Name = sprite.name,
+            Name = sprite.GetUniqueName(),
             PixelsPerUnit = (int)sprite.pixelsPerUnit,
             Position = new Vector(0, 0),
             Size = new Vector(w, h),
@@ -239,7 +244,7 @@ public class BetterExporterTwoStep : IExporter
 
     private string GetAnimationName(Sprite sprite)
     {
-        return sprite.name[0..sprite.name.LastIndexOf('_')];
+        return sprite.texture.name;
     }
 
     private string GetGroupName(Sprite sprite, IEnumerable<AnimationGroup> groups)
@@ -248,6 +253,15 @@ public class BetterExporterTwoStep : IExporter
         AnimationGroup group = groups.FirstOrDefault(x => x.Animations.Contains(name));
 
         return group?.GroupName ?? "unknown";
+    }
+
+    private int GetFrameOrder(Sprite sprite)
+    {
+        if (sprite.name.IndexOf('_') <= 0)
+            return 0;
+
+        string last = sprite.name[(sprite.name.LastIndexOf('_') + 1)..];
+        return int.TryParse(last, out int value) ? value : 0;
     }
 
     private void SaveSpriteSheet(string directory, SpriteSheet sheet)

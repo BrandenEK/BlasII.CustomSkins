@@ -1,5 +1,9 @@
 ﻿using BlasII.CheatConsole;
+using BlasII.CustomSkins.Extensions;
+using BlasII.ModdingAPI;
 using System.IO;
+using System.Linq;
+using UnityEngine;
 
 namespace BlasII.CustomSkins;
 
@@ -43,6 +47,16 @@ internal class SkinCommand : ModCommand
                     Export();
                     break;
                 }
+#if DEBUG
+            case "debug":
+                {
+                    if (!ValidateParameterCount(args, 1))
+                        return;
+
+                    Debug();
+                    break;
+                }
+#endif
             default:
                 {
                     WriteFailure("Unknown subcommand: " + args[0]);
@@ -72,5 +86,37 @@ internal class SkinCommand : ModCommand
     {
         string folder = Main.CustomSkins.FileHandler.ContentFolder;
         Main.CustomSkins.StartExport(folder);
+    }
+
+    private void Debug()
+    {
+        ModLog.Warn("Running debug command");
+
+        var loadedSprites = Resources.FindObjectsOfTypeAll<Sprite>()
+            .Where(x => !string.IsNullOrEmpty(x.name))
+            .Select(x => x.GetUniqueName())
+            .OrderBy(x => x);
+
+        var loadedTextures = Resources.FindObjectsOfTypeAll<Texture2D>()
+            .Where(x => !string.IsNullOrEmpty(x.name))
+            .Select(x => x.name)
+            .OrderBy(x => x);
+
+        var visibleSprites = Object.FindObjectsOfType<SpriteRenderer>()
+            .Where(x => x.sprite != null && !string.IsNullOrEmpty(x.sprite.name))
+            .Select(x => x.sprite.GetUniqueName())
+            .OrderBy(x => x);
+
+        ModLog.Error("Loaded sprites:");
+        foreach (string name in loadedSprites)
+            ModLog.Info(name);
+
+        ModLog.Error("Loaded textures:");
+        foreach (string name in loadedTextures)
+            ModLog.Info(name);
+
+        ModLog.Error("Visible sprites:");
+        foreach (string name in visibleSprites)
+            ModLog.Info(name);
     }
 }

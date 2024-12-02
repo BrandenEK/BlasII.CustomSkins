@@ -19,6 +19,7 @@
 1. Open the cheat console with 'backslash' and type 'skin export'
 1. Wait for the export process to finish, it will take a few minutes and about 1gb of ram
 1. Navigate to the "{GameRoot}/Modding/content/Custom Skins" folder
+1. Verify that there are 1200 files present in the folder
 1. Modify any of these files with a photo editor of your choice
 1. Upload the modified '.png' and '.json' file to the [Community Skins repo](https://github.com/BrandenEK/Blasphemous.Community.Skins)
 

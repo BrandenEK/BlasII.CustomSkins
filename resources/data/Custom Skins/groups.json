@@ -56,6 +56,13 @@
     {
         "groupName": "censer_vfx",
         "animations": [
+            "censerChargingSequence",
+            "censerChargingSequence_FireVFX",
+            "censerChargingSequence_MiasmaVFX",
+            "FireMoonSlashVFX",
+            "InstantQuenchMiasmaVFX",
+            "InstantQuenchVFX",
+            "MiasmaMoonSlashVFX",
             "TPO_crouchSequence_wieldingHeavyWeapon_FireVFX",
             "TPO_crouchSequence_wieldingHeavyWeapon_MiasmaVFX",
             "TPO_dodge_toIdle_wieldingHeavyWeapon_FireVFX",
@@ -74,17 +81,24 @@
             "TPO_runCycleCompleteWieldingWarcenser_FireVFX",
             "TPO_runCycleCompleteWieldingWarcenser_MiasmaVFX",
             "TPO_temperStep_thornedArm_fireVFX",
+            "TPO_temperStep_thornedArm_MiasmaVFX",
             "TPO_wallClimbSequenceRevamp_FireVFX",
+            "TPO_wallClimbSequenceRevamp_MiasmaVFX",
             "TPO_wallReboundSequence_FireVFX",
+            "TPO_wallReboundSequence_MiasmaVFX",
             "TPO_warCenser_airAttack_FireVFX",
             "TPO_warCenser_airSmash_landing_fireVFX",
+            "TPO_warCenser_airSmash_landing_MiasmaVFX",
             "TPO_warCenser_airSmash_wallRebound_fireVFX",
             "TPO_warCenser_cancelAttackWallRebound_fireVFX",
+            "TPO_warCenser_cancelAttackWallRebound_MiasmaVFX",
             "TPO_warCenser_crouchSmash_VFXFire",
             "TPO_warCenser_crouchSmash_VFXMiasma",
             "TPO_warCenser_crouchSmash_wallRebound_VFXFire",
             "TPO_warCenser_groundedAttackEdge_fireVFX",
+            "TPO_warCenser_groundedAttackEdge_MiasmaVFX",
             "TPO_warCenserBasicAttackFireVFX",
+            "TPO_warCenserBasicAttackMiasmaVFX",
             "TPO_warCenserBasicAttackOnEdgeFireVFX",
             "TPO_WPN01_airIgnition_fireVFX",
             "TPO_WPN01_airIgnition_MiasmaVFX",
@@ -116,6 +130,9 @@
     {
         "groupName": "rosary",
         "animations": [
+            "rosary to idle",
+            "RosaryBlade_dodge_toIdle_Armor00",
+            "RosaryBlade_dodge_toRun_Armor00",
             "TPO_airDashSequence_LightWeapon_RosaryBlade",
             "TPO_cherubsRespawnLightWeapon_RosaryBlade",
             "TPO_chessInteraction_lightWeapon_RosaryBlade",
@@ -146,7 +163,9 @@
             "TPO_WPN03_BerserkModeTrigger_weapon",
             "TPO_WPN03_crouchedAttack_RosaryBlade",
             "TPO_WPN03_groundedCombo01_RosaryBlade",
+            "TPO_WPN03_groundedCombo02_RosaryBlade",
             "TPO_WPN03_groundedCombo02FKF_RosaryBlade",
+            "TPO_WPN03_groundedCombo03_RosaryBlade",
             "TPO_WPN03_groundedCombo03B_RisingFinisher_weapon",
             "TPO_WPN03_groundedCombo03C_SpiningFinisher_weapon",
             "TPO_WPN03_groundedCombo03FKF_RosaryBlade",
@@ -164,6 +183,16 @@
     {
         "groupName": "rosary_vfx",
         "animations": [
+            "Plungue Drill Anticipation VFX",
+            "Plungue Drill BigDrill",
+            "Plungue Drill Impact",
+            "Plungue Drill SmallDrill",
+            "Plungue Drill Wave",
+            "Plungue-Drill-Anticipation-RE08VFX",
+            "Plungue-Drill-BigDrillRE08VFX",
+            "Plungue-Drill-ImpactRE08VFX",
+            "Plungue-Drill-SmallDrillRE08VFX",
+            "Plungue-Drill-WaveRE08VFX",
             "TPO_WPN03_BerserkModeTrigger_weapon_VFXs",
             "TPO_WPN03_BerserkModeTriggerRE08Edge",
             "TPO_WPN03_BerserkModeVanish",
@@ -201,12 +230,16 @@
             "TPO_WPN03_UltimateAttackAirRE08VFX",
             "TPO_WPN03_UltimateAttackRE08VFX",
             "TPO_WPN03_upperSlash_RBEdge",
-            "TPO_WPN03_upperSlash_RE08Edge"
+            "TPO_WPN03_upperSlash_RE08Edge",
+            "WPN03_perfectParryStabVFX",
+            "WPN03_perfectParryVFX"
         ]
     },
     {
         "groupName": "rapier",
         "animations": [
+            "Ropera_dodge_toIdle_Armor00",
+            "Ropera_dodge_toRun_Armor00",
             "TPO_airDashSequence_LightWeapon_rapier",
             "TPO_cherubsRespawnLightWeapon_rapier",
             "TPO_chessInteraction_lightWeapon_rapier",
@@ -257,6 +290,9 @@
     {
         "groupName": "rapier_vfx",
         "animations": [
+            "DashCounterBlockVFX",
+            "DashCounterSlashVFX",
+            "RapierTeleportAppearVFX",
             "TPO_dodge_lungeAttack_VFXVD1",
             "TPO_dodge_lungeAttack_VFXVD2",
             "TPO_dodge_lungeAttack_VFXVD3",
@@ -356,6 +392,12 @@
     {
         "groupName": "meaculpa_vfx",
         "animations": [
+            "Meaculpa guardSlideVFX",
+            "Plungue Drill AnticipationMeaCulpa VFX",
+            "Plungue Drill BigDrill MeaCulpa",
+            "Plungue Drill Impact MeaCulpa",
+            "Plungue Drill SmallDrill MeaCulpa",
+            "Plungue Drill Wave MeaCulpa",
             "TPO_MeaCulpa_parryPerfectSuccess_VFX",
             "TPO_MeaCulpa_parryPerfectSuccessStab_VFX",
             "TPO_MeaCulpa_parrySuccess_VFX",
@@ -365,6 +407,7 @@
             "TPO_WPN04_BerserkModeVanish_VFX",
             "TPO_WPN04_crouchedAttack_VFX",
             "TPO_WPN04_groundedCombo01TextureGMVFX",
+            "TPO_WPN04_groundedCombo01VFX",
             "TPO_WPN04_groundedCombo02VFX",
             "TPO_WPN04_groundedCombo03B_RisingFinisher_AnticipationVFX",
             "TPO_WPN04_groundedCombo03B_RisingFinisher_AttackVFX",
@@ -373,14 +416,25 @@
             "TPO_WPN04_groundedCombo04_VFX",
             "TPO_WPN04_jumpCombo01VFX",
             "TPO_WPN04_jumpCombo02VFX",
-            "TPO_WPN04_ultimateReadyUI_VFX",
             "TPO_WPN04_upperSlash_VFX",
             "TPO_WPN04_upperSlashMeaCulpaMidAir_VFX"
         ]
     },
     {
+        "groupName": "meaculpa_projectile",
+        "animations": [
+            "MeaculpaProjectile Explosion_2",
+            "MeaculpaProjectile transform",
+            "MeaculpaProjectile WallOut",
+            "MeaculpaProjectile"
+        ]
+    },
+    {
         "groupName": "player",
         "animations": [
+            "Player_AlhambraMirror_recoveryEmerge",
+            "Player_AlhambraMirror_recoverySink",
+            "Player_AlhambraMirror_recoverySink2",
             "TPO_airDashSequence_HeavyWeapon_armor00",
             "TPO_airDashSequence_HeavyWeapon_flurryVFX",
             "TPO_AlhambraMirrorTransition_MirroredToNormal",
@@ -437,6 +491,7 @@
             "TPO_idle_wieldingHeavyWeapon_Armor00",
             "TPO_idle_wieldingLightWeapon",
             "TPO_idleFinal",
+            "TPO_jumpHorizontalSequenceFinal",
             "TPO_jumpHorizontalSequenceV3",
             "TPO_jumpHorizontalSequenceWieldingHeavyWeapon_armor00",
             "TPO_jumpHorizontalSequenceWieldingLightWeapon_armor00",
@@ -445,10 +500,16 @@
             "TPO_jumpLanding_to_runningWieldingHeavyWeapon_armor00",
             "TPO_jumpLanding_to_runningWieldingLightWeapon_armor00",
             "TPO_jumpVerticalSequence",
+            "TPO_jumpVerticalSequenceFinal",
             "TPO_jumpVerticalSequenceWieldingHeavyWeapon_armor00",
             "TPO_jumpVerticalSequenceWieldingLightWeapon_armor00",
             "TPO_Kneeling_wieldingHeavyWeapon_armor00",
+            "TPO_Kneeling_wieldingHeavyWeapon_kneelingLoopVFX",
+            "TPO_Kneeling_wieldingHeavyWeaponVFX",
             "TPO_Kneeling_wieldingLightWeapon_armor00",
+            "TPO_Kneeling_wieldingLightWeapon_kneelingLoopVFX",
+            "TPO_Kneeling_wieldingLightWeaponVFX",
+            "TPO_knockback_airRecoveryVFX",
             "TPO_knockback_FKF",
             "TPO_ladderClimbing",
             "TPO_ladderClimbing_down",
@@ -505,7 +566,9 @@
             "TPO_talkingPose_LightWeapon_armor00",
             "TPO_teleportIn_CrossingVortex_armor00",
             "TPO_teleportIn_HeavyWeapon_armor0",
+            "TPO_teleportIn_HeavyWeapon_armor00",
             "TPO_teleportIn_LightWeapon_armor0",
+            "TPO_teleportIn_LightWeapon_armor00",
             "TPO_teleportOut_armor00",
             "TPO_teleportOutToIdle_heavyWeapon_armor00",
             "TPO_teleportOutToIdle_lightWeapon_armor00",
@@ -537,7 +600,9 @@
             "TPO_WPN03_BerserkModeTrigger_Armor00",
             "TPO_WPN03_crouchedAttack_armor00",
             "TPO_WPN03_groundedCombo01_armor00",
+            "TPO_WPN03_groundedCombo02_armor00",
             "TPO_WPN03_groundedCombo02FKF_armor00",
+            "TPO_WPN03_groundedCombo03_armor00",
             "TPO_WPN03_groundedCombo03B_RisingFinisher_Armor00",
             "TPO_WPN03_groundedCombo03C_SpiningFinisher_armor00",
             "TPO_WPN03_groundedCombo03FKF_armor00",
@@ -558,6 +623,8 @@
     {
         "groupName": "player_vfx",
         "animations": [
+            "AirDash_spiralDust",
+            "airJumpSpiralDust",
             "TPO_deathNotGroundedRevamp_bloodVFX",
             "TPO_deathNotGroundedRevamp_fireVFX",
             "TPO_deathNotGroundedRevamp_lightVFX",
@@ -571,11 +638,6 @@
             "TPO_HardLanding_dustVFX",
             "TPO_HardLanding_impactVFX",
             "TPO_healingVFX_revamp_VFX",
-            "TPO_Kneeling_wieldingHeavyWeapon_kneelingLoopVFX",
-            "TPO_Kneeling_wieldingHeavyWeaponVFX",
-            "TPO_Kneeling_wieldingLightWeapon_kneelingLoopVFX",
-            "TPO_Kneeling_wieldingLightWeaponVFX",
-            "TPO_knockback_airRecoveryVFX",
             "TPO_MeaCulpaTeleport_HorizontalPhantom",
             "TPO_MeaCulpaTeleport_HorizontalPhantomVanish",
             "TPO_MeaCulpaTeleport_VerticalPhantom",
@@ -586,7 +648,9 @@
             "TPO_QuickVerse_heavyWeapon_midAir_bloodVFX",
             "TPO_QuickVerse_lightWeapon_bloodVFX",
             "TPO_spikesDeath_bloodVFX",
-            "TPOCrisantaAirDash_Explosion"
+            "TPOCrisantaAirDash_Explosion",
+            "Weaponchange",
+            "WeaponchangeMeaCulpa"
         ]
     }
 ]
