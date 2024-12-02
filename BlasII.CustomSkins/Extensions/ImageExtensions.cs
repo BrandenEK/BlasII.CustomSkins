@@ -40,4 +40,12 @@ internal static class ImageExtensions
 
         return readableText;
     }
+
+    public static string GetUniqueName(this Sprite sprite)
+    {
+        if (sprite == null)
+            return null;
+
+        return $"{sprite.texture.name}_{sprite.name}";
+    }
 }

@@ -1,4 +1,5 @@
 ﻿using BlasII.CheatConsole;
+using BlasII.CustomSkins.Extensions;
 using BlasII.ModdingAPI;
 using System.IO;
 using System.Linq;
@@ -91,13 +92,31 @@ internal class SkinCommand : ModCommand
     {
         ModLog.Warn("Running debug command");
 
-        var sprites = Resources.FindObjectsOfTypeAll<Sprite>()
-            .Select(x => x.name)
-            .Where(x => !string.IsNullOrEmpty(x))
-            .DistinctBy(x => x)
+        var loadedSprites = Resources.FindObjectsOfTypeAll<Sprite>()
+            .Where(x => !string.IsNullOrEmpty(x.name))
+            .Select(x => x.GetUniqueName())
             .OrderBy(x => x);
 
-        foreach (string name in sprites)
+        var loadedTextures = Resources.FindObjectsOfTypeAll<Texture2D>()
+            .Where(x => !string.IsNullOrEmpty(x.name))
+            .Select(x => x.name)
+            .OrderBy(x => x);
+
+        var visibleSprites = Object.FindObjectsOfType<SpriteRenderer>()
+            .Where(x => x.sprite != null && !string.IsNullOrEmpty(x.sprite.name))
+            .Select(x => x.sprite.GetUniqueName())
+            .OrderBy(x => x);
+
+        ModLog.Error("Loaded sprites:");
+        foreach (string name in loadedSprites)
+            ModLog.Info(name);
+
+        ModLog.Error("Loaded textures:");
+        foreach (string name in loadedTextures)
+            ModLog.Info(name);
+
+        ModLog.Error("Visible sprites:");
+        foreach (string name in visibleSprites)
             ModLog.Info(name);
     }
 }

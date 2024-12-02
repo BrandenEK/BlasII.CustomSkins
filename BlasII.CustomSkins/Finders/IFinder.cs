@@ -1,5 +1,6 @@
 ﻿using System.Collections;
-using BlasII.CustomSkins.Models;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace BlasII.CustomSkins.Finders;
 
@@ -11,7 +12,7 @@ public interface IFinder
     /// <summary>
     /// The sprites that were found
     /// </summary>
-    public SpriteCollection Result { get; }
+    public IEnumerable<Sprite> Result { get; }
 
     /// <summary>
     /// Finds all player sprites

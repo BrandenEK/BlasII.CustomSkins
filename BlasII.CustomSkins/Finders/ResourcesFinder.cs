@@ -1,6 +1,5 @@
-﻿using BlasII.CustomSkins.Extensions;
-using BlasII.CustomSkins.Models;
-using System.Collections;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -12,7 +11,7 @@ namespace BlasII.CustomSkins.Finders;
 public class ResourcesFinder : IFinder
 {
     /// <inheritdoc/>
-    public SpriteCollection Result { get; private set; }
+    public IEnumerable<Sprite> Result { get; private set; }
 
     /// <inheritdoc/>
     public IEnumerator FindAll()
@@ -20,9 +19,6 @@ public class ResourcesFinder : IFinder
         yield return null;
         Result = Resources.FindObjectsOfTypeAll<Sprite>()
             .Where(x => !string.IsNullOrEmpty(x.name))
-            .DistinctBy(x => x.name)
-            .OrderBy(x => x.name)
-            .ToDictionary(x => x.name, x => x)
-            .AsCollection();
+            .OrderBy(x => x.name);
     }
 }
