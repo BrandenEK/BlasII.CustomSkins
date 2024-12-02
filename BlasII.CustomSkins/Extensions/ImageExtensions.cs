@@ -46,6 +46,6 @@ internal static class ImageExtensions
         if (sprite == null)
             return null;
 
-        return $"{sprite.name}_{sprite.texture?.name?.GetHashCode() ?? 0}";
+        return $"{sprite.texture.name}_{sprite.name}";
     }
 }

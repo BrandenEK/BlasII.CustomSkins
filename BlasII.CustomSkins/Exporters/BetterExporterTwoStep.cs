@@ -48,11 +48,7 @@ public class BetterExporterTwoStep : IExporter
             // This will probably go away with the new group update (TPO)
             // Unfortunately it did not
             if (group == "unknown")
-            {
-                //foreach (Sprite s in groupAnimations)
-                //    ModLog.Warn(s.name + ": " + s.texture.name);
                 continue;
-            }
 
             ModLog.Info($"Exporting group {group}");
             yield return ExportGroup(groupAnimations, group, Path.Combine(directory, group));
@@ -75,7 +71,7 @@ public class BetterExporterTwoStep : IExporter
         foreach (var spritesByAnimation in sprites.GroupBy(GetAnimationName).OrderBy(x => x.Key))
         {
             string animation = spritesByAnimation.Key;
-            var animationFrames = spritesByAnimation.OrderBy(x => int.Parse(x.name[(x.name.LastIndexOf('_') + 1)..]));
+            var animationFrames = spritesByAnimation.OrderBy(GetFrameOrder);
 
             ModLog.Info($"Exporting animation {animation}");
             ExportAnimation(animationFrames, animation, Path.Combine(directory, animation));
@@ -249,10 +245,6 @@ public class BetterExporterTwoStep : IExporter
     private string GetAnimationName(Sprite sprite)
     {
         return sprite.texture.name;
-        //if (sprite.name.IndexOf('_') < 0)
-        //    return sprite.name;
-
-        //return sprite.name[0..sprite.name.LastIndexOf('_')];
     }
 
     private string GetGroupName(Sprite sprite, IEnumerable<AnimationGroup> groups)
@@ -261,6 +253,15 @@ public class BetterExporterTwoStep : IExporter
         AnimationGroup group = groups.FirstOrDefault(x => x.Animations.Contains(name));
 
         return group?.GroupName ?? "unknown";
+    }
+
+    private int GetFrameOrder(Sprite sprite)
+    {
+        if (sprite.name.IndexOf('_') <= 0)
+            return 0;
+
+        string last = sprite.name[(sprite.name.LastIndexOf('_') + 1)..];
+        return int.TryParse(last, out int value) ? value : 0;
     }
 
     private void SaveSpriteSheet(string directory, SpriteSheet sheet)

@@ -104,7 +104,7 @@ internal class SkinCommand : ModCommand
 
         var visibleSprites = Object.FindObjectsOfType<SpriteRenderer>()
             .Where(x => x.sprite != null && !string.IsNullOrEmpty(x.sprite.name))
-            .Select(x => x.sprite.name)
+            .Select(x => x.sprite.GetUniqueName())
             .OrderBy(x => x);
 
         ModLog.Error("Loaded sprites:");
