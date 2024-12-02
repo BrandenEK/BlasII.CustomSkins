@@ -393,10 +393,6 @@
         "groupName": "meaculpa_vfx",
         "animations": [
             "Meaculpa guardSlideVFX",
-            "MeaculpaProjectile Explosion_2",
-            "MeaculpaProjectile transform",
-            "MeaculpaProjectile WallOut",
-            "MeaculpaProjectile",
             "Plungue Drill AnticipationMeaCulpa VFX",
             "Plungue Drill BigDrill MeaCulpa",
             "Plungue Drill Impact MeaCulpa",
@@ -422,6 +418,15 @@
             "TPO_WPN04_jumpCombo02VFX",
             "TPO_WPN04_upperSlash_VFX",
             "TPO_WPN04_upperSlashMeaCulpaMidAir_VFX"
+        ]
+    },
+    {
+        "groupName": "meaculpa_projectile",
+        "animations": [
+            "MeaculpaProjectile Explosion_2",
+            "MeaculpaProjectile transform",
+            "MeaculpaProjectile WallOut",
+            "MeaculpaProjectile"
         ]
     },
     {
