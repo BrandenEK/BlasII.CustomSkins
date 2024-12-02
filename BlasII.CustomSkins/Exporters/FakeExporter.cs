@@ -1,7 +1,8 @@
-﻿using BlasII.CustomSkins.Models;
-using BlasII.ModdingAPI;
+﻿using BlasII.ModdingAPI;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace BlasII.CustomSkins.Exporters;
 
@@ -11,10 +12,10 @@ namespace BlasII.CustomSkins.Exporters;
 public class FakeExporter : IExporter
 {
     /// <inheritdoc/>
-    public IEnumerator ExportAll(SpriteCollection sprites, string directory)
+    public IEnumerator ExportAll(IEnumerable<Sprite> sprites, string directory)
     {
         // Group sprites by name
-        var groups = sprites.GroupBy(x => x.Key[0..x.Key.LastIndexOf('_')]);
+        var groups = sprites.GroupBy(x => x.name[0..x.name.LastIndexOf('_')]);
 
         foreach (var group in groups)
         {

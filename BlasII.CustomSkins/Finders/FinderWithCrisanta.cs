@@ -1,7 +1,8 @@
 ﻿using BlasII.ModdingAPI.Assets;
 using BlasII.ModdingAPI;
 using System.Collections;
-using BlasII.CustomSkins.Models;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace BlasII.CustomSkins.Finders;
 
@@ -13,7 +14,7 @@ public class FinderWithCrisanta(IFinder finder) : IFinder
     bool _alreadyHasCrisanta = false;
 
     /// <inheritdoc/>
-    public SpriteCollection Result => finder.Result;
+    public IEnumerable<Sprite> Result => finder.Result;
 
     /// <inheritdoc/>
     public IEnumerator FindAll()

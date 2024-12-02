@@ -16,18 +16,17 @@ namespace BlasII.CustomSkins.Exporters;
 public class LegacyExporter : IExporter
 {
     /// <inheritdoc/>
-    public IEnumerator ExportAll(SpriteCollection sprites, string directory)
+    public IEnumerator ExportAll(IEnumerable<Sprite> sprites, string directory)
     {
         // Group sprites by name
-        var groups = sprites.GroupBy(x => x.Key[0..x.Key.LastIndexOf('_')]);
+        var groups = sprites.GroupBy(x => x.name[0..x.name.LastIndexOf('_')]);
         int idx = 0;
 
         // Export each individual spritesheet
         foreach (var group in groups)
         {
             var spriteGroup = group
-                .OrderBy(x => int.Parse(x.Key[(x.Key.LastIndexOf('_') + 1)..]))
-                .Select(x => x.Value);
+                .OrderBy(x => int.Parse(x.name[(x.name.LastIndexOf('_') + 1)..]));
 
             Export(group.Key, ++idx, directory, spriteGroup);
             yield return null;

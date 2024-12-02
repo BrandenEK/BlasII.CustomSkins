@@ -29,7 +29,7 @@ public class BetterExporter : IExporter
     }
 
     /// <inheritdoc/>
-    public IEnumerator ExportAll(SpriteCollection sprites, string directory)
+    public IEnumerator ExportAll(IEnumerable<Sprite> sprites, string directory)
     {
         // Load groups from data folder
         if (!Main.CustomSkins.FileHandler.LoadDataAsJson("groups.json", out AnimationGroup[] groups))
@@ -41,7 +41,7 @@ public class BetterExporter : IExporter
         var sheets = new List<SpriteSheet>();
 
         // Split sprites by group and export them
-        foreach (var spritesByGroup in sprites.Values.GroupBy(x => GetGroupName(x, groups)).OrderBy(x => x.Key))
+        foreach (var spritesByGroup in sprites.GroupBy(x => GetGroupName(x, groups)).OrderBy(x => x.Key))
         {
             string group = spritesByGroup.Key;
             var groupAnimations = spritesByGroup.OrderBy(x => x.name);

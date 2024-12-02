@@ -30,7 +30,7 @@ public class BetterExporterTwoStep : IExporter
     }
 
     /// <inheritdoc/>
-    public IEnumerator ExportAll(SpriteCollection sprites, string directory)
+    public IEnumerator ExportAll(IEnumerable<Sprite> sprites, string directory)
     {
         // Load groups from data folder
         if (!Main.CustomSkins.FileHandler.LoadDataAsJson("groups.json", out AnimationGroup[] groups))
@@ -40,7 +40,7 @@ public class BetterExporterTwoStep : IExporter
         }
 
         // Split sprites by group and export them
-        foreach (var spritesByGroup in sprites.Values.GroupBy(x => GetGroupName(x, groups)).OrderBy(x => x.Key))
+        foreach (var spritesByGroup in sprites.GroupBy(x => GetGroupName(x, groups)).OrderBy(x => x.Key))
         {
             string group = spritesByGroup.Key;
             var groupAnimations = spritesByGroup.OrderBy(x => x.name);
@@ -48,7 +48,11 @@ public class BetterExporterTwoStep : IExporter
             // This will probably go away with the new group update (TPO)
             // Unfortunately it did not
             if (group == "unknown")
+            {
+                //foreach (Sprite s in groupAnimations)
+                //    ModLog.Warn(s.name + ": " + s.texture.name);
                 continue;
+            }
 
             ModLog.Info($"Exporting group {group}");
             yield return ExportGroup(groupAnimations, group, Path.Combine(directory, group));
@@ -112,7 +116,7 @@ public class BetterExporterTwoStep : IExporter
 
         var info = new SpriteInfoWithTexture()
         {
-            Name = sprite.name,
+            Name = sprite.GetUniqueName(),
             PixelsPerUnit = (int)sprite.pixelsPerUnit,
             Position = new Vector(0, 0),
             Size = new Vector(w, h),
@@ -244,10 +248,11 @@ public class BetterExporterTwoStep : IExporter
 
     private string GetAnimationName(Sprite sprite)
     {
-        if (sprite.name.IndexOf('_') < 0)
-            return sprite.name;
+        return sprite.texture.name;
+        //if (sprite.name.IndexOf('_') < 0)
+        //    return sprite.name;
 
-        return sprite.name[0..sprite.name.LastIndexOf('_')];
+        //return sprite.name[0..sprite.name.LastIndexOf('_')];
     }
 
     private string GetGroupName(Sprite sprite, IEnumerable<AnimationGroup> groups)

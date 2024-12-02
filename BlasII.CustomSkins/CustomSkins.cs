@@ -1,5 +1,6 @@
 ﻿using BlasII.CheatConsole;
 using BlasII.CustomSkins.Exporters;
+using BlasII.CustomSkins.Extensions;
 using BlasII.CustomSkins.Finders;
 using BlasII.CustomSkins.Importers;
 using BlasII.CustomSkins.Models;
@@ -71,10 +72,9 @@ public class CustomSkins : BlasIIMod
         // Replace all TPO sprites that were loaded
         foreach (var renderer in renderers)
         {
-            if (renderer.sprite == null || string.IsNullOrEmpty(renderer.sprite.name))
-                continue;
+            string name = renderer.sprite?.GetUniqueName();
 
-            if (!_loadedSprites.TryGetValue(renderer.sprite.name, out Sprite customSprite))
+            if (string.IsNullOrEmpty(name) || !_loadedSprites.TryGetValue(name, out Sprite customSprite))
                 continue;
 
             renderer.sprite = customSprite;
