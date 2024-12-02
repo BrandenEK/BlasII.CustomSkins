@@ -1,5 +1,8 @@
 ﻿using BlasII.CheatConsole;
+using BlasII.ModdingAPI;
 using System.IO;
+using System.Linq;
+using UnityEngine;
 
 namespace BlasII.CustomSkins;
 
@@ -43,6 +46,16 @@ internal class SkinCommand : ModCommand
                     Export();
                     break;
                 }
+#if DEBUG
+            case "debug":
+                {
+                    if (!ValidateParameterCount(args, 1))
+                        return;
+
+                    Debug();
+                    break;
+                }
+#endif
             default:
                 {
                     WriteFailure("Unknown subcommand: " + args[0]);
@@ -72,5 +85,19 @@ internal class SkinCommand : ModCommand
     {
         string folder = Main.CustomSkins.FileHandler.ContentFolder;
         Main.CustomSkins.StartExport(folder);
+    }
+
+    private void Debug()
+    {
+        ModLog.Warn("Running debug command");
+
+        var sprites = Resources.FindObjectsOfTypeAll<Sprite>()
+            .Select(x => x.name)
+            .Where(x => !string.IsNullOrEmpty(x))
+            .DistinctBy(x => x)
+            .OrderBy(x => x);
+
+        foreach (string name in sprites)
+            ModLog.Info(name);
     }
 }
