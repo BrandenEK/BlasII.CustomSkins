@@ -50,11 +50,8 @@ public class CustomSkins : BlasIIMod
     /// </summary>
     protected override void OnSceneLoaded(string sceneName)
     {
-        if (_loadedDefault || !SceneHelper.MenuSceneLoaded)
-            return;
-
-        _loadedDefault = true;
-        StartImport(Path.Combine(FileHandler.ModdingFolder, "skins"), ReplaceSkin);
+        if (SceneHelper.MenuSceneLoaded)
+            PerformDefaultLoad();
     }
 
     /// <summary>
@@ -79,6 +76,18 @@ public class CustomSkins : BlasIIMod
 
             renderer.sprite = customSprite;
         }
+    }
+
+    private void PerformDefaultLoad()
+    {
+        if (_loadedDefault)
+            return;
+
+        _loadedDefault = true;
+        string path = Path.Combine(FileHandler.ModdingFolder, "skins");
+
+        Directory.CreateDirectory(path);
+        StartImport(path, ReplaceSkin);
     }
 
     // Import methods

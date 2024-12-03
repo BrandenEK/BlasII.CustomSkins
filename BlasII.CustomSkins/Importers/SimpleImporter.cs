@@ -33,9 +33,6 @@ public class SimpleImporter : IImporter
         Result = [];
         _currentImports = 0;
 
-        // Create import folder
-        Directory.CreateDirectory(directory);
-
         // Get all json files in the import folder
         foreach (var file in Directory.GetFiles(directory, "*.json", SearchOption.TopDirectoryOnly))
         {
