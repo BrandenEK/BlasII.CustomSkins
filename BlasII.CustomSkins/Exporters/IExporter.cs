@@ -10,7 +10,7 @@ namespace BlasII.CustomSkins.Exporters;
 public interface IExporter
 {
     /// <summary>
-    /// Exports all spritesheets into the directory
+    /// Exports all spritesheets of the given type into the directory
     /// </summary>
-    public IEnumerator ExportAll(IEnumerable<Sprite> sprites, string directory);
+    public IEnumerator ExportAll(IEnumerable<Sprite> sprites, string type, string directory);
 }
