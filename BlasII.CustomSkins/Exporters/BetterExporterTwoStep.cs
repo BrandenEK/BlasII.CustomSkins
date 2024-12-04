@@ -62,6 +62,9 @@ public class BetterExporterTwoStep : IExporter
             Object.Destroy(_creationResult.Texture);
         }
 
+        if (_totalTextures != _currentTextureIndex)
+            ModLog.Error("Not all textures were exported!");
+
         _exportResult = null;
         _creationResult = null;
     }
