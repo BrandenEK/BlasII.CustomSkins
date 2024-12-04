@@ -278,12 +278,14 @@ public class BetterExporterTwoStep : IExporter
     {
         var groups = new List<AnimationGroup>();
 
+        IEnumerable<string> searchTypes = type.Split('+').Where(x => !string.IsNullOrEmpty(x));
         string folder = Path.Combine(Main.CustomSkins.FileHandler.ModdingFolder, "data", "Custom Skins");
+        
         foreach (string groupFile in Directory.GetFiles(folder, "*.txt"))
         {
             string name = Path.GetFileNameWithoutExtension(groupFile);
 
-            if (type != "all" && !name.StartsWith(type))
+            if (type != "all" && !searchTypes.Any(name.StartsWith))
                 continue;
 
             Main.CustomSkins.FileHandler.LoadDataAsArray(Path.GetFileName(groupFile), out string[] animations);
