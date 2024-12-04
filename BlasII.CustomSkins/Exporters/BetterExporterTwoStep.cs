@@ -30,21 +30,21 @@ public class BetterExporterTwoStep : IExporter
     }
 
     /// <inheritdoc/>
-    public IEnumerator ExportAll(IEnumerable<Sprite> sprites, string directory)
+    public IEnumerator ExportAll(IEnumerable<Sprite> sprites, string type, string directory)
     {
-        // Load groups from data folder
-        IEnumerable<AnimationGroup> groups = LoadAllAnimationGroups();
+        // Load specified groups from data folder
+        IEnumerable<AnimationGroup> groups = LoadAllAnimationGroups(type);
 
         // Split sprites by group and export them
         foreach (var spritesByGroup in sprites.GroupBy(x => GetGroupName(x, groups)).OrderBy(x => x.Key))
         {
-            string group = spritesByGroup.Key;
-            var groupAnimations = spritesByGroup.OrderBy(x => x.name);
-
             // This will probably go away with the new group update (TPO)
             // Unfortunately it did not
-            if (group == "unknown")
+            if (spritesByGroup.Key == "unknown")
                 continue;
+
+            string group = spritesByGroup.Key;
+            var groupAnimations = spritesByGroup.OrderBy(x => x.name);
 
             ModLog.Info($"Exporting group {group}");
             yield return ExportGroup(groupAnimations, group, Path.Combine(directory, group));
@@ -274,16 +274,21 @@ public class BetterExporterTwoStep : IExporter
         File.WriteAllText(infoPath, JsonConvert.SerializeObject(sheet.Infos, Formatting.Indented));
     }
 
-    private IEnumerable<AnimationGroup> LoadAllAnimationGroups()
+    private IEnumerable<AnimationGroup> LoadAllAnimationGroups(string type)
     {
         var groups = new List<AnimationGroup>();
 
+        IEnumerable<string> searchTypes = type.Split('+').Where(x => !string.IsNullOrEmpty(x));
         string folder = Path.Combine(Main.CustomSkins.FileHandler.ModdingFolder, "data", "Custom Skins");
+        
         foreach (string groupFile in Directory.GetFiles(folder, "*.txt"))
         {
             string name = Path.GetFileNameWithoutExtension(groupFile);
-            Main.CustomSkins.FileHandler.LoadDataAsArray(Path.GetFileName(groupFile), out string[] animations);
 
+            if (type != "all" && !searchTypes.Any(name.StartsWith))
+                continue;
+
+            Main.CustomSkins.FileHandler.LoadDataAsArray(Path.GetFileName(groupFile), out string[] animations);
             groups.Add(new AnimationGroup()
             {
                 GroupName = name,
