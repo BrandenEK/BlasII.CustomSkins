@@ -48,7 +48,12 @@ public class BetterExporterTwoStep : IExporter
             // This will probably go away with the new group update (TPO)
             // Unfortunately it did not
             if (spritesByGroup.Key == "unknown")
+            {
+                //ModLog.Warn("Unknown sprites:");
+                //foreach (Sprite s in spritesByGroup.OrderBy(x => x.name))
+                //    ModLog.Info(s.GetUniqueName());
                 continue;
+            }
 
             string group = spritesByGroup.Key;
             var groupAnimations = spritesByGroup.OrderBy(x => x.name);
