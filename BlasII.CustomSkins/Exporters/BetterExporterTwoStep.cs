@@ -17,8 +17,12 @@ public class BetterExporterTwoStep : IExporter
 {
     private readonly int _animationWidthPixels;
     private readonly int _groupHeightPixels;
+
     private SpriteSheetWithoutTexture _exportResult;
     private SpriteSheet _creationResult;
+
+    private int _totalTextures;
+    private int _currentTextureIndex;
 
     /// <summary>
     /// Creates a new IExporter
@@ -34,6 +38,9 @@ public class BetterExporterTwoStep : IExporter
     {
         // Load specified groups from data folder
         IEnumerable<AnimationGroup> groups = LoadAllAnimationGroups(type);
+
+        _totalTextures = groups.SelectMany(x => x.Animations).Count();
+        _currentTextureIndex = 0;
 
         // Split sprites by group and export them
         foreach (var spritesByGroup in sprites.GroupBy(x => GetGroupName(x, groups)).OrderBy(x => x.Key))
@@ -55,6 +62,9 @@ public class BetterExporterTwoStep : IExporter
             Object.Destroy(_creationResult.Texture);
         }
 
+        if (_totalTextures != _currentTextureIndex)
+            ModLog.Error("Not all textures were exported!");
+
         _exportResult = null;
         _creationResult = null;
     }
@@ -69,7 +79,7 @@ public class BetterExporterTwoStep : IExporter
             string animation = spritesByAnimation.Key;
             var animationFrames = spritesByAnimation.OrderBy(GetFrameOrder);
 
-            ModLog.Info($"Exporting animation {animation}");
+            ModLog.Info($"[{++_currentTextureIndex}/{_totalTextures}] Exporting animation {animation}");
             ExportAnimation(animationFrames, animation, Path.Combine(directory, animation));
             sheets.Add(_exportResult);
 
