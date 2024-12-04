@@ -41,10 +41,10 @@ internal class SkinCommand : ModCommand
                 }
             case "export":
                 {
-                    if (!ValidateParameterCount(args, 1))
+                    if (!ValidateParameterCount(args, 2))
                         return;
 
-                    Export();
+                    Export(args[1]);
                     break;
                 }
 #if DEBUG
@@ -82,10 +82,10 @@ internal class SkinCommand : ModCommand
         Main.CustomSkins.ResetSkin();
     }
 
-    private void Export()
+    private void Export(string type)
     {
         string folder = Main.CustomSkins.FileHandler.ContentFolder;
-        Main.CustomSkins.StartExport(folder);
+        Main.CustomSkins.StartExport(type, folder);
     }
 
     private void Debug()

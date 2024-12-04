@@ -30,7 +30,7 @@ public class BetterExporterTwoStep : IExporter
     }
 
     /// <inheritdoc/>
-    public IEnumerator ExportAll(IEnumerable<Sprite> sprites, string directory)
+    public IEnumerator ExportAll(IEnumerable<Sprite> sprites, string type, string directory)
     {
         // Load groups from data folder
         IEnumerable<AnimationGroup> groups = LoadAllAnimationGroups();

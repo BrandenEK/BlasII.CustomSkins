@@ -122,7 +122,7 @@ public class CustomSkins : BlasIIMod
     /// <summary>
     /// Starts the export process
     /// </summary>
-    public void StartExport(string directory)
+    public void StartExport(string type, string directory)
     {
         if (!Directory.Exists(directory))
         {
@@ -130,17 +130,17 @@ public class CustomSkins : BlasIIMod
             return;
         }
 
-        MelonCoroutines.Start(ExportCoroutine(directory));
+        MelonCoroutines.Start(ExportCoroutine(type, directory));
     }
 
-    private IEnumerator ExportCoroutine(string directory)
+    private IEnumerator ExportCoroutine(string type, string directory)
     {
         IFinder finder = new FinderWithCrisanta(new ResourcesFinder());
         IExporter exporter = new BetterExporterTwoStep(_config.ExportAnimationWidth, _config.ExportGroupHeight);
 
         ModLog.Warn("Starting export...");
         yield return finder.FindAll();
-        yield return exporter.ExportAll(finder.Result, directory);
+        yield return exporter.ExportAll(finder.Result, type, directory);
         ModLog.Warn("Finished export");
     }
 
