@@ -11,9 +11,9 @@
 
 ## How to play with custom skins
 1. Open the "blasphemous2" folder on the [Community Skins repo](https://github.com/BrandenEK/Blasphemous.Community.Skins)
-1. Find a skin you like and download everything in the 'textures' folder
-1. Place all of the '.png' and the '.json' files into your "{GameRoot}/Modding/skins" folder
-1. Everything in the "skins" folder will be loaded into the game, you can also use commands to modify your skin
+1. Find a skin you like and download the entire folder
+1. Place the downloaded folder into your "{GameRoot}/Modding/skins" folder
+1. Once in-game, use the command 'skin set {ID}'
 
 ## How to create custom skins
 1. Open the cheat console with 'backslash' and type 'skin export {GROUP}'
@@ -48,9 +48,9 @@ For example,
 ## Available commands
 | Command | Parameters | Description |
 | ------- | ----------- | ------- |
-| `skin merge` | FOLDER | Merges the current skin with one at "Modding/skins/{FOLDER}" |
-| `skin replace` | FOLDER | Replaces the current skin with one at "Modding/skins/{FOLDER}" |
-| `skin reset` | none | Removes all loaded skins |
+| `skin set` | ID | Replaces the current skin with one at "Modding/skins/{ID}" |
+| `skin merge` | ID | Merges the current skin with one at "Modding/skins/{ID}" |
+| `skin reset` | none | Resets the current skin to default |
 | `skin export` | GROUP | Extracts all unmodified player animations in the specified group(s) from the game |
 
 ## Configuration settings
