@@ -96,7 +96,7 @@ public class CustomSkins : BlasIIMod, IGlobalPersistentMod<SkinGlobalSaveData>
         if (string.IsNullOrEmpty(CurrentSkin))
             return;
 
-        StartImport(Path.Combine(skinsFolder, CurrentSkin), ReplaceSkin);
+        StartImport(Path.Combine(skinsFolder, CurrentSkin, "textures"), ReplaceSkin);
     }
 
     // Import methods

@@ -67,7 +67,7 @@ internal class SkinCommand : ModCommand
 
     private void Replace(string id)
     {
-        string folder = Path.Combine(Main.CustomSkins.FileHandler.ModdingFolder, "skins", id);
+        string folder = Path.Combine(Main.CustomSkins.FileHandler.ModdingFolder, "skins", id, "textures");
 
         if (Directory.Exists(folder))
         {
@@ -80,7 +80,7 @@ internal class SkinCommand : ModCommand
 
     private void Merge(string id)
     {
-        string folder = Path.Combine(Main.CustomSkins.FileHandler.ModdingFolder, "skins", id);
+        string folder = Path.Combine(Main.CustomSkins.FileHandler.ModdingFolder, "skins", id, "textures");
 
         if (Directory.Exists(folder))
         {
