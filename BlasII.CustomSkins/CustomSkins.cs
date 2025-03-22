@@ -90,10 +90,13 @@ public class CustomSkins : BlasIIMod, IGlobalPersistentMod<SkinGlobalSaveData>
             return;
 
         _loadedDefault = true;
-        string path = Path.Combine(FileHandler.ModdingFolder, "skins");
+        string skinsFolder = Path.Combine(FileHandler.ModdingFolder, "skins");
+        Directory.CreateDirectory(skinsFolder);
 
-        Directory.CreateDirectory(path);
-        StartImport(path, ReplaceSkin);
+        if (string.IsNullOrEmpty(CurrentSkin))
+            return;
+
+        StartImport(Path.Combine(skinsFolder, CurrentSkin), ReplaceSkin);
     }
 
     // Import methods
