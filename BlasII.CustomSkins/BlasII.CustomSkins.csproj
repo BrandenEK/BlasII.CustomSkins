@@ -20,9 +20,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BlasII.CheatConsole" Version="1.2.0" />
+    <PackageReference Include="BlasII.CheatConsole" Version="1.3.0" />
     <PackageReference Include="BlasII.GameLibs" Version="2.2.0" />
-    <PackageReference Include="BlasII.ModdingAPI" Version="1.1.0" />
+    <PackageReference Include="BlasII.ModdingAPI" Version="2.0.0" />
   </ItemGroup>
 
   <Target Name="Development" AfterTargets="PostBuildEvent">
