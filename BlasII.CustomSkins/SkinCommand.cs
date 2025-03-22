@@ -15,15 +15,7 @@ internal class SkinCommand : ModCommand
     {
         switch (args[0])
         {
-            case "merge":
-                {
-                    if (!ValidateParameterCount(args, 2))
-                        return;
-
-                    Merge(args[1]);
-                    break;
-                }
-            case "replace":
+            case "set":
                 {
                     if (!ValidateParameterCount(args, 2))
                         return;
@@ -37,6 +29,14 @@ internal class SkinCommand : ModCommand
                         return;
 
                     Reset();
+                    break;
+                }
+            case "merge":
+                {
+                    if (!ValidateParameterCount(args, 2))
+                        return;
+
+                    Merge(args[1]);
                     break;
                 }
             case "export":

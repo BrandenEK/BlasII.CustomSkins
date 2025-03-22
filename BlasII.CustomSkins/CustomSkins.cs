@@ -30,7 +30,7 @@ public class CustomSkins : BlasIIMod, IGlobalPersistentMod<SkinGlobalSaveData>
     /// <summary>
     /// The currently selected skin id
     /// </summary>
-    public string CurrentSkin { get; private set; } = string.Empty;
+    public string CurrentSkin { get; set; } = string.Empty;
 
     /// <summary>
     /// Registers the skin command
