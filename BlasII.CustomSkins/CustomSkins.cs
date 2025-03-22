@@ -6,6 +6,7 @@ using BlasII.CustomSkins.Importers;
 using BlasII.CustomSkins.Models;
 using BlasII.ModdingAPI;
 using BlasII.ModdingAPI.Helpers;
+using BlasII.ModdingAPI.Persistence;
 using Il2CppTGK.Game;
 using MelonLoader;
 using System;
@@ -18,13 +19,18 @@ namespace BlasII.CustomSkins;
 /// <summary>
 /// Allows using custom player skins made by the community
 /// </summary>
-public class CustomSkins : BlasIIMod
+public class CustomSkins : BlasIIMod, IGlobalPersistentMod<SkinGlobalSaveData>
 {
     internal CustomSkins() : base(ModInfo.MOD_ID, ModInfo.MOD_NAME, ModInfo.MOD_AUTHOR, ModInfo.MOD_VERSION) { }
 
     private SkinConfig _config;
     private SpriteCollection _loadedSprites = [];
     private bool _loadedDefault = false;
+
+    /// <summary>
+    /// The currently selected skin id
+    /// </summary>
+    public string CurrentSkin { get; set; } = string.Empty;
 
     /// <summary>
     /// Registers the skin command
@@ -84,10 +90,13 @@ public class CustomSkins : BlasIIMod
             return;
 
         _loadedDefault = true;
-        string path = Path.Combine(FileHandler.ModdingFolder, "skins");
+        string skinsFolder = Path.Combine(FileHandler.ModdingFolder, "skins");
+        Directory.CreateDirectory(skinsFolder);
 
-        Directory.CreateDirectory(path);
-        StartImport(path, ReplaceSkin);
+        if (string.IsNullOrEmpty(CurrentSkin))
+            return;
+
+        StartImport(Path.Combine(skinsFolder, CurrentSkin), ReplaceSkin);
     }
 
     // Import methods
@@ -171,5 +180,26 @@ public class CustomSkins : BlasIIMod
     public void ResetSkin()
     {
         _loadedSprites = [];
+    }
+
+    // Persistence methods
+
+    /// <summary>
+    /// Save the current skin
+    /// </summary>
+    public SkinGlobalSaveData SaveGlobal()
+    {
+        return new SkinGlobalSaveData()
+        {
+            SelectedSkin = CurrentSkin
+        };
+    }
+
+    /// <summary>
+    /// Load the current skin
+    /// </summary>
+    public void LoadGlobal(SkinGlobalSaveData data)
+    {
+        CurrentSkin = data.SelectedSkin;
     }
 }

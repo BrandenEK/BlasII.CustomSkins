@@ -15,15 +15,7 @@ internal class SkinCommand : ModCommand
     {
         switch (args[0])
         {
-            case "merge":
-                {
-                    if (!ValidateParameterCount(args, 2))
-                        return;
-
-                    Merge(args[1]);
-                    break;
-                }
-            case "replace":
+            case "set":
                 {
                     if (!ValidateParameterCount(args, 2))
                         return;
@@ -37,6 +29,14 @@ internal class SkinCommand : ModCommand
                         return;
 
                     Reset();
+                    break;
+                }
+            case "merge":
+                {
+                    if (!ValidateParameterCount(args, 2))
+                        return;
+
+                    Merge(args[1]);
                     break;
                 }
             case "export":
@@ -65,20 +65,37 @@ internal class SkinCommand : ModCommand
         }
     }
 
-    private void Replace(string folder)
+    private void Replace(string id)
     {
-        folder = Path.Combine(Main.CustomSkins.FileHandler.ModdingFolder, "skins", folder);
+        string folder = Path.Combine(Main.CustomSkins.FileHandler.ModdingFolder, "skins", id);
+
+        if (Directory.Exists(folder))
+        {
+            Write($"Setting selected skin to {id}");
+            Main.CustomSkins.CurrentSkin = id;
+        }
+
         Main.CustomSkins.StartImport(folder, Main.CustomSkins.ReplaceSkin);
     }
 
-    private void Merge(string folder)
+    private void Merge(string id)
     {
-        folder = Path.Combine(Main.CustomSkins.FileHandler.ModdingFolder, "skins", folder);
+        string folder = Path.Combine(Main.CustomSkins.FileHandler.ModdingFolder, "skins", id);
+
+        if (Directory.Exists(folder))
+        {
+            Write($"Merging selected skin with {id}");
+            // Add merge to current id
+        }
+
         Main.CustomSkins.StartImport(folder, Main.CustomSkins.MergeSkin);
     }
 
     private void Reset()
     {
+        Write($"Restting selected skin to default");
+        Main.CustomSkins.CurrentSkin = string.Empty;
+
         Main.CustomSkins.ResetSkin();
     }
 
