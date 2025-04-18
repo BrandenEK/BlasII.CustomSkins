@@ -119,7 +119,7 @@ internal class SkinCommand : ModCommand
         string folder = Path.Combine(Main.CustomSkins.FileHandler.ModdingFolder, "skins");
 
         var skins = Directory.Exists(folder)
-            ? Directory.GetDirectories(folder).Select(x => x)
+            ? Directory.GetDirectories(folder).Select(Path.GetFileName)
             : [];
 
         var sb = new StringBuilder();
