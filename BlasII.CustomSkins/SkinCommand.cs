@@ -3,6 +3,7 @@ using BlasII.CustomSkins.Extensions;
 using BlasII.ModdingAPI;
 using System.IO;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 
 namespace BlasII.CustomSkins;
@@ -45,6 +46,14 @@ internal class SkinCommand : ModCommand
                         return;
 
                     Export(args[1]);
+                    break;
+                }
+            case "list":
+                {
+                    if (!ValidateParameterCount(args, 1))
+                        return;
+
+                    List();
                     break;
                 }
 #if DEBUG
@@ -103,6 +112,30 @@ internal class SkinCommand : ModCommand
     {
         string folder = Main.CustomSkins.FileHandler.ContentFolder;
         Main.CustomSkins.StartExport(type, folder);
+    }
+
+    private void List()
+    {
+        string folder = Path.Combine(Main.CustomSkins.FileHandler.ModdingFolder, "skins");
+
+        var skins = Directory.Exists(folder)
+            ? Directory.GetDirectories(folder).Select(x => x)
+            : [];
+
+        var sb = new StringBuilder();
+        sb.AppendLine("Installed skins:");
+
+        if (skins.Any())
+        {
+            foreach (var skin in skins)
+                sb.AppendLine(skin);
+        }
+        else
+        {
+            sb.AppendLine("None");
+        }
+
+        Write(sb.ToString());
     }
 
     private void Debug()
