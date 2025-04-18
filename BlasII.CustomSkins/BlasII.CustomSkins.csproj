@@ -9,7 +9,7 @@
     <Authors>Damocles</Authors>
     <Company>Damocles</Company>
     <Description>Allows using custom player skins made by the community</Description>
-    <Version>0.3.0</Version>
+    <Version>0.3.1</Version>
     
     <TargetName>CustomSkins</TargetName>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
