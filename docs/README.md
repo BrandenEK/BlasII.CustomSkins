@@ -51,6 +51,7 @@ For example,
 | `skin set` | ID | Replaces the current skin with one at "Modding/skins/{ID}" |
 | `skin merge` | ID | Merges the current skin with one at "Modding/skins/{ID}" |
 | `skin reset` | none | Resets the current skin to default |
+| `skin list` | none | Displays a list of all installed skins |
 | `skin export` | GROUP | Extracts all unmodified player animations in the specified group(s) from the game |
 
 ## Configuration settings
