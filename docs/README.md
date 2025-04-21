@@ -63,5 +63,7 @@ For example,
 | exportGroupHeight | The maximum height of exported groups in pixels | 8192 |
 
 ## Installation
-This mod is available for download through the [Blasphemous Mod Installer](https://github.com/BrandenEK/Blasphemous.Modding.Installer)
-- Required dependencies: Modding API, Cheat Console
+This mod is available for download through the [Blasphemous Mod Installer](https://github.com/BrandenEK/Blasphemous.Modding.Installer) <br>
+Required dependencies:
+- [Modding API](https://github.com/BrandenEK/BlasII.ModdingAPI)
+- [Cheat Console](https://github.com/BrandenEK/BlasII.CheatConsole)
