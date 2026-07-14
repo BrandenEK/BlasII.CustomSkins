@@ -13,6 +13,7 @@ using System;
 using System.Collections;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace BlasII.CustomSkins;
 
@@ -81,6 +82,17 @@ public class CustomSkins : BlasIIMod, IGlobalPersistentMod<SkinGlobalSaveData>
                 continue;
 
             renderer.sprite = customSprite;
+        }
+
+        // Replace UI sprites
+        foreach (var image in UnityEngine.Object.FindObjectsOfType<Image>())
+        {
+            string name = image.sprite?.GetUniqueName();
+
+            if (string.IsNullOrEmpty(name) || !_loadedSprites.TryGetValue(name, out Sprite customSprite))
+                continue;
+
+            image.sprite = customSprite;
         }
     }
 
