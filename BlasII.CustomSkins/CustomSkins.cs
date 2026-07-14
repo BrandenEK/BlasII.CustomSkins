@@ -8,6 +8,7 @@ using BlasII.ModdingAPI;
 using BlasII.ModdingAPI.Helpers;
 using BlasII.ModdingAPI.Persistence;
 using Il2CppTGK.Game;
+using Il2CppTGK.Game.Managers;
 using MelonLoader;
 using System;
 using System.Collections;
@@ -57,8 +58,34 @@ public class CustomSkins : BlasIIMod, IGlobalPersistentMod<SkinGlobalSaveData>
     protected override void OnSceneLoaded(string sceneName)
     {
         if (SceneHelper.MenuSceneLoaded)
+        {
             PerformDefaultLoad();
+
+            string path = Path.Combine(FileHandler.ModdingFolder, "data", "Custom Skins", "test.png");
+            var bytes = File.ReadAllBytes(path);
+
+            var tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            tex.LoadImage(bytes, false);
+            tex.hideFlags = HideFlags.DontUnloadUnusedAsset;
+            tex.filterMode = FilterMode.Point;
+
+            var id = ScriptableObject.CreateInstance<PaletteID>();
+            id.name = "Test";
+            id.id = 600;
+            id.hideFlags = HideFlags.DontUnloadUnusedAsset;
+
+            //bool success = FileHandler.LoadDataAsTexture("test.png", out Texture2D tex);
+            //ModLog.Info("Success = " + success);
+            CoreCache.PlayerRecolorManager.config.palettes.Add(new Il2CppTGK.Game.Managers.Config.PlayerRecolorManagerConfig.PaletteEntry()
+            {
+                palette = tex,
+                ID = id
+            });
+            ID = id;
+        }
     }
+
+    PaletteID ID = null;
 
     /// <summary>
     /// Replace TPO sprites every frame with a loaded one
@@ -72,15 +99,47 @@ public class CustomSkins : BlasIIMod, IGlobalPersistentMod<SkinGlobalSaveData>
             ? CoreCache.PlayerSpawn.PlayerInstance.GetComponentsInChildren<SpriteRenderer>()
             : UnityEngine.Object.FindObjectsOfType<SpriteRenderer>();
 
+        //ModLog.Info("Current sprites");
         // Replace all TPO sprites that were loaded
         foreach (var renderer in renderers)
         {
             string name = renderer.sprite?.GetUniqueName();
+            //if (!string.IsNullOrEmpty(name))
+            //    ModLog.Warn(name);
 
             if (string.IsNullOrEmpty(name) || !_loadedSprites.TryGetValue(name, out Sprite customSprite))
                 continue;
 
             renderer.sprite = customSprite;
+        }
+
+        if (UnityEngine.Input.GetKeyDown(KeyCode.H))
+        {
+            ModLog.Warn("Exporting pals");
+            var pals = CoreCache.PlayerRecolorManager.config.palettes;
+
+            for (int i = 0; i < pals.Length; i++)
+            {
+                try
+                {
+                    var p = pals[i];
+
+                    string name = p.ID.name;
+                    var bytes = p.palette.Duplicate().EncodeToPNG();
+
+                    File.WriteAllBytes(Path.Combine(FileHandler.ContentFolder, name), bytes);
+                }
+                catch (Exception ex)
+                {
+                    ModLog.Error(ex);
+                }
+            }
+        }
+
+        if (UnityEngine.Input.GetKeyDown(KeyCode.V))
+        {
+            ModLog.Info("Setting test skin");
+            CoreCache.PlayerRecolorManager.SetPalette(ID);
         }
     }
 
