@@ -46,6 +46,6 @@ internal static class ImageExtensions
         if (sprite == null)
             return null;
 
-        return $"{sprite.texture.name}_{sprite.name}";
+        return $"{sprite.texture.name}_{sprite.name}".Replace("_IC", string.Empty);
     }
 }

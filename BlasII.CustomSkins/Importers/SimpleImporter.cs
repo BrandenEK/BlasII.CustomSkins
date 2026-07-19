@@ -63,6 +63,7 @@ public class SimpleImporter : IImporter
             var rect = new Rect(info.Position, info.Size);
             var sprite = Sprite.Create(texture, rect, info.Pivot, info.PixelsPerUnit, 0, SpriteMeshType.FullRect);
             sprite.hideFlags = HideFlags.DontUnloadUnusedAsset;
+            sprite.name = $"{info.Name}_modded";
 
             Result[info.Name] = sprite;
             if (_currentImports++ % _importsPerFrame == 0)
