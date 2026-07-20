@@ -1,7 +1,9 @@
 ﻿using BlasII.CustomSkins.Models;
 using BlasII.ModdingAPI;
+using Il2CppTGK.Game;
 using Il2CppTGK.Game.Managers;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -9,26 +11,28 @@ namespace BlasII.CustomSkins;
 
 internal class SkinImporter
 {
-    // Will return a list of full skin data in the future
-    public void LoadAllSkins(string directory)
+    public List<SkinData> LoadAllSkins(string directory)
     {
         Directory.CreateDirectory(directory);
 
-        ModLog.Warn("Found folders");
+        var skins = new List<SkinData>();
+
         foreach (string path in Directory.GetDirectories(directory))
         {
             try
             {
-                LoadSkin(path);
+                skins.Add(LoadSkin(path));
             }
             catch (System.Exception ex)
             {
                 ModLog.Error($"Failed to load skin from {path} ({ex.Message})");
             }
         }
+
+        return skins;
     }
 
-    private void LoadSkin(string directory)
+    private SkinData LoadSkin(string directory)
     {
         string infoPath = Path.Combine(directory, "info.json");
         string texturePath = Path.Combine(directory, "texture.png");
@@ -39,10 +43,7 @@ internal class SkinImporter
         if (!File.Exists(texturePath))
             throw new System.Exception("No texture file was present");
 
-        var info = LoadInfo(infoPath);
-        var texture = LoadTexture(texturePath);
-
-        ModLog.Warn($"{info.Id} {info.Name} by {info.Author}");
+        return RegisterPalette(LoadInfo(infoPath), LoadTexture(texturePath));
     }
 
     private SkinInfo LoadInfo(string path)
@@ -61,5 +62,22 @@ internal class SkinImporter
         tex.filterMode = FilterMode.Point;
 
         return tex;
+    }
+
+    private SkinData RegisterPalette(SkinInfo info, Texture2D texture)
+    {
+        var palette = ScriptableObject.CreateInstance<PaletteID>();
+        palette.name = info.Id;
+        palette.id = info.Id.GetHashCode();
+        palette.hideFlags = HideFlags.DontUnloadUnusedAsset;
+
+        CoreCache.PlayerRecolorManager.config.palettes.Add(new Il2CppTGK.Game.Managers.Config.PlayerRecolorManagerConfig.PaletteEntry()
+        {
+            palette = texture,
+            ID = palette
+        });
+
+        ModLog.Info($"Loaded custom skin {info.Id} ({info.Name})");
+        return new SkinData(info, texture, palette);
     }
 }
