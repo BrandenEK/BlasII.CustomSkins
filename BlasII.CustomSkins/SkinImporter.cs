@@ -1,5 +1,6 @@
 ﻿using BlasII.CustomSkins.Models;
 using BlasII.ModdingAPI;
+using Il2CppTGK.Game.Managers;
 using Newtonsoft.Json;
 using System.IO;
 using UnityEngine;
@@ -52,6 +53,13 @@ internal class SkinImporter
 
     private Texture2D LoadTexture(string path)
     {
-        return null;
+        var bytes = File.ReadAllBytes(path);
+
+        var tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+        tex.LoadImage(bytes, false);
+        tex.hideFlags = HideFlags.DontUnloadUnusedAsset;
+        tex.filterMode = FilterMode.Point;
+
+        return tex;
     }
 }
