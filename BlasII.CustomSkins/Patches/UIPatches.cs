@@ -31,9 +31,14 @@ class SkinSelectorLogic_SetInitialsSkins_Patch
             return;
         _createdUI = true;
 
+        // Cache variables
         var skinconfig = __instance.skinConfig;
         var root = __instance.skinsRoot;
         var prefab = root.GetChild(0);
+
+        // Modify name text
+        __instance.skinName.normalText.richText = true;
+        __instance.skinName.shadowText.richText = true;
 
         foreach (var skin in Main.CustomSkins.GetAllSkins())
         {
@@ -81,4 +86,17 @@ class SkinSelectorLogic_SetInitialsSkins_Patch
     }
 
     private static bool _createdUI = false;
+}
+
+[HarmonyPatch(typeof(SkinSelectorLogic), nameof(SkinSelectorLogic.SetCurrentElement))]
+class SkinSelectorLogic_SetCurrentElement_Patch
+{
+    public static void Postfix(SkinSelectorLogic __instance)
+    {
+        if (__instance.currentSkinIndex < 8)
+            return;
+
+        var skin = Main.CustomSkins.GetSkin(__instance.currentSkinIndex - 8);
+        __instance.skinName.SetText($"{skin.Info.Name} <color=#FFDE92>by</color> {skin.Info.Author}");
+    }
 }

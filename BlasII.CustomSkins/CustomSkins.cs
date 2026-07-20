@@ -34,4 +34,6 @@ public class CustomSkins : BlasIIMod
     }
 
     internal IEnumerable<SkinData> GetAllSkins() => _loadedSkins;
+
+    internal SkinData GetSkin(int index) => _loadedSkins[index];
 }
