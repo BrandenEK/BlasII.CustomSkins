@@ -32,4 +32,6 @@ public class CustomSkins : BlasIIMod
             CoreCache.PlayerRecolorManager.SetPalette(_loadedSkins[0].Palette);
         }
     }
+
+    internal IEnumerable<SkinData> GetAllSkins() => _loadedSkins;
 }
