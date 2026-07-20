@@ -1,4 +1,4 @@
-using BlasII.CustomSkins;
+using BlasII.CustomSkinsLegacy;
 using MelonLoader;
 
 [assembly: MelonInfo(typeof(BlasII.CustomSkins.Main), ModInfo.MOD_NAME, ModInfo.MOD_VERSION, ModInfo.MOD_AUTHOR)]
