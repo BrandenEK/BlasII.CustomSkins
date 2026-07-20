@@ -8,10 +8,13 @@ using BlasII.ModdingAPI;
 using BlasII.ModdingAPI.Helpers;
 using BlasII.ModdingAPI.Persistence;
 using Il2CppTGK.Game;
+using Il2CppTGK.Game.Managers;
+using Il2CppTGK.Game.Managers.Config;
 using MelonLoader;
 using System;
 using System.Collections;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 namespace BlasII.CustomSkins;
@@ -46,10 +49,66 @@ public class CustomSkins : BlasIIMod, IGlobalPersistentMod<SkinGlobalSaveData>
     protected override void OnAllInitialized()
     {
         _config = ConfigHandler.Load<SkinConfig>();
+        
+        LoadTestPalette();
 
         if (!_config.UsePerformanceMode)
             ModLog.Warn("The setting 'UsePerformanceMode' is disabled. If you experience significant frame drops, enable this setting in the config at the cost of certain animations not being replaced.");
     }
+
+    private void LoadTestPalette()
+    {
+        string path = Path.Combine(FileHandler.ModdingFolder, "data", "Custom Skins", "test.png");
+        var bytes = File.ReadAllBytes(path);
+
+        var tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+        tex.LoadImage(bytes, false);
+        tex.hideFlags = HideFlags.DontUnloadUnusedAsset;
+        tex.filterMode = FilterMode.Point;
+
+        var id = ScriptableObject.CreateInstance<PaletteID>();
+        id.name = "PLT_TEST";
+        id.id = 600;
+        id.hideFlags = HideFlags.DontUnloadUnusedAsset;
+
+        //bool success = FileHandler.LoadDataAsTexture("test.png", out Texture2D tex);
+        //ModLog.Info("Success = " + success);
+        CoreCache.PlayerRecolorManager.config.palettes.Add(new Il2CppTGK.Game.Managers.Config.PlayerRecolorManagerConfig.PaletteEntry()
+        {
+            palette = tex,
+            ID = id
+        });
+        TestPalette = id;
+        ModLog.Error("Created new palette id: " + id.name);
+
+        var skinconfig = Resources.FindObjectsOfTypeAll<PlayerRecolorManagerUIConfig>().First();
+        if (skinconfig == null)
+        {
+            ModLog.Fatal("Cant find config");
+            return;
+        }
+
+        Sprite s1 = skinconfig.palettes[1].UIImage;
+        Sprite s2 = skinconfig.palettes[1].UIImageBig;
+        skinconfig.palettes.Add(new PlayerRecolorManagerUIConfig.UIPaletteConfig()
+        {
+            ID = id,
+            term = "Test Palette Name",
+            UIImage = s1,
+            UIImageBig = s2,
+        });
+        ModLog.Error("Added new palette to config");
+
+        for (int i = 0; i < skinconfig.palettes.Length; i++)
+        {
+            var entry = skinconfig.palettes[i];
+            ModLog.Info(entry.ID.name);
+            ModLog.Warn(entry.term);
+            ModLog.Warn(entry.UIImage?.name ?? "none");
+        }
+    }
+
+    public PaletteID TestPalette { get; set; } = null;
 
     /// <summary>
     /// Update skin with default when loading menu for the first time
