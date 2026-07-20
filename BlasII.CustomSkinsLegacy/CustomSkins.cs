@@ -1,4 +1,5 @@
 ﻿using BlasII.CheatConsole;
+using BlasII.CustomSkinsLegacy;
 using BlasII.CustomSkins.Exporters;
 using BlasII.CustomSkins.Extensions;
 using BlasII.CustomSkins.Finders;

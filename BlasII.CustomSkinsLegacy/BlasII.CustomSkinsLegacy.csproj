@@ -4,14 +4,14 @@
     <TargetFramework>net6.0</TargetFramework>
     <LangVersion>latest</LangVersion>
 
-    <Title>Custom Skins</Title>
-    <Product>Custom Skins</Product>
+    <Title>Custom Skins Legacy</Title>
+    <Product>Custom Skins Legacy</Product>
     <Authors>Damocles</Authors>
     <Company>Damocles</Company>
     <Description>Allows using custom player skins made by the community</Description>
     <Version>0.3.1</Version>
     
-    <TargetName>CustomSkins</TargetName>
+    <TargetName>CustomSkinsLegacy</TargetName>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile>bin\$(Configuration)\$(TargetName).xml</DocumentationFile>
