@@ -1,8 +1,12 @@
 ﻿using BlasII.CustomSkins.Models;
 using BlasII.ModdingAPI;
 using BlasII.ModdingAPI.Persistence;
+using Il2CppTGK.Game;
+using Il2CppTGK.Game.Managers;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using UnityEngine;
 
 namespace BlasII.CustomSkins;
 
@@ -30,9 +34,14 @@ public class CustomSkins : BlasIIMod, IGlobalPersistentMod<SkinGlobalSaveData>
     /// </summary>
     public SkinGlobalSaveData SaveGlobal()
     {
+        int current = CoreCache.PlayerRecolorManager.currentPalette;
+        var pal = Resources.FindObjectsOfTypeAll<PaletteID>().FirstOrDefault(x => x.id == current);
+
+        ModLog.Warn("Saving custom skin: " + (pal == null || pal.name.StartsWith("PLT") ? string.Empty : pal.name));
+
         return new SkinGlobalSaveData()
         {
-            SelectedSkin = _selectedSkin
+            SelectedSkin = pal == null || pal.name.StartsWith("PLT") ? string.Empty : pal.name
         };
     }
 
