@@ -18,7 +18,6 @@ public class CustomSkins : BlasIIMod, IGlobalPersistentMod<SkinGlobalSaveData>
     internal CustomSkins() : base(ModInfo.MOD_ID, ModInfo.MOD_NAME, ModInfo.MOD_AUTHOR, ModInfo.MOD_VERSION) { }
 
     private List<SkinData> _loadedSkins;
-    private string _selectedSkin = string.Empty;
 
     /// <summary>
     /// Loads all skins from the modding folder
@@ -37,7 +36,7 @@ public class CustomSkins : BlasIIMod, IGlobalPersistentMod<SkinGlobalSaveData>
         int current = CoreCache.PlayerRecolorManager.currentPalette;
         var pal = Resources.FindObjectsOfTypeAll<PaletteID>().FirstOrDefault(x => x.id == current);
 
-        ModLog.Warn("Saving custom skin: " + (pal == null || pal.name.StartsWith("PLT") ? string.Empty : pal.name));
+        //ModLog.Warn("Saving custom skin: " + (pal == null || pal.name.StartsWith("PLT") ? string.Empty : pal.name));
 
         return new SkinGlobalSaveData()
         {
@@ -50,8 +49,17 @@ public class CustomSkins : BlasIIMod, IGlobalPersistentMod<SkinGlobalSaveData>
     /// </summary>
     public void LoadGlobal(SkinGlobalSaveData data)
     {
-        ModLog.Error("Loading the skin: " + data.SelectedSkin);
-        _selectedSkin = data.SelectedSkin ?? string.Empty;
+        //ModLog.Warn("Loading custom skin: " + data.SelectedSkin);
+
+        if (string.IsNullOrEmpty(data.SelectedSkin))
+            return;
+
+        var skin = _loadedSkins.FirstOrDefault(x => x.Info.Id == data.SelectedSkin);
+
+        if (skin == null)
+            return;
+
+        CoreCache.PlayerRecolorManager.SetPalette(skin.Palette);
     }
 
     internal IEnumerable<SkinData> GetAllSkins() => _loadedSkins;
