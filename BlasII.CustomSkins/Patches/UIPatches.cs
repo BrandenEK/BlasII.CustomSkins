@@ -13,11 +13,11 @@ class SkinSelectorLogic_SetInitialsSkins_Patch
 {
     public static void Prefix(SkinSelectorLogic __instance)
     {
-        ModLog.Info("Adding custom skins to UI selector");
-
         if (_createdUI)
             return;
         _createdUI = true;
+
+        ModLog.Info("Adding custom skins to UI selector");
 
         // Cache variables
         var skinconfig = __instance.skinConfig;
