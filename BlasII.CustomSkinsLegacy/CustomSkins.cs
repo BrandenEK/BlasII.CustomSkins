@@ -68,24 +68,6 @@ public class CustomSkins : BlasIIMod, IGlobalPersistentMod<SkinGlobalSaveData>
     /// </summary>
     protected override void OnLateUpdate()
     {
-        //if (UnityEngine.Input.GetKeyDown(KeyCode.P))
-        //{
-        //    ModLog.Info("Export sprites");
-
-        //    var config = Resources.FindObjectsOfTypeAll<PlayerRecolorManagerUIConfig>().First();
-        //    for (int i = 0; i < config.palettes.Length; i++)
-        //    {
-        //        string id = config.palettes[i].ID.name;
-        //        var s1 = config.palettes[i].UIImage.GetSlicedTexture().EncodeToPNG();
-        //        var s2 = config.palettes[i].UIImageBig.GetSlicedTexture().EncodeToPNG();
-
-        //        File.WriteAllBytes(Path.Combine(FileHandler.ContentFolder, id + "-small.png"), s1);
-        //        File.WriteAllBytes(Path.Combine(FileHandler.ContentFolder, id + "-big.png"), s2);
-
-        //        ModLog.Warn("Exported " + id);
-        //    }
-        //}
-
         if (!SceneHelper.GameSceneLoaded || CoreCache.PlayerSpawn.PlayerInstance == null)
             return;
 
