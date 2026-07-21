@@ -14,8 +14,6 @@ using System;
 using System.Collections;
 using System.IO;
 using UnityEngine;
-using Il2CppTGK.Game.Managers.Config;
-using System.Linq;
 
 namespace BlasII.CustomSkins;
 
