@@ -1,9 +1,12 @@
 ﻿using BlasII.ModdingAPI;
 using HarmonyLib;
+using Il2Cpp;
 using Il2CppTGK.Game;
+using Il2CppTGK.Game.Components.Animation;
 using Il2CppTGK.Game.Components.UI;
 using Il2CppTGK.Game.Managers.Config;
 using UnityEngine;
+using UnityEngine.Playables;
 using UnityEngine.UI;
 
 namespace BlasII.CustomSkins.Patches;
@@ -26,6 +29,9 @@ class SkinSelectorLogic_SetInitialsSkins_Patch
         //{
         //    ModLog.Warn(entry.gameObject.transform.parent.name);
         //}
+
+        foreach (var recolor in __instance.skinsListUI)
+            recolor.UpdateRecolor();
 
         if (_createdUI)
             return;
@@ -61,8 +67,8 @@ class SkinSelectorLogic_SetInitialsSkins_Patch
             // Setup the recolor data
             var recolor = newElement.transform.GetChild(0).GetComponent<ApplyRecolor>();
             recolor.ID = skin.Palette;
-            recolor.recolorImage = recolor.transform.parent.GetChild(1).GetComponent<Image>();
-            recolor.UpdateRecolor();
+            recolor.recolorImage = newElement.transform.GetChild(1).GetComponent<Image>();
+            recolor.recolorImage.material = new Material(__instance.skinsListUI[0].recolorImage.material);
 
             // Add the element to the UI lists
             __instance.skinsListUI.Add(recolor);
@@ -72,9 +78,33 @@ class SkinSelectorLogic_SetInitialsSkins_Patch
                 nameTerm = string.Empty,
                 isUnlocked = true,
             });
+        }
 
-            ModLog.Warn("Added new skin element to UI");
+        foreach (var recolor in __instance.skinsListUI)
+        {
+            //ModLog.Info(recolor.transform.parent.name + " (" + recolor.ID.name + ") applies to " + recolor.recolorImage.gameObject.GetInstanceID());
+            //var anims = recolor.transform.parent.GetComponent<RandomizeAnimator>().animators;
+            //for (int i = 0; i < anims.Length; i++)
+            //{
+            //    ModLog.Error(anims[i].name + ": " + anims[i].gameObject.GetInstanceID());
+            //}
 
+            //recolor.recolorImage = null;
+            //recolor.UpdateRecolor();
+
+            //var callbacks = recolor.transform.parent.GetComponent<MonoBehaviourCallbacks>();
+
+            //ModLog.Info(callbacks.OnStartCallback.GetPersistentEventCount());
+            //for (int i = 0; i < callbacks.OnStartCallback.GetPersistentEventCount(); i++)
+            //    ModLog.Warn(callbacks.OnStartCallback.GetPersistentMethodName(i));
+
+            //callbacks.OnEnableCallback.RemoveAllListeners();
+            //callbacks.OnStartCallback.RemoveAllListeners();
+            //callbacks.OnDestroyCallback.RemoveAllListeners();
+            //callbacks.OnDisableCallback.RemoveAllListeners();
+
+            //ModLog.Info(recolor.transform.parent.GetChild(0).GetComponent<Image>().sprite.name ?? "none");
+            //ModLog.Warn(recolor.transform.parent.GetChild(1).GetComponent<Image>().sprite.name ?? "none");
         }
 
         //ModLog.Info("Entries in the palette config");
@@ -93,6 +123,14 @@ class SkinSelectorLogic_SetCurrentElement_Patch
 {
     public static void Postfix(SkinSelectorLogic __instance)
     {
+        ModLog.Error("Forcing recolor");
+        var recolor = __instance.skinsListUI[__instance.currentSkinIndex];
+        //recolor.ID = Main.CustomSkins.GetSkin(0).Palette;
+        //recolor.recolorImage = __instance.skinsListUI[1].transform.parent.GetChild(1).GetComponent<Image>();
+        //recolor.UpdateRecolor();
+
+        //return;
+
         if (__instance.currentSkinIndex < 8)
             return;
 
