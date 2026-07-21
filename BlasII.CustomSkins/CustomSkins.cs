@@ -1,6 +1,5 @@
 ﻿using BlasII.CustomSkins.Models;
 using BlasII.ModdingAPI;
-using Il2CppTGK.Game;
 using System.Collections.Generic;
 using System.IO;
 
@@ -22,15 +21,6 @@ public class CustomSkins : BlasIIMod
     {
         var importer = new SkinImporter();
         _loadedSkins = importer.LoadAllSkins(Path.Combine(FileHandler.ModdingFolder, "custom_skins"));
-    }
-
-    protected override void OnUpdate()
-    {
-        if (UnityEngine.Input.GetKeyDown(UnityEngine.KeyCode.P))
-        {
-            ModLog.Warn("equip");
-            CoreCache.PlayerRecolorManager.SetPalette(_loadedSkins[0].Palette);
-        }
     }
 
     internal IEnumerable<SkinData> GetAllSkins() => _loadedSkins;
