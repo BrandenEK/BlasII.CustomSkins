@@ -294,7 +294,7 @@ public class BetterExporterTwoStep : IExporter
         var groups = new List<AnimationGroup>();
 
         IEnumerable<string> searchTypes = type.Split('+').Where(x => !string.IsNullOrEmpty(x));
-        string folder = Path.Combine(Main.CustomSkins.FileHandler.ModdingFolder, "data", "Custom Skins");
+        string folder = Path.Combine(Main.CustomSkins.FileHandler.ModdingFolder, "data", BlasII.CustomSkinsLegacy.ModInfo.MOD_NAME);
         
         foreach (string groupFile in Directory.GetFiles(folder, "*.txt"))
         {
