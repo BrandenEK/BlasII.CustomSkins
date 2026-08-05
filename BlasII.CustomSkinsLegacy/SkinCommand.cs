@@ -138,23 +138,26 @@ internal class SkinCommand : ModCommand
         Write(sb.ToString());
     }
 
-    private void Debug()
+    public static void Debug()
     {
         ModLog.Warn("Running debug command");
 
         var loadedSprites = Resources.FindObjectsOfTypeAll<Sprite>()
             .Where(x => !string.IsNullOrEmpty(x.name))
             .Select(x => x.GetUniqueName())
+            .Distinct()
             .OrderBy(x => x);
 
         var loadedTextures = Resources.FindObjectsOfTypeAll<Texture2D>()
             .Where(x => !string.IsNullOrEmpty(x.name))
             .Select(x => x.name)
+            .Distinct()
             .OrderBy(x => x);
 
         var visibleSprites = Object.FindObjectsOfType<SpriteRenderer>()
             .Where(x => x.sprite != null && !string.IsNullOrEmpty(x.sprite.name))
             .Select(x => x.sprite.GetUniqueName())
+            .Distinct()
             .OrderBy(x => x);
 
         ModLog.Error("Loaded sprites:");

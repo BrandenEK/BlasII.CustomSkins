@@ -83,6 +83,11 @@ public class CustomSkins : BlasIIMod, IGlobalPersistentMod<SkinGlobalSaveData>
 
             renderer.sprite = customSprite;
         }
+
+        //if (UnityEngine.Input.GetKeyDown(KeyCode.Equals))
+        //{
+        //    SkinCommand.Debug();
+        //}
     }
 
     private void PerformDefaultLoad()
