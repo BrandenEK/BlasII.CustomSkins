@@ -20,7 +20,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BlasII.CheatConsole" Version="1.5.0" />
+    <PackageReference Include="BlasII.CheatConsole" Version="2.0.1" />
     <PackageReference Include="BlasII.GameLibs" Version="3.0.0" />
     <PackageReference Include="BlasII.ModdingAPI" Version="2.1.0" />
   </ItemGroup>
