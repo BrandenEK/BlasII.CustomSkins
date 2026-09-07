@@ -1,4 +1,5 @@
-﻿using BlasII.CheatConsole;
+﻿using BlasII.CheatConsole.Attributes;
+using BlasII.CheatConsole.Commands;
 using BlasII.CustomSkins.Extensions;
 using BlasII.ModdingAPI;
 using System.IO;
@@ -8,112 +9,11 @@ using UnityEngine;
 
 namespace BlasII.CustomSkins;
 
-internal class SkinCommand : ModCommand
+internal class SkinCommand : ModComplexCommand
 {
-    public SkinCommand() : base("skin") { }
+    public SkinCommand() : base("cskin") { }
 
-    public override void Execute(string[] args)
-    {
-        switch (args[0])
-        {
-            case "set":
-                {
-                    if (!ValidateParameterCount(args, 2))
-                        return;
-
-                    Replace(args[1]);
-                    break;
-                }
-            case "reset":
-                {
-                    if (!ValidateParameterCount(args, 1))
-                        return;
-
-                    Reset();
-                    break;
-                }
-            case "merge":
-                {
-                    if (!ValidateParameterCount(args, 2))
-                        return;
-
-                    Merge(args[1]);
-                    break;
-                }
-            case "export":
-                {
-                    if (!ValidateParameterCount(args, 2))
-                        return;
-
-                    Export(args[1]);
-                    break;
-                }
-            case "list":
-                {
-                    if (!ValidateParameterCount(args, 1))
-                        return;
-
-                    List();
-                    break;
-                }
-#if DEBUG
-            case "debug":
-                {
-                    if (!ValidateParameterCount(args, 1))
-                        return;
-
-                    Debug();
-                    break;
-                }
-#endif
-            default:
-                {
-                    WriteFailure("Unknown subcommand: " + args[0]);
-                    break;
-                }
-        }
-    }
-
-    private void Replace(string id)
-    {
-        string folder = Path.Combine(Main.CustomSkins.FileHandler.ModdingFolder, "skins", id, "textures");
-
-        if (Directory.Exists(folder))
-        {
-            Write($"Setting selected skin to {id}");
-            Main.CustomSkins.CurrentSkin = id;
-        }
-
-        Main.CustomSkins.StartImport(folder, Main.CustomSkins.ReplaceSkin);
-    }
-
-    private void Merge(string id)
-    {
-        string folder = Path.Combine(Main.CustomSkins.FileHandler.ModdingFolder, "skins", id, "textures");
-
-        if (Directory.Exists(folder))
-        {
-            Write($"Merging selected skin with {id}");
-            // Add merge to current id
-        }
-
-        Main.CustomSkins.StartImport(folder, Main.CustomSkins.MergeSkin);
-    }
-
-    private void Reset()
-    {
-        Write($"Restting selected skin to default");
-        Main.CustomSkins.CurrentSkin = string.Empty;
-
-        Main.CustomSkins.ResetSkin();
-    }
-
-    private void Export(string type)
-    {
-        string folder = Main.CustomSkins.FileHandler.ContentFolder;
-        Main.CustomSkins.StartExport(type, folder);
-    }
-
+    [SubCommand]
     private void List()
     {
         string folder = Path.Combine(Main.CustomSkins.FileHandler.ModdingFolder, "skins");
@@ -138,7 +38,53 @@ internal class SkinCommand : ModCommand
         Write(sb.ToString());
     }
 
-    public static void Debug()
+    [SubCommand]
+    private void Set(string id)
+    {
+        string folder = Path.Combine(Main.CustomSkins.FileHandler.ModdingFolder, "skins", id, "textures");
+
+        if (Directory.Exists(folder))
+        {
+            Write($"Setting selected skin to {id}");
+            Main.CustomSkins.CurrentSkin = id;
+        }
+
+        Main.CustomSkins.StartImport(folder, Main.CustomSkins.ReplaceSkin);
+    }
+
+    [SubCommand]
+    private void Reset()
+    {
+        Write($"Restting selected skin to default");
+        Main.CustomSkins.CurrentSkin = string.Empty;
+
+        Main.CustomSkins.ResetSkin();
+    }
+
+    [SubCommand]
+    private void Merge(string id)
+    {
+        string folder = Path.Combine(Main.CustomSkins.FileHandler.ModdingFolder, "skins", id, "textures");
+
+        if (Directory.Exists(folder))
+        {
+            Write($"Merging selected skin with {id}");
+            // Add merge to current id
+        }
+
+        Main.CustomSkins.StartImport(folder, Main.CustomSkins.MergeSkin);
+    }
+
+    [SubCommand]
+    private void Export(string type)
+    {
+        string folder = Main.CustomSkins.FileHandler.ContentFolder;
+        Main.CustomSkins.StartExport(type, folder);
+    }
+
+#if DEBUG
+    [SubCommand]
+    private void Debug()
     {
         ModLog.Warn("Running debug command");
 
@@ -172,4 +118,5 @@ internal class SkinCommand : ModCommand
         foreach (string name in visibleSprites)
             ModLog.Info(name);
     }
+#endif    
 }
